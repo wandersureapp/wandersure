@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, PlaneTakeoff, Shield, FileText, Menu, X } from "lucide-react";
+import { Home, PlaneTakeoff, Shield, Bell, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export default function Layout({ children, currentPageName }) {
@@ -20,7 +20,8 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: "Dashboard", path: createPageUrl("Dashboard"), icon: Home },
     { name: "My Trips", path: createPageUrl("MyTrips"), icon: PlaneTakeoff },
-            { name: "Compare Plans", path: createPageUrl("BrowsePlans"), icon: Shield },
+    { name: "Compare Plans", path: createPageUrl("BrowsePlans"), icon: Shield },
+    { name: "Alerts", path: createPageUrl("NotificationSettings"), icon: Bell },
   ];
 
   const isActive = (path) => location.pathname === path;

@@ -6,6 +6,7 @@ import InvestorPitchPrint from './pages/InvestorPitchPrint';
 import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import TripDetail from './pages/TripDetail';
+import NotificationSettings from './pages/NotificationSettings';
 import __Layout from './Layout.jsx';
 
 
@@ -18,6 +19,7 @@ export const PAGES = {
     "MyTrips": MyTrips,
     "NewTrip": NewTrip,
     "TripDetail": TripDetail,
+    "NotificationSettings": NotificationSettings,
 }
 
 export const pagesConfig = {
