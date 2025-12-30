@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Shield, Sparkles, ArrowRight, Award, ExternalLink } from "lucide-react";
+import { buildAffiliateUrl, trackAffiliateClick } from "../components/utils/affiliateTracking";
 
 export default function BrowsePlans() {
   const providers = [
@@ -169,7 +170,13 @@ export default function BrowsePlans() {
                   </ul>
 
                   <Button 
-                    onClick={() => window.open(provider.website, '_blank')}
+                    onClick={() => {
+                      const affiliateUrl = buildAffiliateUrl(provider.website, provider.name, {
+                        source: 'browse_plans'
+                      });
+                      trackAffiliateClick(provider.name, null, null);
+                      window.open(affiliateUrl, '_blank');
+                    }}
                     variant="outline"
                     className="w-full"
                   >

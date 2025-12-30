@@ -16,6 +16,7 @@ import {
   Sparkles,
   ArrowLeft
 } from "lucide-react";
+import { buildAffiliateUrl, trackAffiliateClick } from "../components/utils/affiliateTracking";
 
 export default function CustomizeInsurance() {
   const navigate = useNavigate();
@@ -112,6 +113,20 @@ export default function CustomizeInsurance() {
   ].sort((a, b) => a.estimatedPremium - b.estimatedPremium);
 
   const handleGetQuote = async (provider) => {
+    // Build affiliate tracking URL
+    const affiliateUrl = buildAffiliateUrl(
+      provider.referralUrl,
+      provider.name,
+      {
+        trip_id: tripId,
+        destination: trip?.destination,
+        coverage_count: selectedCoverages.length
+      }
+    );
+
+    // Track the click
+    trackAffiliateClick(provider.name, tripId, provider.estimatedPremium);
+
     // Save recommendation before redirecting
     await saveRecommendationMutation.mutateAsync({
       trip_id: tripId,
@@ -122,15 +137,15 @@ export default function CustomizeInsurance() {
       },
       provider_referrals: [{
         provider_name: provider.name,
-        referral_url: provider.referralUrl,
+        referral_url: affiliateUrl,
         estimated_premium: provider.estimatedPremium,
         clicked: true
       }],
       notes: `User selected ${selectedCoverages.length} coverage options for ${trip?.destination}`
     });
 
-    // Open provider website in new tab
-    window.open(provider.referralUrl, '_blank');
+    // Open provider website with affiliate tracking
+    window.open(affiliateUrl, '_blank');
   };
 
   if (loadingTrip) {

@@ -135,9 +135,8 @@ export default function Layout({ children, currentPageName }) {
               <span className="text-gray-600">© 2024 WanderSure. Your journey, protected.</span>
             </div>
             <div className="flex gap-6 text-sm text-gray-500">
-              <a href="#" className="hover:text-blue-600 transition-colors">Privacy Policy</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">Terms of Service</a>
-              <a href="#" className="hover:text-blue-600 transition-colors">Support</a>
+              <Link to={createPageUrl("Legal")} className="hover:text-blue-600 transition-colors">Privacy & Terms</Link>
+              <a href="mailto:support@wandersure.com" className="hover:text-blue-600 transition-colors">Support</a>
             </div>
           </div>
         </div>
