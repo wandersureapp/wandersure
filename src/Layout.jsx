@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
@@ -21,8 +20,7 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: "Dashboard", path: createPageUrl("Dashboard"), icon: Home },
     { name: "My Trips", path: createPageUrl("MyTrips"), icon: PlaneTakeoff },
-    { name: "Browse Plans", path: createPageUrl("BrowsePlans"), icon: Shield },
-    { name: "Claims", path: createPageUrl("Claims"), icon: FileText },
+            { name: "Compare Plans", path: createPageUrl("BrowsePlans"), icon: Shield },
   ];
 
   const isActive = (path) => location.pathname === path;

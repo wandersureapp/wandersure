@@ -1,319 +1,145 @@
-
-import React, { useState, useEffect } from "react";
-import { base44 } from "@/api/base44Client";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Alert, AlertDescription } from "@/components/ui/alert"; 
-import { format } from "date-fns"; // Added for date formatting
-import insuranceProvider from "../components/insurance/InsuranceProviderService"; // Added import
-
 import { 
-  ArrowLeft,
-  Shield,
-  CheckCircle,
-  AlertTriangle,
-  Info,
-  Sparkles,
+  Shield, 
+  CheckCircle, 
+  ExternalLink,
   TrendingUp,
-  Loader2,
-  DollarSign
+  Award,
+  Sparkles,
+  ArrowLeft
 } from "lucide-react";
-import { motion } from "framer-motion";
 
 export default function CustomizeInsurance() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
-  const tripId = urlParams.get('tripId');
+  const tripId = urlParams.get("tripId");
 
   const [selectedCoverages, setSelectedCoverages] = useState([]);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [providerQuote, setProviderQuote] = useState(null); // Added state
-  const [isGettingQuote, setIsGettingQuote] = useState(false); // Added state
 
-  const { data: trip, isLoading } = useQuery({
+  const { data: trip, isLoading: loadingTrip } = useQuery({
     queryKey: ['trip', tripId],
-    queryFn: () => base44.entities.Trip.list().then(trips => trips.find(t => t.id === tripId)),
+    queryFn: async () => {
+      const trips = await base44.entities.Trip.list();
+      return trips.find(t => t.id === tripId);
+    },
     enabled: !!tripId
   });
 
-  // Coverage options with base pricing and risk factors
-  const coverageOptions = [
-    {
-      id: "trip_cancellation",
-      name: "Trip Cancellation",
-      description: "Get reimbursed if you need to cancel due to illness, injury, or other covered reasons",
-      basePrice: 0.025, // 2.5% of trip cost
-      riskFactor: "overall_score",
-      icon: Shield,
-      category: "essential"
-    },
-    {
-      id: "trip_interruption",
-      name: "Trip Interruption",
-      description: "Coverage if your trip is cut short due to emergencies",
-      basePrice: 0.02, // 2% of trip cost
-      riskFactor: "disruption_risk",
-      icon: AlertTriangle,
-      category: "essential"
-    },
-    {
-      id: "flight_delay",
-      name: "Flight Delay Protection",
-      description: "Compensation for delays over 4 hours including meals and accommodation",
-      basePrice: 18,
-      riskFactor: "flight_delay_risk",
-      icon: TrendingUp,
-      category: "travel"
-    },
-    {
-      id: "baggage_loss",
-      name: "Baggage Loss",
-      description: "Reimbursement for lost or stolen baggage up to coverage limit",
-      basePrice: 22,
-      riskFactor: "overall_score",
-      icon: Shield,
-      category: "travel"
-    },
-    {
-      id: "baggage_delay",
-      name: "Baggage Delay",
-      description: "Coverage for essential items if baggage is delayed 12+ hours",
-      basePrice: 12,
-      riskFactor: "disruption_risk",
-      icon: Shield,
-      category: "travel"
-    },
-    {
-      id: "medical_emergency",
-      name: "Medical Emergency",
-      description: "Emergency medical expenses coverage up to $100,000",
-      basePrice: 32,
-      riskFactor: "health_risk",
-      icon: Shield,
-      category: "medical"
-    },
-    {
-      id: "medical_evacuation",
-      name: "Medical Evacuation",
-      description: "Emergency medical transportation to nearest adequate facility",
-      basePrice: 42,
-      riskFactor: "health_risk",
-      icon: Shield,
-      category: "medical"
-    },
-    {
-      id: "theft_protection",
-      name: "Theft Protection",
-      description: "Coverage for stolen personal belongings and identity theft assistance",
-      basePrice: 24,
-      riskFactor: "crime_risk",
-      icon: Shield,
-      category: "security"
-    },
-    {
-      id: "rental_car_damage",
-      name: "Rental Car Damage",
-      description: "Coverage for rental car damage or theft",
-      basePrice: 28,
-      riskFactor: "overall_score",
-      icon: Shield,
-      category: "travel"
-    },
-    {
-      id: "missed_connection",
-      name: "Missed Connection",
-      description: "Coverage for additional expenses due to missed connections",
-      basePrice: 16,
-      riskFactor: "flight_delay_risk",
-      icon: Shield,
-      category: "travel"
-    },
-    {
-      id: "natural_disaster",
-      name: "Natural Disaster Coverage",
-      description: "Protection against trip disruptions from natural disasters",
-      basePrice: 35,
-      riskFactor: "disruption_risk",
-      icon: Shield,
-      category: "essential"
-    }
-  ];
-
-  // Get real-time quote from insurance provider
-  const getProviderQuote = async () => {
-    if (selectedCoverages.length === 0 || !trip) {
-      setProviderQuote(null); // Clear quote if no coverages selected or trip data missing
-      return;
-    }
-    
-    setIsGettingQuote(true);
-    try {
-      // Pass trip details and selected coverage IDs to the provider service
-      const quote = await insuranceProvider.getQuote(trip, selectedCoverages);
-      setProviderQuote(quote);
-    } catch (error) {
-      console.error("Error getting provider quote:", error);
-      setProviderQuote(null);
-    }
-    setIsGettingQuote(false);
-  };
-
-  // Update quote when coverage selection or trip data changes
-  useEffect(() => {
-    // Only attempt to get a quote if a trip is loaded
-    if (trip) {
-      getProviderQuote();
-    }
-  }, [selectedCoverages, trip]); // Rerun when selectedCoverages or trip changes
-
-  const createPolicyMutation = useMutation({
-    mutationFn: async (policyData) => {
-      // Get customer data for the insurance provider
-      const user = await base44.auth.me();
-      
-      // Purchase policy from external insurance provider using the obtained quote
-      const providerPolicy = await insuranceProvider.purchasePolicy(
-        providerQuote, // Use the real-time quote
-        {
-          email: user.email,
-          full_name: user.full_name,
-          trip_details: trip
-        },
-        {
-          // In a real implementation, this would include payment details (e.g., tokenized card data)
-          method: "credit_card" // Placeholder payment method
-        }
-      );
-      
-      // Create policy record in our database with provider details for tracking and management
-      return base44.entities.Policy.create({
-        ...policyData,
-        provider_name: providerPolicy.provider_name,
-        provider_policy_id: providerPolicy.provider_policy_id,
-        provider_quote_id: providerPolicy.provider_quote_id,
-        policy_document_url: providerPolicy.policy_document_url,
-        terms_document_url: providerPolicy.terms_document_url,
-        provider_contact: providerPolicy.provider_contact,
-        // Potentially store other provider-specific fields if necessary
-      });
-    },
+  const saveRecommendationMutation = useMutation({
+    mutationFn: (data) => base44.entities.Recommendation.create(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['policies'] });
-      navigate(createPageUrl("Dashboard"));
+      queryClient.invalidateQueries({ queryKey: ['recommendations'] });
     }
   });
 
-  // Coverage options with base pricing and risk factors (already exists)
-  // ...
-
-  // Analyze coverage recommendations based on risk
-  const getCoverageRecommendation = (coverage) => {
-    if (!trip?.risk_assessment) return { priority: "optional", reason: "No risk data available" };
-
-    const riskScore = trip.risk_assessment[coverage.riskFactor] || trip.risk_assessment.overall_score;
-    
-    if (riskScore >= 60) {
-      return {
-        priority: "highly_recommended",
-        reason: `High ${coverage.riskFactor.replace('_', ' ')} detected (${riskScore}/100)`,
-        color: "red"
-      };
-    } else if (riskScore >= 30) {
-      return {
-        priority: "recommended",
-        reason: `Moderate ${coverage.riskFactor.replace('_', ' ')} (${riskScore}/100)`,
-        color: "yellow"
-      };
-    } else {
-      return {
-        priority: "optional",
-        reason: `Low ${coverage.riskFactor.replace('_', ' ')} (${riskScore}/100)`,
-        color: "gray"
-      };
-    }
+  const coverageOptions = {
+    essential: [
+      { id: "trip_cancellation", name: "Trip Cancellation", basePrice: 45, description: "Reimburses non-refundable trip costs if you need to cancel" },
+      { id: "medical_emergency", name: "Medical Emergency", basePrice: 35, description: "Covers emergency medical expenses while traveling" },
+      { id: "trip_interruption", name: "Trip Interruption", basePrice: 30, description: "Covers costs if your trip is cut short" }
+    ],
+    recommended: [
+      { id: "baggage_loss", name: "Baggage Loss", basePrice: 25, description: "Reimbursement for lost or stolen luggage" },
+      { id: "flight_delay", name: "Flight Delay", basePrice: 20, description: "Compensation for significant flight delays" },
+      { id: "medical_evacuation", name: "Medical Evacuation", basePrice: 40, description: "Emergency transportation to medical facilities" }
+    ],
+    optional: [
+      { id: "baggage_delay", name: "Baggage Delay", basePrice: 15, description: "Reimbursement for essentials if baggage is delayed" },
+      { id: "rental_car_damage", name: "Rental Car Damage", basePrice: 28, description: "Coverage for rental vehicle damage" },
+      { id: "missed_connection", name: "Missed Connection", basePrice: 18, description: "Covers costs from missed connections" },
+      { id: "natural_disaster", name: "Natural Disaster", basePrice: 35, description: "Protection against weather-related disruptions" }
+    ]
   };
-
-  // Calculate dynamic pricing (for display/fallback if provider quote not available)
-  const calculateCoveragePrice = (coverage) => {
-    if (!trip) return coverage.basePrice;
-    
-    if (coverage.basePrice < 1) {
-      // Percentage-based pricing
-      return Math.round(trip.trip_cost * coverage.basePrice);
-    }
-    
-    // Fixed price with reduced risk multiplier
-    const riskScore = trip.risk_assessment?.[coverage.riskFactor] || 0;
-    const multiplier = 1 + (riskScore / 300); // Up to 1.33x for high risk (reduced from 1.5x)
-    return Math.round(coverage.basePrice * multiplier);
-  };
-
-  // Initialize with highly recommended coverages
-  useEffect(() => {
-    if (trip?.risk_assessment) {
-      const highlyRecommended = coverageOptions
-        .filter(cov => getCoverageRecommendation(cov).priority === "highly_recommended")
-        .map(cov => cov.id);
-      setSelectedCoverages(highlyRecommended);
-    }
-  }, [trip]);
 
   const toggleCoverage = (coverageId) => {
     setSelectedCoverages(prev => 
-      prev.includes(coverageId)
+      prev.includes(coverageId) 
         ? prev.filter(id => id !== coverageId)
         : [...prev, coverageId]
     );
   };
 
-  const totalPremium = selectedCoverages.reduce((sum, covId) => {
-    const coverage = coverageOptions.find(c => c.id === covId);
-    return sum + (coverage ? calculateCoveragePrice(coverage) : 0);
-  }, 0);
-
-  const handlePurchase = async () => {
-    setIsAnalyzing(true);
-    
-    // Determine plan name based on coverage count
-    let planName = "Custom Plan";
-    if (selectedCoverages.length <= 3) planName = "Basic Protection";
-    else if (selectedCoverages.length <= 6) planName = "Standard Coverage";
-    else if (selectedCoverages.length <= 9) planName = "Premium Shield";
-    else planName = "Ultimate Protection";
-
-    // Use provider quote if available, otherwise calculate using our internal logic
-    const premium = providerQuote?.premium_amount || totalPremium;
-    const coverageLimit = providerQuote?.coverage_limit || (premium * 50); // Fallback to 50x if provider doesn't specify
-
-    const policyData = {
-      trip_id: tripId,
-      policy_number: `WS-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`,
-      plan_name: planName,
-      coverage_types: selectedCoverages,
-      premium_amount: premium,
-      coverage_limit: coverageLimit,
-      status: "active",
-      purchase_date: new Date().toISOString().split('T')[0],
-      expiry_date: trip?.end_date
-    };
-
-    try {
-      await createPolicyMutation.mutateAsync(policyData);
-    } finally {
-      setIsAnalyzing(false);
-    }
+  const calculateTotal = () => {
+    const allCoverages = [...coverageOptions.essential, ...coverageOptions.recommended, ...coverageOptions.optional];
+    return selectedCoverages.reduce((sum, id) => {
+      const coverage = allCoverages.find(c => c.id === id);
+      return sum + (coverage?.basePrice || 0);
+    }, 0);
   };
 
-  if (isLoading) {
+  const insuranceProviders = [
+    {
+      name: "World Nomads",
+      logo: "🌍",
+      referralUrl: "https://www.worldnomads.com",
+      estimatedPremium: calculateTotal() * 0.95,
+      features: ["Adventure sports coverage", "24/7 emergency assistance", "Flexible policies"],
+      rating: 4.5
+    },
+    {
+      name: "Allianz Travel",
+      logo: "🛡️",
+      referralUrl: "https://www.allianztravelinsurance.com",
+      estimatedPremium: calculateTotal() * 1.1,
+      features: ["Trip cancellation for any reason", "Flight accident coverage", "Rental car protection"],
+      rating: 4.7
+    },
+    {
+      name: "Travel Guard",
+      logo: "✈️",
+      referralUrl: "https://www.travelguard.com",
+      estimatedPremium: calculateTotal() * 1.05,
+      features: ["Medical expense coverage", "Baggage protection", "Travel delay reimbursement"],
+      rating: 4.3
+    },
+    {
+      name: "Seven Corners",
+      logo: "⭐",
+      referralUrl: "https://www.sevencorners.com",
+      estimatedPremium: calculateTotal() * 0.92,
+      features: ["Customizable coverage", "Pre-existing condition coverage", "Cancel for work reasons"],
+      rating: 4.4
+    }
+  ].sort((a, b) => a.estimatedPremium - b.estimatedPremium);
+
+  const handleGetQuote = async (provider) => {
+    // Save recommendation before redirecting
+    await saveRecommendationMutation.mutateAsync({
+      trip_id: tripId,
+      recommended_coverages: selectedCoverages,
+      estimated_premium_range: {
+        min: calculateTotal() * 0.9,
+        max: calculateTotal() * 1.15
+      },
+      provider_referrals: [{
+        provider_name: provider.name,
+        referral_url: provider.referralUrl,
+        estimated_premium: provider.estimatedPremium,
+        clicked: true
+      }],
+      notes: `User selected ${selectedCoverages.length} coverage options for ${trip?.destination}`
+    });
+
+    // Open provider website in new tab
+    window.open(provider.referralUrl, '_blank');
+  };
+
+  if (loadingTrip) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-12 h-12 animate-spin text-blue-600" />
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading trip details...</p>
+        </div>
       </div>
     );
   }
@@ -321,24 +147,24 @@ export default function CustomizeInsurance() {
   if (!trip) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-gray-600">Trip not found</p>
-          <Button onClick={() => navigate(createPageUrl("Dashboard"))} className="mt-4">
-            Return to Dashboard
-          </Button>
-        </div>
+        <Card className="max-w-md">
+          <CardContent className="p-8 text-center">
+            <p className="text-gray-600 mb-4">Trip not found</p>
+            <Button onClick={() => navigate(createPageUrl("MyTrips"))}>
+              Return to My Trips
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
-  // Group coverages by recommendation priority
-  const highlyRecommended = coverageOptions.filter(c => getCoverageRecommendation(c).priority === "highly_recommended");
-  const recommended = coverageOptions.filter(c => getCoverageRecommendation(c).priority === "recommended");
-  const optional = coverageOptions.filter(c => getCoverageRecommendation(c).priority === "optional");
+  const riskScore = trip.risk_assessment?.overall_score || 0;
+  const estimatedSavings = calculateTotal() * 0.4;
 
   return (
-    <div className="min-h-screen py-8 bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
+      <div className="max-w-7xl mx-auto">
         <Button
           variant="ghost"
           onClick={() => navigate(createPageUrl(`TripDetail?id=${tripId}`))}
@@ -350,335 +176,221 @@ export default function CustomizeInsurance() {
 
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-teal-500 rounded-xl flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Customize Your Insurance</h1>
-              <p className="text-gray-600">{trip.trip_name}</p>
-            </div>
-          </div>
-          
-          <Alert className="border-blue-200 bg-blue-50">
-            <Info className="w-4 h-4 text-blue-600" />
-            <AlertDescription className="text-blue-900">
-              Based on your trip's risk analysis, we've pre-selected the most important coverages for you. 
-              Adjust as needed to create your perfect protection plan.
-            </AlertDescription>
-          </Alert>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">
+            Compare Insurance Plans
+          </h1>
+          <p className="text-xl text-gray-600">
+            AI-powered recommendations for {trip.trip_name}
+          </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Coverage Selection */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Highly Recommended */}
-            {highlyRecommended.length > 0 && (
-              <Card className="border-2 border-red-200 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-red-50 to-orange-50">
-                  <CardTitle className="flex items-center gap-2 text-red-800">
-                    <AlertTriangle className="w-5 h-5" />
-                    Highly Recommended for Your Trip
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {highlyRecommended.map((coverage) => {
-                      const recommendation = getCoverageRecommendation(coverage);
-                      const price = calculateCoveragePrice(coverage);
-                      const isSelected = selectedCoverages.includes(coverage.id);
-
-                      return (
-                        <motion.div
-                          key={coverage.id}
-                          whileHover={{ scale: 1.02 }}
-                          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                            isSelected 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                          onClick={() => toggleCoverage(coverage.id)}
-                        >
-                          <div className="flex items-start gap-4">
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={() => toggleCoverage(coverage.id)}
-                              className="mt-1"
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-start justify-between mb-2">
-                                <div>
-                                  <h3 className="font-semibold text-gray-900">{coverage.name}</h3>
-                                  <p className="text-sm text-gray-600 mt-1">{coverage.description}</p>
-                                </div>
-                                <div className="text-right ml-4">
-                                  <p className="text-lg font-bold text-gray-900">${price}</p>
-                                  <p className="text-xs text-gray-500">per trip</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2 mt-2">
-                                <Badge className="bg-red-100 text-red-800 border-0 text-xs">
-                                  {recommendation.reason}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Recommended */}
-            {recommended.length > 0 && (
-              <Card className="border-2 border-yellow-200 shadow-lg">
-                <CardHeader className="bg-gradient-to-r from-yellow-50 to-amber-50">
-                  <CardTitle className="flex items-center gap-2 text-yellow-800">
-                    <CheckCircle className="w-5 h-5" />
-                    Recommended Coverage
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {recommended.map((coverage) => {
-                      const recommendation = getCoverageRecommendation(coverage);
-                      const price = calculateCoveragePrice(coverage);
-                      const isSelected = selectedCoverages.includes(coverage.id);
-
-                      return (
-                        <motion.div
-                          key={coverage.id}
-                          whileHover={{ scale: 1.02 }}
-                          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                            isSelected 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                          onClick={() => toggleCoverage(coverage.id)}
-                        >
-                          <div className="flex items-start gap-4">
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={() => toggleCoverage(coverage.id)}
-                              className="mt-1"
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-start justify-between mb-2">
-                                <div>
-                                  <h3 className="font-semibold text-gray-900">{coverage.name}</h3>
-                                  <p className="text-sm text-gray-600 mt-1">{coverage.description}</p>
-                                </div>
-                                <div className="text-right ml-4">
-                                  <p className="text-lg font-bold text-gray-900">${price}</p>
-                                  <p className="text-xs text-gray-500">per trip</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2 mt-2">
-                                <Badge className="bg-yellow-100 text-yellow-800 border-0 text-xs">
-                                  {recommendation.reason}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Optional */}
-            {optional.length > 0 && (
-              <Card className="border-gray-200 shadow-lg">
-                <CardHeader className="bg-gray-50">
-                  <CardTitle className="flex items-center gap-2 text-gray-700">
-                    <Info className="w-5 h-5" />
-                    Optional Coverage
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="p-6">
-                  <div className="space-y-4">
-                    {optional.map((coverage) => {
-                      const recommendation = getCoverageRecommendation(coverage);
-                      const price = calculateCoveragePrice(coverage);
-                      const isSelected = selectedCoverages.includes(coverage.id);
-
-                      return (
-                        <motion.div
-                          key={coverage.id}
-                          whileHover={{ scale: 1.02 }}
-                          className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
-                            isSelected 
-                              ? 'border-blue-500 bg-blue-50' 
-                              : 'border-gray-200 hover:border-gray-300'
-                          }`}
-                          onClick={() => toggleCoverage(coverage.id)}
-                        >
-                          <div className="flex items-start gap-4">
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={() => toggleCoverage(coverage.id)}
-                              className="mt-1"
-                            />
-                            <div className="flex-1">
-                              <div className="flex items-start justify-between mb-2">
-                                <div>
-                                  <h3 className="font-semibold text-gray-900">{coverage.name}</h3>
-                                  <p className="text-sm text-gray-600 mt-1">{coverage.description}</p>
-                                </div>
-                                <div className="text-right ml-4">
-                                  <p className="text-lg font-bold text-gray-900">${price}</p>
-                                  <p className="text-xs text-gray-500">per trip</p>
-                                </div>
-                              </div>
-                              <div className="flex items-center gap-2 mt-2">
-                                <Badge variant="outline" className="text-xs">
-                                  {recommendation.reason}
-                                </Badge>
-                              </div>
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
-
-          {/* Summary Sidebar */}
-          <div className="space-y-6">
-            <Card className="border-none shadow-xl sticky top-24">
-              <CardHeader className="bg-gradient-to-br from-blue-600 to-teal-600 text-white">
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="w-5 h-5" />
-                  Your Custom Plan
-                </CardTitle>
-              </CardHeader>
+            {/* Trip Info */}
+            <Card className="border-2 border-blue-200 bg-blue-50">
               <CardContent className="p-6">
-                <div className="space-y-4">
-                  {/* Provider Info - Display only if a quote is available */}
-                  {providerQuote && (
-                    <div className="pb-4 border-b">
-                      <div className="flex items-center justify-between mb-2">
-                        <span className="text-sm text-gray-600">Provider</span>
-                        <Badge variant="secondary" className="font-semibold bg-blue-100 text-blue-800">
-                          {providerQuote.provider_name}
-                        </Badge>
-                      </div>
-                      <p className="text-xs text-gray-500">
-                        Quote valid until {format(new Date(providerQuote.valid_until), "MMM d, yyyy")}
-                      </p>
-                    </div>
-                  )}
-
-                  <div className="pb-4 border-b">
-                    <p className="text-sm text-gray-600 mb-2">Selected Coverage</p>
-                    <p className="text-2xl font-bold text-gray-900">
-                      {selectedCoverages.length} {selectedCoverages.length === 1 ? 'item' : 'items'}
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">{trip.destination}</h3>
+                    <p className="text-gray-700">
+                      {new Date(trip.start_date).toLocaleDateString()} - {new Date(trip.end_date).toLocaleDateString()}
+                    </p>
+                    <p className="text-gray-700 mt-1">
+                      {trip.travelers_count} {trip.travelers_count === 1 ? 'traveler' : 'travelers'}
                     </p>
                   </div>
-
-                  {isGettingQuote ? (
-                    <div className="flex items-center justify-center py-4">
-                      <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-                      <span className="ml-2 text-sm text-gray-600">Getting live quote...</span>
-                    </div>
-                  ) : (
-                    <>
-                      <div className="space-y-2">
-                        {selectedCoverages.map(covId => {
-                          const coverage = coverageOptions.find(c => c.id === covId);
-                          if (!coverage) return null;
-                          const price = calculateCoveragePrice(coverage); // Display our calculated price even if provider quote is different for individual items
-                          
-                          return (
-                            <div key={covId} className="flex justify-between text-sm">
-                              <span className="text-gray-600">{coverage.name}</span>
-                              <span className="font-medium">${price}</span>
-                            </div>
-                          );
-                        })}
-                      </div>
-
-                      <div className="pt-4 border-t">
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-gray-900 font-semibold">Total Premium</span>
-                          {/* Display provider's premium if available, otherwise our calculated premium */}
-                          <span className="text-3xl font-bold text-blue-600">
-                            ${providerQuote?.premium_amount || totalPremium}
-                          </span>
-                        </div>
-                        <p className="text-xs text-gray-500">One-time payment for entire trip</p>
-                      </div>
-                    </>
-                  )}
-
-                  <div className="pt-4">
-                    <div className="p-3 bg-green-50 rounded-lg mb-4">
-                      <p className="text-sm text-green-800 font-medium">
-                        {/* Display provider's coverage limit if available, otherwise our calculated limit */}
-                        ✓ Coverage up to ${((providerQuote?.coverage_limit || (totalPremium * 50))).toLocaleString()}
-                      </p>
-                      <p className="text-xs text-green-600 mt-1">
-                        24/7 emergency assistance included
-                      </p>
-                      {/* Display provider name if quote available */}
-                      {providerQuote && (
-                        <p className="text-xs text-green-600 mt-1">
-                          Backed by {providerQuote.provider_name}
-                        </p>
-                      )}
-                    </div>
-
-                    <Button
-                      className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-lg py-6"
-                      onClick={handlePurchase}
-                      disabled={selectedCoverages.length === 0 || isAnalyzing || isGettingQuote || !providerQuote}
-                    >
-                      {isAnalyzing ? (
-                        <>
-                          <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>
-                          <Shield className="w-5 h-5 mr-2" />
-                          Purchase Protection
-                        </>
-                      )}
-                    </Button>
+                  <div className="text-right">
+                    <p className="text-sm text-gray-600 mb-1">Risk Score</p>
+                    <Badge className={`text-lg ${
+                      riskScore < 30 ? 'bg-green-100 text-green-800' :
+                      riskScore < 60 ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
+                    }`}>
+                      {riskScore}/100
+                    </Badge>
                   </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Why WanderSure */}
-            <Card className="border-none shadow-lg bg-gradient-to-br from-purple-50 to-pink-50">
-              <CardContent className="p-6">
-                <h3 className="font-semibold text-gray-900 mb-3">Why WanderSure?</h3>
-                <ul className="space-y-2 text-sm text-gray-700">
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>AI-powered risk analysis for your specific trip</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Pay only for coverage you actually need</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Real-time travel alerts and updates</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
-                    <span>Fast claims processing with support</span>
-                  </li>
-                </ul>
+            {/* Essential Coverage */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-red-600" />
+                  Essential Coverage
+                  <Badge className="bg-red-100 text-red-800">Highly Recommended</Badge>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {coverageOptions.essential.map(coverage => (
+                  <div
+                    key={coverage.id}
+                    className="flex items-start gap-4 p-4 rounded-lg border-2 hover:border-blue-300 transition-colors cursor-pointer"
+                    onClick={() => toggleCoverage(coverage.id)}
+                  >
+                    <Checkbox
+                      checked={selectedCoverages.includes(coverage.id)}
+                      onCheckedChange={() => toggleCoverage(coverage.id)}
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-semibold text-gray-900">{coverage.name}</h4>
+                        <span className="text-blue-600 font-bold">${coverage.basePrice}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{coverage.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Recommended Coverage */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Sparkles className="w-5 h-5 text-yellow-600" />
+                  AI Recommended for Your Trip
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {coverageOptions.recommended.map(coverage => (
+                  <div
+                    key={coverage.id}
+                    className="flex items-start gap-4 p-4 rounded-lg border-2 hover:border-blue-300 transition-colors cursor-pointer"
+                    onClick={() => toggleCoverage(coverage.id)}
+                  >
+                    <Checkbox
+                      checked={selectedCoverages.includes(coverage.id)}
+                      onCheckedChange={() => toggleCoverage(coverage.id)}
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-semibold text-gray-900">{coverage.name}</h4>
+                        <span className="text-blue-600 font-bold">${coverage.basePrice}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{coverage.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+
+            {/* Optional Coverage */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-gray-600" />
+                  Optional Add-Ons
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                {coverageOptions.optional.map(coverage => (
+                  <div
+                    key={coverage.id}
+                    className="flex items-start gap-4 p-4 rounded-lg border-2 hover:border-blue-300 transition-colors cursor-pointer"
+                    onClick={() => toggleCoverage(coverage.id)}
+                  >
+                    <Checkbox
+                      checked={selectedCoverages.includes(coverage.id)}
+                      onCheckedChange={() => toggleCoverage(coverage.id)}
+                    />
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-semibold text-gray-900">{coverage.name}</h4>
+                        <span className="text-blue-600 font-bold">${coverage.basePrice}</span>
+                      </div>
+                      <p className="text-sm text-gray-600">{coverage.description}</p>
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Provider Comparison */}
+          <div className="space-y-6">
+            <Card className="sticky top-6 border-2 border-blue-300">
+              <CardHeader className="bg-gradient-to-r from-blue-600 to-teal-600 text-white">
+                <CardTitle>Provider Comparison</CardTitle>
+                <p className="text-sm text-blue-100">Based on your selected coverage</p>
+              </CardHeader>
+              <CardContent className="p-6 space-y-4">
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <p className="text-sm text-gray-600 mb-1">Estimated Total</p>
+                  <p className="text-4xl font-bold text-blue-600">${calculateTotal()}</p>
+                  <p className="text-xs text-gray-500 mt-2">{selectedCoverages.length} coverages selected</p>
+                </div>
+
+                {selectedCoverages.length > 0 ? (
+                  <>
+                    <div className="space-y-4">
+                      {insuranceProviders.map((provider, index) => (
+                        <Card key={provider.name} className={`${index === 0 ? 'border-2 border-green-400 bg-green-50' : ''}`}>
+                          <CardContent className="p-4">
+                            {index === 0 && (
+                              <Badge className="bg-green-600 text-white mb-2">
+                                <Award className="w-3 h-3 mr-1" />
+                                Best Value
+                              </Badge>
+                            )}
+                            <div className="flex items-center gap-3 mb-3">
+                              <span className="text-3xl">{provider.logo}</span>
+                              <div>
+                                <h4 className="font-bold text-gray-900">{provider.name}</h4>
+                                <div className="flex items-center gap-1">
+                                  <span className="text-yellow-500">★</span>
+                                  <span className="text-sm text-gray-600">{provider.rating}</span>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="mb-3">
+                              <p className="text-2xl font-bold text-blue-600">
+                                ${provider.estimatedPremium.toFixed(0)}
+                              </p>
+                              <p className="text-xs text-gray-500">Estimated premium</p>
+                            </div>
+
+                            <ul className="space-y-1 mb-4">
+                              {provider.features.map(feature => (
+                                <li key={feature} className="text-xs text-gray-600 flex items-start gap-1">
+                                  <CheckCircle className="w-3 h-3 text-green-600 flex-shrink-0 mt-0.5" />
+                                  <span>{feature}</span>
+                                </li>
+                              ))}
+                            </ul>
+
+                            <Button
+                              onClick={() => handleGetQuote(provider)}
+                              className={`w-full ${index === 0 ? 'bg-green-600 hover:bg-green-700' : 'bg-blue-600 hover:bg-blue-700'}`}
+                            >
+                              Get Quote
+                              <ExternalLink className="w-4 h-4 ml-2" />
+                            </Button>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+
+                    <Card className="bg-gradient-to-br from-green-50 to-teal-50 border-2 border-green-200">
+                      <CardContent className="p-4 text-center">
+                        <TrendingUp className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                        <p className="text-sm text-gray-700 font-medium">Potential Savings</p>
+                        <p className="text-2xl font-bold text-green-600">
+                          ~${estimatedSavings.toFixed(0)}
+                        </p>
+                        <p className="text-xs text-gray-600 mt-1">vs. traditional packages</p>
+                      </CardContent>
+                    </Card>
+                  </>
+                ) : (
+                  <div className="text-center py-8">
+                    <Shield className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                    <p className="text-gray-600">Select coverage to see provider options</p>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
