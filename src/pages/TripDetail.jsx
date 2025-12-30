@@ -21,6 +21,7 @@ import { format, differenceInDays } from "date-fns";
 
 import RiskGauges from "../components/trip/RiskGauges";
 import InsuranceRecommendations from "../components/trip/InsuranceRecommendations";
+import EnableAlertsPrompt from "../components/trip/EnableAlertsPrompt";
 
 export default function TripDetail() {
   const navigate = useNavigate();
@@ -160,6 +161,8 @@ export default function TripDetail() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Risk Assessment */}
           <div className="lg:col-span-2 space-y-6">
+            <EnableAlertsPrompt trip={trip} />
+            
             <RiskGauges riskAssessment={trip.risk_assessment} />
 
             {/* Travel Bookings */}
