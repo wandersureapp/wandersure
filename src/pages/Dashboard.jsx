@@ -27,9 +27,9 @@ export default function Dashboard() {
     queryFn: () => base44.entities.Trip.list('-created_date'),
   });
 
-  const { data: policies = [] } = useQuery({
-    queryKey: ['policies'],
-    queryFn: () => base44.entities.Policy.list('-created_date'),
+  const { data: recommendations = [] } = useQuery({
+    queryKey: ['recommendations'],
+    queryFn: () => base44.entities.Recommendation.list('-created_date'),
   });
 
   const activeTrips = trips.filter(trip => 
@@ -91,7 +91,7 @@ export default function Dashboard() {
                 <Link to={createPageUrl("BrowsePlans")}>
                   <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6 backdrop-blur-sm">
                     <Shield className="w-5 h-5 mr-2" />
-                    Browse Insurance Plans
+                    Compare Insurance Plans
                   </Button>
                 </Link>
               </div>
@@ -113,8 +113,8 @@ export default function Dashboard() {
                   transition={{ delay: 0.3 }}
                   className="text-center"
                 >
-                  <p className="text-4xl font-bold text-white mb-1">{policies.filter(p => p.status === 'active').length}</p>
-                  <p className="text-blue-100 text-sm">Active Policies</p>
+                  <p className="text-4xl font-bold text-white mb-1">{recommendations.length}</p>
+                  <p className="text-blue-100 text-sm">Recommendations</p>
                 </motion.div>
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
@@ -200,7 +200,7 @@ export default function Dashboard() {
         >
           <QuickStats 
             activeTripsCount={activeTrips.length}
-            policiesCount={policies.filter(p => p.status === 'active').length}
+            policiesCount={recommendations.length}
             highRiskCount={highRiskTrips.length}
             upcomingCount={upcomingTrips.length}
           />
@@ -280,11 +280,11 @@ export default function Dashboard() {
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-lg">Need Coverage?</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Browse our insurance plans and get protected today
+                  Get AI-powered recommendations and compare top providers
                 </p>
                 <Link to={createPageUrl("BrowsePlans")}>
                   <Button className="w-full bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 shadow-lg group">
-                    View Plans
+                    Compare Plans
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </Link>
