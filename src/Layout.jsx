@@ -20,7 +20,7 @@ export default function Layout({ children, currentPageName }) {
   const navItems = [
     { name: "Dashboard", path: createPageUrl("Dashboard"), icon: Home },
     { name: "My Trips", path: createPageUrl("MyTrips"), icon: PlaneTakeoff },
-    { name: "Compare Plans", path: createPageUrl("BrowsePlans"), icon: Shield },
+    { name: "My Quotes", path: createPageUrl("MyQuotes"), icon: Shield },
     { name: "Alerts", path: createPageUrl("NotificationSettings"), icon: Bell },
   ];
 

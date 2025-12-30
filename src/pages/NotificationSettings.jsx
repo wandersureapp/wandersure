@@ -14,7 +14,8 @@ import {
   Shield,
   Sparkles,
   CheckCircle,
-  Crown
+  Crown,
+  CreditCard
 } from "lucide-react";
 
 export default function NotificationSettings() {
@@ -132,10 +133,19 @@ export default function NotificationSettings() {
                       <p className="text-3xl font-bold text-gray-900">$4.99<span className="text-lg text-gray-600">/mo</span></p>
                       <p className="text-sm text-gray-600">or $49/year (save 18%)</p>
                     </div>
-                    <Button className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600">
+                    <Button 
+                      className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                      onClick={() => {
+                        alert("Payment integration requires backend functions to be enabled.\n\nOnce enabled, you'll be able to process payments securely through Stripe.");
+                      }}
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
                       Upgrade Now
                     </Button>
                   </div>
+                  <p className="text-xs text-gray-500 mt-3">
+                    💳 Secure payment via Stripe • Cancel anytime
+                  </p>
                 </div>
               </div>
             </CardContent>

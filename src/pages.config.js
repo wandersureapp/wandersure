@@ -7,6 +7,7 @@ import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import TripDetail from './pages/TripDetail';
 import NotificationSettings from './pages/NotificationSettings';
+import MyQuotes from './pages/MyQuotes';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +21,7 @@ export const PAGES = {
     "NewTrip": NewTrip,
     "TripDetail": TripDetail,
     "NotificationSettings": NotificationSettings,
+    "MyQuotes": MyQuotes,
 }
 
 export const pagesConfig = {
