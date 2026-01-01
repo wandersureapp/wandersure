@@ -76,6 +76,7 @@ export default function TravelAides() {
       description: "Comprehensive safety protocols for every destination",
       price: "$3.99",
       color: "from-red-500 to-orange-500",
+      image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800",
       features: [
         "Emergency contacts",
         "Scam awareness",
@@ -92,6 +93,7 @@ export default function TravelAides() {
       description: "Track expenses and stay on budget throughout your trip",
       price: "$2.99",
       color: "from-green-500 to-teal-500",
+      image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800",
       features: [
         "Daily expense tracker",
         "Currency conversion helper",
@@ -108,6 +110,7 @@ export default function TravelAides() {
       description: "Capture memories like a pro with expert tips",
       price: "$4.99",
       color: "from-indigo-500 to-blue-500",
+      image: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800",
       features: [
         "Best photo spots",
         "Golden hour timing",
@@ -124,6 +127,7 @@ export default function TravelAides() {
       description: "Keep everyone organized for multi-person trips",
       price: "$5.99",
       color: "from-yellow-500 to-orange-500",
+      image: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=800",
       features: [
         "Shared itinerary",
         "Group expense splitting",
@@ -164,20 +168,24 @@ export default function TravelAides() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {aides.map((aide) => (
             <Card key={aide.id} className="border-none shadow-lg hover:shadow-xl transition-all relative overflow-hidden group">
-              <div className={`h-32 bg-gradient-to-br ${aide.color} relative`}>
-                <div className="absolute inset-0 bg-black/10 group-hover:bg-black/5 transition-colors"></div>
-                <div className="relative h-full flex items-center justify-center">
-                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                    <aide.icon className="w-8 h-8 text-white" />
+              {/* Photo Banner */}
+              <div className="relative h-48 overflow-hidden">
+                <img 
+                  src={aide.image} 
+                  alt={aide.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+                <div className={`absolute inset-0 bg-gradient-to-br ${aide.color} opacity-70`}></div>
+                {aide.badge && (
+                  <Badge className="absolute top-3 right-3 bg-yellow-400 text-gray-900 border-0 shadow-lg">
+                    {aide.badge}
+                  </Badge>
+                )}
+                <div className="absolute bottom-4 left-4">
+                  <div className="p-3 rounded-xl bg-white/95 backdrop-blur-sm shadow-lg">
+                    <aide.icon className="w-7 h-7 text-gray-800" />
                   </div>
                 </div>
-                {aide.badge && (
-                  <div className="absolute top-3 right-3">
-                    <Badge className="bg-yellow-400 text-gray-900 border-0">
-                      {aide.badge}
-                    </Badge>
-                  </div>
-                )}
               </div>
               
               <CardHeader>
