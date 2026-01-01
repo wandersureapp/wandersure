@@ -10,6 +10,7 @@ import NewTrip from './pages/NewTrip';
 import NotificationSettings from './pages/NotificationSettings';
 import PartnerWithUs from './pages/PartnerWithUs';
 import TripDetail from './pages/TripDetail';
+import TravelAides from './pages/TravelAides';
 import __Layout from './Layout.jsx';
 
 
@@ -26,6 +27,7 @@ export const PAGES = {
     "NotificationSettings": NotificationSettings,
     "PartnerWithUs": PartnerWithUs,
     "TripDetail": TripDetail,
+    "TravelAides": TravelAides,
 }
 
 export const pagesConfig = {

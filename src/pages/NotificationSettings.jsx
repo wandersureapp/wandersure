@@ -15,7 +15,16 @@ import {
   Sparkles,
   CheckCircle,
   Crown,
-  CreditCard
+  CreditCard,
+  X,
+  Check,
+  Plane,
+  Cloud,
+  AlertTriangle,
+  Hotel,
+  Car,
+  Ship,
+  Train
 } from "lucide-react";
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
 
@@ -46,8 +55,13 @@ export default function NotificationSettings() {
       trip_reminders: true,
       major_risk_alerts: true,
       flight_updates: false,
+      airport_intelligence: false,
       weather_updates: false,
       destination_safety: false,
+      hotel_updates: false,
+      car_rental_updates: false,
+      cruise_updates: false,
+      rail_updates: false,
       insurance_recommendations: false,
       price_drop_alerts: false
     }
@@ -96,13 +110,23 @@ export default function NotificationSettings() {
     }
   };
 
+  const freeFeatures = [
+    { icon: Bell, label: "Trip countdown reminders" },
+    { icon: AlertTriangle, label: "Major safety warnings" },
+    { icon: Cloud, label: "Severe weather alerts" }
+  ];
+
   const premiumFeatures = [
-    { icon: "✈️", label: "Real-time flight delay alerts" },
-    { icon: "🌦️", label: "Detailed weather forecasts" },
-    { icon: "🚨", label: "Live destination safety updates" },
-    { icon: "💰", label: "Insurance price drop notifications" },
-    { icon: "🎯", label: "Smart coverage recommendations" },
-    { icon: "📱", label: "SMS alerts included" }
+    { icon: Plane, label: "Real-time flight delays & gate changes" },
+    { icon: AlertTriangle, label: "Live TSA wait times & airport traffic" },
+    { icon: Cloud, label: "Hour-by-hour weather tracking" },
+    { icon: Shield, label: "Political & safety updates" },
+    { icon: Hotel, label: "Hotel status & room changes" },
+    { icon: Car, label: "Rental car availability alerts" },
+    { icon: Ship, label: "Cruise departure & port updates" },
+    { icon: Train, label: "Rail delays & platform changes" },
+    { icon: CreditCard, label: "Insurance price drop alerts" },
+    { icon: Smartphone, label: "SMS alerts included" }
   ];
 
   if (isLoading || !user) {
@@ -118,64 +142,109 @@ export default function NotificationSettings() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Notification Settings</h1>
-          <p className="text-xl text-gray-600">Stay informed with AI-powered travel alerts</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">AI Travel Alerts</h1>
+          <p className="text-xl text-gray-600">Real-time monitoring and intelligent notifications</p>
         </div>
 
-        {!formData.premium_subscription && (
-          <Card className="mb-6 border-2 border-yellow-300 bg-gradient-to-br from-yellow-50 to-orange-50">
+        {/* Free vs Premium Comparison */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {/* Free Tier */}
+          <Card className="border-2 border-gray-200">
+            <CardHeader className="bg-gray-50">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl">Basic Alerts</CardTitle>
+                <Badge className="bg-gray-200 text-gray-800">FREE</Badge>
+              </div>
+              <p className="text-gray-600 text-sm mt-2">Essential notifications for every traveler</p>
+            </CardHeader>
             <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                  <Crown className="w-6 h-6 text-white" />
-                </div>
-                <div className="flex-1">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                    Upgrade to Premium Alerts
-                  </h3>
-                  <p className="text-gray-700 mb-4">
-                    Get real-time risk intelligence, flight updates, and smart insurance recommendations
+              <div className="space-y-4">
+                {freeFeatures.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Check className="w-4 h-4 text-green-600" />
+                    </div>
+                    <div className="flex-1">
+                      <feature.icon className="w-4 h-4 text-gray-500 mb-1" />
+                      <p className="text-sm text-gray-700">{feature.label}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {!formData.premium_subscription && (
+                <div className="mt-6 pt-6 border-t">
+                  <p className="text-sm text-gray-600 text-center">
+                    You're currently on Basic Alerts
                   </p>
-                  <div className="grid md:grid-cols-3 gap-3 mb-4">
-                    {premiumFeatures.map(feature => (
-                      <div key={feature.label} className="flex items-center gap-2 text-sm text-gray-700">
-                        <span className="text-lg">{feature.icon}</span>
-                        <span>{feature.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div>
-                      <p className="text-3xl font-bold text-gray-900">$4.99<span className="text-lg text-gray-600">/mo</span></p>
-                      <p className="text-sm text-gray-600">or $49/year (save 18%)</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Premium Tier */}
+          <Card className="border-2 border-yellow-400 bg-gradient-to-br from-yellow-50 to-orange-50 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-300/30 rounded-full -mr-16 -mt-16"></div>
+            <CardHeader className="relative">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl flex items-center gap-2">
+                  <Crown className="w-6 h-6 text-yellow-600" />
+                  Premium Intelligence
+                </CardTitle>
+                {formData.premium_subscription ? (
+                  <Badge className="bg-green-600 text-white">ACTIVE</Badge>
+                ) : (
+                  <Badge className="bg-yellow-600 text-white">UPGRADE</Badge>
+                )}
+              </div>
+              <p className="text-gray-700 text-sm mt-2">Complete real-time travel intelligence</p>
+            </CardHeader>
+            <CardContent className="p-6 relative">
+              <div className="space-y-3 mb-6">
+                {premiumFeatures.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Sparkles className="w-4 h-4 text-yellow-600" />
                     </div>
-                    <div className="flex gap-2">
-                      <Button 
-                        className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                        onClick={() => handleUpgrade('monthly')}
-                      >
-                        <CreditCard className="w-4 h-4 mr-2" />
-                        Monthly
-                      </Button>
-                      <Button 
-                        variant="outline"
-                        className="border-2 border-yellow-500 text-yellow-700 hover:bg-yellow-50"
-                        onClick={() => handleUpgrade('yearly')}
-                      >
-                        Yearly (Save 18%)
-                      </Button>
+                    <div className="flex-1">
+                      <feature.icon className="w-4 h-4 text-gray-600 mb-1" />
+                      <p className="text-sm text-gray-800 font-medium">{feature.label}</p>
                     </div>
                   </div>
-                  <p className="text-xs text-gray-500 mt-3">
+                ))}
+              </div>
+
+              {!formData.premium_subscription && (
+                <div className="mt-6 pt-6 border-t border-yellow-200">
+                  <div className="text-center mb-4">
+                    <p className="text-3xl font-bold text-gray-900">$4.99<span className="text-lg text-gray-600">/mo</span></p>
+                    <p className="text-sm text-gray-600">or $49/year (save 18%)</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                      onClick={() => handleUpgrade('monthly')}
+                    >
+                      <CreditCard className="w-4 h-4 mr-2" />
+                      Monthly
+                    </Button>
+                    <Button 
+                      variant="outline"
+                      className="flex-1 border-2 border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+                      onClick={() => handleUpgrade('yearly')}
+                    >
+                      Yearly (Save 18%)
+                    </Button>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-3 text-center">
                     💳 Secure payment via Stripe • Cancel anytime
                   </p>
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
-        )}
+        </div>
 
         {formData.premium_subscription && (
           <Card className="mb-6 border-2 border-green-300 bg-green-50">
@@ -183,8 +252,8 @@ export default function NotificationSettings() {
               <div className="flex items-center gap-3">
                 <CheckCircle className="w-6 h-6 text-green-600" />
                 <div>
-                  <p className="font-bold text-gray-900">Premium Alerts Active</p>
-                  <p className="text-sm text-gray-600">All features unlocked</p>
+                  <p className="font-bold text-gray-900">Premium Intelligence Active</p>
+                  <p className="text-sm text-gray-600">All real-time features unlocked</p>
                 </div>
               </div>
               <Badge className="bg-green-600 text-white">
@@ -276,7 +345,7 @@ export default function NotificationSettings() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Shield className="w-5 h-5 text-green-600" />
-                Free Alerts
+                Basic Alerts (Free)
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
@@ -315,7 +384,7 @@ export default function NotificationSettings() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-yellow-500" />
-                Premium Alerts
+                Premium Intelligence Alerts
                 {!formData.premium_subscription && (
                   <Badge className="bg-yellow-100 text-yellow-800 ml-2">Upgrade Required</Badge>
                 )}
@@ -324,7 +393,10 @@ export default function NotificationSettings() {
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">Flight Updates</p>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <Plane className="w-4 h-4" />
+                    Flight Updates
+                  </p>
                   <p className="text-sm text-gray-600">Real-time delays, cancellations, gate changes</p>
                 </div>
                 <Switch
@@ -339,8 +411,29 @@ export default function NotificationSettings() {
 
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">Weather Updates</p>
-                  <p className="text-sm text-gray-600">Detailed forecasts and storm warnings</p>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4" />
+                    Airport Intelligence
+                  </p>
+                  <p className="text-sm text-gray-600">Live TSA wait times, traffic, parking availability</p>
+                </div>
+                <Switch
+                  checked={formData.alert_types.airport_intelligence}
+                  disabled={!formData.premium_subscription}
+                  onCheckedChange={(checked) => setFormData({
+                    ...formData,
+                    alert_types: {...formData.alert_types, airport_intelligence: checked}
+                  })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <Cloud className="w-4 h-4" />
+                    Weather Intelligence
+                  </p>
+                  <p className="text-sm text-gray-600">Hour-by-hour forecasts and storm tracking</p>
                 </div>
                 <Switch
                   checked={formData.alert_types.weather_updates}
@@ -354,7 +447,10 @@ export default function NotificationSettings() {
 
               <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                 <div>
-                  <p className="font-medium text-gray-900">Destination Safety</p>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <Shield className="w-4 h-4" />
+                    Destination Safety
+                  </p>
                   <p className="text-sm text-gray-600">Political updates, crime alerts, health advisories</p>
                 </div>
                 <Switch
@@ -363,6 +459,78 @@ export default function NotificationSettings() {
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, destination_safety: checked}
+                  })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <Hotel className="w-4 h-4" />
+                    Hotel Updates
+                  </p>
+                  <p className="text-sm text-gray-600">Check-in status, room changes, facility alerts</p>
+                </div>
+                <Switch
+                  checked={formData.alert_types.hotel_updates}
+                  disabled={!formData.premium_subscription}
+                  onCheckedChange={(checked) => setFormData({
+                    ...formData,
+                    alert_types: {...formData.alert_types, hotel_updates: checked}
+                  })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <Car className="w-4 h-4" />
+                    Car Rental Updates
+                  </p>
+                  <p className="text-sm text-gray-600">Availability, pickup location changes</p>
+                </div>
+                <Switch
+                  checked={formData.alert_types.car_rental_updates}
+                  disabled={!formData.premium_subscription}
+                  onCheckedChange={(checked) => setFormData({
+                    ...formData,
+                    alert_types: {...formData.alert_types, car_rental_updates: checked}
+                  })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <Ship className="w-4 h-4" />
+                    Cruise Updates
+                  </p>
+                  <p className="text-sm text-gray-600">Departure times, port changes, excursion alerts</p>
+                </div>
+                <Switch
+                  checked={formData.alert_types.cruise_updates}
+                  disabled={!formData.premium_subscription}
+                  onCheckedChange={(checked) => setFormData({
+                    ...formData,
+                    alert_types: {...formData.alert_types, cruise_updates: checked}
+                  })}
+                />
+              </div>
+
+              <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                <div>
+                  <p className="font-medium text-gray-900 flex items-center gap-2">
+                    <Train className="w-4 h-4" />
+                    Rail & Train Updates
+                  </p>
+                  <p className="text-sm text-gray-600">Delays, platform changes, service disruptions</p>
+                </div>
+                <Switch
+                  checked={formData.alert_types.rail_updates}
+                  disabled={!formData.premium_subscription}
+                  onCheckedChange={(checked) => setFormData({
+                    ...formData,
+                    alert_types: {...formData.alert_types, rail_updates: checked}
                   })}
                 />
               </div>
@@ -413,7 +581,7 @@ export default function NotificationSettings() {
         {saveMutation.isSuccess && (
           <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg flex items-center gap-3">
             <CheckCircle className="w-5 h-5 text-green-600" />
-            <p className="text-green-800">Notification preferences saved successfully!</p>
+            <p className="text-green-800">Alert preferences saved successfully!</p>
           </div>
         )}
       </div>
