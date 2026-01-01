@@ -15,8 +15,10 @@ import {
   Plane,
   Hotel,
   Car,
-  Activity
+  Activity,
+  ListChecks
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
 
 import RiskGauges from "../components/trip/RiskGauges";
@@ -163,6 +165,29 @@ export default function TripDetail() {
           <div className="lg:col-span-2 space-y-6">
             <EnableAlertsPrompt trip={trip} />
             
+            {/* Travel Checklist Card */}
+            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <ListChecks className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 mb-2 text-lg">Travel Checklist</h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Track your pre-departure tasks with our interactive checklist
+                    </p>
+                    <Link to={createPageUrl(`TripChecklist?id=${trip.id}`)}>
+                      <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                        <ListChecks className="w-4 h-4 mr-2" />
+                        View Checklist
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
             <RiskGauges riskAssessment={trip.risk_assessment} />
 
             {/* Travel Bookings */}
