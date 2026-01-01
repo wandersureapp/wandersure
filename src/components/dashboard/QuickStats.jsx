@@ -30,7 +30,7 @@ export default function QuickStats({ activeTripsCount, policiesCount, highRiskCo
       label: "Upcoming",
       value: upcomingCount,
       icon: TrendingUp,
-      gradient: "from-purple-500 to-pink-600",
+      gradient: "from-blue-500 to-cyan-600",
       image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400"
     }
   ];
@@ -52,9 +52,9 @@ export default function QuickStats({ activeTripsCount, policiesCount, highRiskCo
                 alt={stat.label}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
               />
-              <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-85`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-50`}></div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <stat.icon className="w-10 h-10 text-white opacity-30" />
+                <stat.icon className="w-10 h-10 text-white opacity-20" />
               </div>
             </div>
             <CardContent className="p-6 text-center">

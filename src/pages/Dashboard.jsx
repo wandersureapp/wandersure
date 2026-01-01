@@ -240,7 +240,7 @@ export default function Dashboard() {
                   alt="Upcoming Trips"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/90 to-pink-600/90"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-cyan-600/70"></div>
                 <div className="absolute inset-0 flex items-center px-6">
                   <Calendar className="w-6 h-6 text-white mr-3" />
                   <h3 className="text-xl font-bold text-white">Upcoming Trips</h3>
@@ -253,11 +253,11 @@ export default function Dashboard() {
                       <Link
                         key={trip.id}
                         to={createPageUrl(`TripDetail?id=${trip.id}`)}
-                        className="block p-3 rounded-lg border hover:border-purple-300 hover:bg-purple-50 transition-all group"
+                        className="block p-3 rounded-lg border hover:border-blue-300 hover:bg-blue-50 transition-all group"
                       >
                         <div className="flex items-start justify-between">
                           <div>
-                            <p className="font-medium text-gray-900 group-hover:text-purple-600 transition-colors">{trip.trip_name}</p>
+                            <p className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">{trip.trip_name}</p>
                             <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
                               <MapPin className="w-3 h-3" />
                               {trip.destination}
@@ -290,13 +290,13 @@ export default function Dashboard() {
                   alt="Travel Aides"
                   className="w-full h-full object-cover"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 to-pink-600/85"></div>
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/60 to-cyan-600/60"></div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <Sparkles className="w-12 h-12 text-white/30" />
                 </div>
               </div>
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg -mt-14 border-4 border-white">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg -mt-14 border-4 border-white">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-lg">Travel Aides</h3>
@@ -304,7 +304,7 @@ export default function Dashboard() {
                   Checklists, playbooks, and planning guides for stress-free travel
                 </p>
                 <Link to={createPageUrl("TravelAides")}>
-                  <Button className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg group">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg group">
                     Explore Aides
                     <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
                   </Button>
