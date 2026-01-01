@@ -234,12 +234,18 @@ export default function Dashboard() {
 
             {/* Upcoming Trips */}
             <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="bg-gradient-to-br from-purple-500 to-pink-500 text-white">
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Upcoming Trips
-                </CardTitle>
-              </CardHeader>
+              <div className="relative h-24 overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800"
+                  alt="Upcoming Trips"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/90 to-pink-600/90"></div>
+                <div className="absolute inset-0 flex items-center px-6">
+                  <Calendar className="w-6 h-6 text-white mr-3" />
+                  <h3 className="text-xl font-bold text-white">Upcoming Trips</h3>
+                </div>
+              </div>
               <CardContent className="p-4">
                 {upcomingTrips.length > 0 ? (
                   <div className="space-y-3">
@@ -277,10 +283,20 @@ export default function Dashboard() {
             </Card>
 
             {/* Travel Aides Card */}
-            <Card className="border-none shadow-lg bg-gradient-to-br from-purple-50 to-pink-50 overflow-hidden relative">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-purple-200 rounded-full -mr-16 -mt-16 opacity-50"></div>
-              <CardContent className="p-6 text-center relative">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg">
+            <Card className="border-none shadow-lg overflow-hidden">
+              <div className="relative h-32 overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800"
+                  alt="Travel Aides"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/85 to-pink-600/85"></div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Sparkles className="w-12 h-12 text-white/30" />
+                </div>
+              </div>
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center shadow-lg -mt-14 border-4 border-white">
                   <Sparkles className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="font-bold text-gray-900 mb-2 text-lg">Travel Aides</h3>
