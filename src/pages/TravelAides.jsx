@@ -155,9 +155,13 @@ export default function TravelAides() {
             <span className="text-purple-700 text-sm font-medium">Your Travel Command Center</span>
           </div>
           <h1 className="text-5xl font-bold text-gray-900 mb-4">Travel Aides</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-4">
             Expert-crafted checklists, playbooks, and planning tools to make every journey stress-free and unforgettable
           </p>
+          <div className="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 text-white rounded-full shadow-lg">
+            <Sparkles className="w-5 h-5" />
+            <span className="text-lg font-semibold">We do the research. You focus on packing!</span>
+          </div>
         </div>
 
         <Card className="mb-8 border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-cyan-50">
