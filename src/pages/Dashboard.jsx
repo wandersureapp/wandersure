@@ -129,8 +129,8 @@ export default function Dashboard() {
                   transition={{ delay: 0.4 }}
                   className="text-center"
                 >
-                  <p className="text-4xl font-bold text-white mb-1">{activeTrips.length}</p>
-                  <p className="text-blue-100 text-sm">Live Monitoring</p>
+                  <p className="text-4xl font-bold text-gray-900 mb-1">{activeTrips.length}</p>
+                  <p className="text-gray-700 text-sm font-medium">Live Monitoring</p>
                 </motion.div>
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
@@ -138,8 +138,8 @@ export default function Dashboard() {
                   transition={{ delay: 0.5 }}
                   className="text-center"
                 >
-                  <p className="text-4xl font-bold text-white mb-1">{highRiskTrips.length}</p>
-                  <p className="text-blue-100 text-sm">Active Alerts</p>
+                  <p className="text-4xl font-bold text-gray-900 mb-1">{highRiskTrips.length}</p>
+                  <p className="text-gray-700 text-sm font-medium">Active Alerts</p>
                 </motion.div>
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
@@ -147,8 +147,8 @@ export default function Dashboard() {
                   transition={{ delay: 0.6 }}
                   className="text-center"
                 >
-                  <p className="text-4xl font-bold text-white mb-1">{upcomingTrips.length}</p>
-                  <p className="text-blue-100 text-sm">Upcoming</p>
+                  <p className="text-4xl font-bold text-gray-900 mb-1">{upcomingTrips.length}</p>
+                  <p className="text-gray-700 text-sm font-medium">Upcoming</p>
                 </motion.div>
               </div>
             </motion.div>
