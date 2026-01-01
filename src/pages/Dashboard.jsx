@@ -66,42 +66,40 @@ export default function Dashboard() {
         </div>
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center mb-12">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Column - Logo */}
             <motion.div
-              initial={{ opacity: 0, y: -30 }}
-              animate={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, x: -50 }}
+              animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6 }}
-              className="flex flex-col items-center gap-6"
+              className="flex items-center justify-center"
             >
               <div className="relative">
                 <div className="absolute inset-0 bg-white/30 blur-3xl rounded-full"></div>
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
                   alt="WanderSure"
-                  className="relative w-32 h-32 md:w-40 md:h-40 object-contain drop-shadow-2xl animate-float"
+                  className="relative w-64 h-64 md:w-80 md:h-80 lg:w-96 lg:h-96 object-contain drop-shadow-2xl animate-float"
                 />
               </div>
-              <div>
-                <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-4">
-                  <Sparkles className="w-4 h-4 text-yellow-300" />
-                  <span className="text-white text-sm font-medium">AI-Powered Travel Intelligence</span>
-                </div>
-                <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
-                  Your AI Travel
-                  <br />
-                  <span className="text-cyan-200">Intelligence Platform</span>
-                </h1>
-              </div>
             </motion.div>
-          </div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Column */}
+            {/* Right Column - Content */}
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
+              initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
             >
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full mb-6">
+                <Sparkles className="w-4 h-4 text-yellow-300" />
+                <span className="text-white text-sm font-medium">AI-Powered Travel Intelligence</span>
+              </div>
+
+              <h1 className="text-5xl md:text-6xl font-bold text-white mb-6 leading-tight">
+                Your AI Travel
+                <br />
+                <span className="text-cyan-200">Intelligence Platform</span>
+              </h1>
 
               <p className="text-xl text-blue-50 mb-8 leading-relaxed">
                 Real-time flight tracking, TSA wait times, weather alerts, and AI-powered risk monitoring. 
@@ -128,7 +126,7 @@ export default function Dashboard() {
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.2 }}
+                  transition={{ delay: 0.4 }}
                   className="text-center"
                 >
                   <p className="text-4xl font-bold text-white mb-1">{activeTrips.length}</p>
@@ -137,7 +135,7 @@ export default function Dashboard() {
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                  transition={{ delay: 0.5 }}
                   className="text-center"
                 >
                   <p className="text-4xl font-bold text-white mb-1">{highRiskTrips.length}</p>
@@ -146,69 +144,13 @@ export default function Dashboard() {
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
+                  transition={{ delay: 0.6 }}
                   className="text-center"
                 >
                   <p className="text-4xl font-bold text-white mb-1">{upcomingTrips.length}</p>
                   <p className="text-blue-100 text-sm">Upcoming</p>
                 </motion.div>
               </div>
-            </motion.div>
-
-            {/* Right Column - Feature Badges */}
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.6, delay: 0.5 }}
-              className="hidden lg:flex flex-col gap-4"
-            >
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity }}
-                className="bg-white/10 backdrop-blur-lg border border-white/20 px-6 py-4 rounded-2xl shadow-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                    <span className="text-xl">✓</span>
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">Real-Time Monitoring</p>
-                    <p className="text-blue-100 text-sm">Flight delays, TSA wait times & more</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, 10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 0.5 }}
-                className="bg-white/10 backdrop-blur-lg border border-white/20 px-6 py-4 rounded-2xl shadow-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-yellow-400 rounded-full flex items-center justify-center">
-                    <Sparkles className="w-5 h-5 text-gray-900" />
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">AI Risk Analysis</p>
-                    <p className="text-blue-100 text-sm">Smart predictions for your journey</p>
-                  </div>
-                </div>
-              </motion.div>
-
-              <motion.div
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3, repeat: Infinity, delay: 1 }}
-                className="bg-white/10 backdrop-blur-lg border border-white/20 px-6 py-4 rounded-2xl shadow-xl"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-cyan-400 rounded-full flex items-center justify-center">
-                    <Shield className="w-5 h-5 text-gray-900" />
-                  </div>
-                  <div>
-                    <p className="text-white font-semibold">Instant Alerts</p>
-                    <p className="text-blue-100 text-sm">Stay informed, travel confident</p>
-                  </div>
-                </div>
-              </motion.div>
             </motion.div>
           </div>
         </div>
