@@ -95,8 +95,8 @@ export default function NotificationSettings() {
 
   const handleUpgrade = async (plan) => {
     const priceId = plan === 'monthly' 
-      ? 'price_1Skr53D69XH0zcOB4De6au5c' 
-      : 'price_1Skr53D69XH0zcOB5d7dLugp';
+        ? 'price_1SkuAWDAiWHJZCc7cYYkBp09' 
+        : 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ';
     
     try {
       const response = await createCheckoutSession({ 

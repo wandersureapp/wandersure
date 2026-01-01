@@ -1,6 +1,7 @@
 import BrowsePlans from './pages/BrowsePlans';
 import CustomizeInsurance from './pages/CustomizeInsurance';
 import Dashboard from './pages/Dashboard';
+import Home from './pages/Home';
 import InvestorPitch from './pages/InvestorPitch';
 import InvestorPitchPrint from './pages/InvestorPitchPrint';
 import Legal from './pages/Legal';
@@ -12,7 +13,6 @@ import PartnerWithUs from './pages/PartnerWithUs';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
@@ -20,6 +20,7 @@ export const PAGES = {
     "BrowsePlans": BrowsePlans,
     "CustomizeInsurance": CustomizeInsurance,
     "Dashboard": Dashboard,
+    "Home": Home,
     "InvestorPitch": InvestorPitch,
     "InvestorPitchPrint": InvestorPitchPrint,
     "Legal": Legal,
@@ -31,7 +32,6 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "Home": Home,
 }
 
 export const pagesConfig = {
