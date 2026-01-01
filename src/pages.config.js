@@ -8,8 +8,8 @@ import MyQuotes from './pages/MyQuotes';
 import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import NotificationSettings from './pages/NotificationSettings';
-import TripDetail from './pages/TripDetail';
 import PartnerWithUs from './pages/PartnerWithUs';
+import TripDetail from './pages/TripDetail';
 import __Layout from './Layout.jsx';
 
 
@@ -24,8 +24,8 @@ export const PAGES = {
     "MyTrips": MyTrips,
     "NewTrip": NewTrip,
     "NotificationSettings": NotificationSettings,
-    "TripDetail": TripDetail,
     "PartnerWithUs": PartnerWithUs,
+    "TripDetail": TripDetail,
 }
 
 export const pagesConfig = {

@@ -17,6 +17,7 @@ import {
   Crown,
   CreditCard
 } from "lucide-react";
+import { createCheckoutSession } from "@/functions/createCheckoutSession";
 
 export default function NotificationSettings() {
   const queryClient = useQueryClient();
@@ -78,6 +79,23 @@ export default function NotificationSettings() {
     saveMutation.mutate(formData);
   };
 
+  const handleUpgrade = async (plan) => {
+    const priceId = plan === 'monthly' 
+      ? 'price_1Skr53D69XH0zcOB4De6au5c' 
+      : 'price_1Skr53D69XH0zcOB5d7dLugp';
+    
+    try {
+      const response = await createCheckoutSession({ 
+        priceId, 
+        plan 
+      });
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error('Payment error:', error);
+      alert('Payment setup failed. Please try again.');
+    }
+  };
+
   const premiumFeatures = [
     { icon: "✈️", label: "Real-time flight delay alerts" },
     { icon: "🌦️", label: "Detailed weather forecasts" },
@@ -133,15 +151,22 @@ export default function NotificationSettings() {
                       <p className="text-3xl font-bold text-gray-900">$4.99<span className="text-lg text-gray-600">/mo</span></p>
                       <p className="text-sm text-gray-600">or $49/year (save 18%)</p>
                     </div>
-                    <Button 
-                      className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                      onClick={() => {
-                        alert("Payment integration requires backend functions to be enabled.\n\nOnce enabled, you'll be able to process payments securely through Stripe.");
-                      }}
-                    >
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Upgrade Now
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button 
+                        className="bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
+                        onClick={() => handleUpgrade('monthly')}
+                      >
+                        <CreditCard className="w-4 h-4 mr-2" />
+                        Monthly
+                      </Button>
+                      <Button 
+                        variant="outline"
+                        className="border-2 border-yellow-500 text-yellow-700 hover:bg-yellow-50"
+                        onClick={() => handleUpgrade('yearly')}
+                      >
+                        Yearly (Save 18%)
+                      </Button>
+                    </div>
                   </div>
                   <p className="text-xs text-gray-500 mt-3">
                     💳 Secure payment via Stripe • Cancel anytime
