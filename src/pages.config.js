@@ -13,6 +13,10 @@ import PartnerWithUs from './pages/PartnerWithUs';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
+import DestinationPlaybook from './pages/DestinationPlaybook';
+import BudgetPlanner from './pages/BudgetPlanner';
+import SafetyGuide from './pages/SafetyGuide';
+import GroupTravelCoordinator from './pages/GroupTravelCoordinator';
 import __Layout from './Layout.jsx';
 
 
@@ -32,6 +36,10 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
+    "DestinationPlaybook": DestinationPlaybook,
+    "BudgetPlanner": BudgetPlanner,
+    "SafetyGuide": SafetyGuide,
+    "GroupTravelCoordinator": GroupTravelCoordinator,
 }
 
 export const pagesConfig = {
