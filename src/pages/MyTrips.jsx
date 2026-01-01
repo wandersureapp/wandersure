@@ -13,10 +13,18 @@ import TripCard from "../components/trips/TripCard";
 export default function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const queryClient = useQueryClient();
 
   const { data: trips = [], isLoading } = useQuery({
     queryKey: ['trips'],
     queryFn: () => base44.entities.Trip.list('-created_date'),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (tripId) => base44.entities.Trip.delete(tripId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trips'] });
+    }
   });
 
   const filteredTrips = trips.filter(trip => {
@@ -75,7 +83,11 @@ export default function MyTrips() {
         ) : filteredTrips.length > 0 ? (
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredTrips.map(trip => (
-              <TripCard key={trip.id} trip={trip} />
+              <TripCard 
+                key={trip.id} 
+                trip={trip} 
+                onDelete={(id) => deleteMutation.mutate(id)}
+              />
             ))}
           </div>
         ) : (
