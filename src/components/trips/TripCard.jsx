@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { MapPin, Calendar, ArrowRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { MapPin, Calendar, ArrowRight, Trash2 } from "lucide-react";
 import { format, differenceInDays, isFuture } from "date-fns";
 
-export default function TripCard({ trip }) {
+export default function TripCard({ trip, onDelete }) {
   const getRiskColor = (score) => {
     if (!score) return { bg: "bg-gray-100", text: "text-gray-800" };
     if (score < 30) return { bg: "bg-green-100", text: "text-green-800" };
@@ -30,8 +31,23 @@ export default function TripCard({ trip }) {
   const isTripUpcoming = isFuture(new Date(trip.start_date));
 
   return (
-    <Link to={createPageUrl(`TripDetail?id=${trip.id}`)}>
-      <Card className="h-full border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden">
+    <Card className="h-full border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden relative">
+      <Button
+        variant="ghost"
+        size="icon"
+        className="absolute top-3 right-3 z-10 bg-white/90 hover:bg-red-50 hover:text-red-600 rounded-full"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (confirm(`Delete "${trip.trip_name}"?`)) {
+            onDelete(trip.id);
+          }
+        }}
+      >
+        <Trash2 className="w-4 h-4" />
+      </Button>
+
+      <Link to={createPageUrl(`TripDetail?id=${trip.id}`)}>
         <div className="h-40 bg-gradient-to-br from-blue-500 via-teal-500 to-cyan-500 relative overflow-hidden">
           <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800')] bg-cover bg-center opacity-30"></div>
           <div className="relative h-full p-6 flex flex-col justify-between">
@@ -81,7 +97,7 @@ export default function TripCard({ trip }) {
             </div>
           </div>
         </CardContent>
-      </Card>
-    </Link>
+      </Link>
+    </Card>
   );
 }
