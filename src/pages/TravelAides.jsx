@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { base44 } from "@/api/base44Client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,26 +15,41 @@ import {
   Shield,
   Wallet,
   Camera,
-  Users
+  Users,
+  Check
 } from "lucide-react";
 
 export default function TravelAides() {
-  const [comingSoon] = useState(true);
+  const { data: purchases = [] } = useQuery({
+    queryKey: ['checklist-purchases'],
+    queryFn: () => base44.entities.ChecklistPurchase.list()
+  });
+
+  const hasPurchased = (productId) => {
+    return purchases.some(p => 
+      p.product_id === productId || 
+      p.product_type === 'travel_aide_bundle'
+    );
+  };
 
   const aides = [
     {
-      id: 'essential-checklist',
+      id: 'interactive-checklist',
       icon: ListChecks,
-      title: "Essential Travel Checklist",
-      description: "Never forget the basics - from passport to chargers",
-      price: "Free",
+      title: "Interactive Smart Checklist",
+      description: "AI-powered checklist with timeline alerts and progress tracking",
+      price: "$4.99",
       color: "from-blue-500 to-cyan-500",
       features: [
-        "Pre-departure checklist",
-        "Packing essentials by destination",
-        "Document verification list",
-        "Last-minute reminders"
-      ]
+        "AI-generated custom items for your trip",
+        "Timeline-based smart reminders",
+        "Push notifications for overdue tasks",
+        "Auto-populate from booking data",
+        "Print or use in-app",
+        "Track completion progress"
+      ],
+      badge: "Most Popular",
+      comingSoon: false
     },
     {
       id: 'destination-playbook',
@@ -48,7 +65,7 @@ export default function TravelAides() {
         "Safety & health guidance",
         "Money-saving strategies"
       ],
-      badge: "Popular"
+      comingSoon: true
     },
     {
       id: 'safety-guide',
@@ -63,7 +80,8 @@ export default function TravelAides() {
         "Safe transportation tips",
         "Health precautions",
         "Document backup strategies"
-      ]
+      ],
+      comingSoon: true
     },
     {
       id: 'budget-planner',
@@ -78,7 +96,8 @@ export default function TravelAides() {
         "Budget alerts",
         "Expense categories",
         "Post-trip analysis"
-      ]
+      ],
+      comingSoon: true
     },
     {
       id: 'photography-guide',
@@ -93,7 +112,8 @@ export default function TravelAides() {
         "Composition tips",
         "Mobile photography hacks",
         "Photo organization"
-      ]
+      ],
+      comingSoon: true
     },
     {
       id: 'group-coordinator',
@@ -108,7 +128,8 @@ export default function TravelAides() {
         "Communication hub",
         "Voting on activities",
         "Shared packing lists"
-      ]
+      ],
+      comingSoon: true
     }
   ];
 
@@ -127,20 +148,15 @@ export default function TravelAides() {
           </p>
         </div>
 
-        {comingSoon && (
-          <Card className="mb-8 border-2 border-purple-300 bg-gradient-to-r from-purple-50 to-pink-50">
-            <CardContent className="p-6 text-center">
-              <Sparkles className="w-12 h-12 mx-auto mb-3 text-purple-600" />
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Coming Soon!</h3>
-              <p className="text-gray-600 mb-4">
-                We're crafting the ultimate travel planning resources. Get notified when we launch!
-              </p>
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
-                Join Waitlist
-              </Button>
-            </CardContent>
-          </Card>
-        )}
+        <Card className="mb-8 border-2 border-blue-300 bg-gradient-to-r from-blue-50 to-cyan-50">
+          <CardContent className="p-6 text-center">
+            <ListChecks className="w-12 h-12 mx-auto mb-3 text-blue-600" />
+            <h3 className="text-2xl font-bold text-gray-900 mb-2">Interactive Checklist Now Available!</h3>
+            <p className="text-gray-600 mb-4">
+              AI-powered checklist with smart reminders and progress tracking. Never miss a travel task again!
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Aides Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -182,18 +198,25 @@ export default function TravelAides() {
                   ))}
                 </div>
 
-                <Button 
-                  className="w-full" 
-                  variant={aide.price === "Free" ? "default" : "outline"}
-                  disabled={comingSoon}
-                >
-                  {comingSoon ? "Coming Soon" : (
-                    <>
-                      <Download className="w-4 h-4 mr-2" />
-                      {aide.price === "Free" ? "Download Free" : `Get for ${aide.price}`}
-                    </>
-                  )}
-                </Button>
+                {hasPurchased(aide.id) ? (
+                  <Button className="w-full bg-green-600 hover:bg-green-700" disabled>
+                    <Check className="w-4 h-4 mr-2" />
+                    Purchased
+                  </Button>
+                ) : (
+                  <Button 
+                    className="w-full" 
+                    variant={aide.comingSoon ? "outline" : "default"}
+                    disabled={aide.comingSoon}
+                  >
+                    {aide.comingSoon ? "Coming Soon" : (
+                      <>
+                        <Download className="w-4 h-4 mr-2" />
+                        Get for {aide.price}
+                      </>
+                    )}
+                  </Button>
+                )}
               </CardContent>
             </Card>
           ))}
@@ -244,10 +267,10 @@ export default function TravelAides() {
             <Sparkles className="w-16 h-16 mx-auto mb-4" />
             <h2 className="text-3xl font-bold mb-4">Bundle & Save</h2>
             <p className="text-xl text-blue-100 mb-6">
-              Get all Travel Aides for just $19.99 (40% off individual prices)
+              Get all Travel Aides (when available) for just $24.99 - save 40%
             </p>
-            <Button size="lg" className="bg-white text-indigo-600 hover:bg-blue-50" disabled={comingSoon}>
-              {comingSoon ? "Coming Soon" : "Get Complete Bundle"}
+            <Button size="lg" className="bg-white text-indigo-600 hover:bg-blue-50" disabled>
+              Coming Soon
             </Button>
           </CardContent>
         </Card>
