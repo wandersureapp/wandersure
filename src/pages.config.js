@@ -9,9 +9,10 @@ import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import NotificationSettings from './pages/NotificationSettings';
 import PartnerWithUs from './pages/PartnerWithUs';
-import TripDetail from './pages/TripDetail';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
+import TripDetail from './pages/TripDetail';
+import Home from './pages/Home';
 import __Layout from './Layout.jsx';
 
 
@@ -27,9 +28,10 @@ export const PAGES = {
     "NewTrip": NewTrip,
     "NotificationSettings": NotificationSettings,
     "PartnerWithUs": PartnerWithUs,
-    "TripDetail": TripDetail,
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
+    "TripDetail": TripDetail,
+    "Home": Home,
 }
 
 export const pagesConfig = {
