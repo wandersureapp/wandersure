@@ -40,6 +40,7 @@ export default function TravelAides() {
       description: "AI-powered checklist with timeline alerts and progress tracking",
       price: "$4.99",
       color: "from-blue-500 to-cyan-500",
+      image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800",
       features: [
         "AI-generated custom items for your trip",
         "Timeline-based smart reminders",
@@ -58,6 +59,7 @@ export default function TravelAides() {
       description: "In-depth guide with local insights, customs, and tips",
       price: "$4.99",
       color: "from-purple-500 to-pink-500",
+      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800",
       features: [
         "Local customs & etiquette",
         "Phrases & language tips",
