@@ -10,32 +10,28 @@ export default function QuickStats({ activeTripsCount, policiesCount, highRiskCo
       value: activeTripsCount,
       icon: PlaneTakeoff,
       gradient: "from-blue-500 to-blue-600",
-      bgGradient: "from-blue-50 to-blue-100",
-      iconBg: "bg-blue-500"
+      image: "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=400"
     },
     {
       label: "Active Policies",
       value: policiesCount,
       icon: Shield,
       gradient: "from-green-500 to-emerald-600",
-      bgGradient: "from-green-50 to-emerald-100",
-      iconBg: "bg-green-500"
+      image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400"
     },
     {
       label: "High Risk Alerts",
       value: highRiskCount,
       icon: AlertTriangle,
       gradient: "from-orange-500 to-red-600",
-      bgGradient: "from-orange-50 to-red-100",
-      iconBg: "bg-orange-500"
+      image: "https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=400"
     },
     {
       label: "Upcoming",
       value: upcomingCount,
       icon: TrendingUp,
       gradient: "from-purple-500 to-pink-600",
-      bgGradient: "from-purple-50 to-pink-100",
-      iconBg: "bg-purple-500"
+      image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=400"
     }
   ];
 
@@ -49,16 +45,21 @@ export default function QuickStats({ activeTripsCount, policiesCount, highRiskCo
           transition={{ delay: index * 0.1 }}
           whileHover={{ scale: 1.05, y: -5 }}
         >
-          <Card className={`border-none shadow-lg hover:shadow-2xl transition-all overflow-hidden relative bg-gradient-to-br ${stat.bgGradient}`}>
-            <div className="absolute top-0 right-0 w-24 h-24 bg-white/30 rounded-full -mr-12 -mt-12"></div>
-            <CardContent className="p-6 relative">
-              <div className="flex items-start justify-between mb-4">
-                <div className={`p-3 rounded-xl ${stat.iconBg} shadow-lg`}>
-                  <stat.icon className="w-6 h-6 text-white" />
-                </div>
+          <Card className="border-none shadow-lg hover:shadow-2xl transition-all overflow-hidden">
+            <div className="relative h-28 overflow-hidden">
+              <img 
+                src={stat.image}
+                alt={stat.label}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className={`absolute inset-0 bg-gradient-to-br ${stat.gradient} opacity-85`}></div>
+              <div className="absolute inset-0 flex items-center justify-center">
+                <stat.icon className="w-10 h-10 text-white opacity-30" />
               </div>
-              <p className="text-sm text-gray-700 font-medium mb-1">{stat.label}</p>
-              <p className={`text-4xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent`}>
+            </div>
+            <CardContent className="p-6 text-center">
+              <p className="text-sm text-gray-600 font-medium mb-1">{stat.label}</p>
+              <p className="text-4xl font-bold text-gray-900">
                 {stat.value}
               </p>
             </CardContent>
