@@ -39,6 +39,7 @@ export default function TravelAides() {
       title: "Interactive Smart Checklist",
       description: "AI-powered checklist with timeline alerts and progress tracking",
       price: "$4.99",
+      stripePriceId: "price_1SktziDAiWHJZCc7wLwHQKMZ",
       color: "from-blue-500 to-cyan-500",
       image: "https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800",
       features: [
@@ -58,6 +59,7 @@ export default function TravelAides() {
       title: "Destination Playbook",
       description: "In-depth guide with local insights, customs, and tips",
       price: "$4.99",
+      stripePriceId: "price_1Sku0fDAiWHJZCc7s33t0GJl",
       color: "from-purple-500 to-pink-500",
       image: "https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800",
       features: [
@@ -75,6 +77,7 @@ export default function TravelAides() {
       title: "Safety & Security Guide",
       description: "Comprehensive safety protocols for every destination",
       price: "$3.99",
+      stripePriceId: "price_1Sku1WDAiWHJZCc7fx5Dn0GI",
       color: "from-red-500 to-orange-500",
       image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=800",
       features: [
@@ -92,6 +95,7 @@ export default function TravelAides() {
       title: "Budget Planner",
       description: "Track expenses and stay on budget throughout your trip",
       price: "$2.99",
+      stripePriceId: "price_1Sku1yDAiWHJZCc7iERsDN69",
       color: "from-green-500 to-teal-500",
       image: "https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?w=800",
       features: [
@@ -109,6 +113,7 @@ export default function TravelAides() {
       title: "Travel Photography Guide",
       description: "Capture memories like a pro with expert tips",
       price: "$4.99",
+      stripePriceId: "price_1Sku2TDAiWHJZCc7f2ZF7Hnp",
       color: "from-indigo-500 to-blue-500",
       image: "https://images.unsplash.com/photo-1452587925148-ce544e77e70d?w=800",
       features: [
@@ -126,6 +131,7 @@ export default function TravelAides() {
       title: "Group Travel Coordinator",
       description: "Keep everyone organized for multi-person trips",
       price: "$5.99",
+      stripePriceId: "price_1Sku3BDAiWHJZCc7XlleSbk2",
       color: "from-yellow-500 to-orange-500",
       image: "https://images.unsplash.com/photo-1530789253388-582c481c54b0?w=800",
       features: [
@@ -279,7 +285,12 @@ export default function TravelAides() {
             <p className="text-xl text-blue-100 mb-6">
               Get all Travel Aides (when available) for just $24.99 - save 40%
             </p>
-            <Button size="lg" className="bg-white text-indigo-600 hover:bg-blue-50" disabled>
+            <Button 
+              size="lg" 
+              className="bg-white text-indigo-600 hover:bg-blue-50" 
+              disabled
+              data-stripe-price-id="price_1Sku4qDAiWHJZCc7F8cgP33S"
+            >
               Coming Soon
             </Button>
           </CardContent>
