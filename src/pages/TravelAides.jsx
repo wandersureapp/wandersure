@@ -114,7 +114,7 @@ export default function TravelAides() {
         "Safety & health guidance",
         "Money-saving strategies"
       ],
-      comingSoon: true
+      comingSoon: false
     },
     {
       id: 'safety-guide',
@@ -132,7 +132,7 @@ export default function TravelAides() {
         "Health precautions",
         "Document backup strategies"
       ],
-      comingSoon: true
+      comingSoon: false
     },
     {
       id: 'budget-planner',
@@ -150,7 +150,7 @@ export default function TravelAides() {
         "Expense categories",
         "Post-trip analysis"
       ],
-      comingSoon: true
+      comingSoon: false
     },
     {
       id: 'photography-guide',
@@ -186,7 +186,7 @@ export default function TravelAides() {
         "Voting on activities",
         "Shared packing lists"
       ],
-      comingSoon: true
+      comingSoon: false
     }
   ];
 
