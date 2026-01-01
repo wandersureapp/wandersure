@@ -33,6 +33,7 @@ export default function Layout({ children, currentPageName }) {
     { name: "Dashboard", path: createPageUrl("Dashboard"), icon: Home },
     { name: "My Trips", path: createPageUrl("MyTrips"), icon: PlaneTakeoff },
     { name: "Smart Alerts", path: createPageUrl("NotificationSettings"), icon: Bell },
+    { name: "Travel Aides", path: createPageUrl("TravelAides"), icon: Shield },
   ];
 
   const isActive = (path) => location.pathname === path;
