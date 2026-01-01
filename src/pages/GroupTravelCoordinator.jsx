@@ -11,6 +11,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Users, Plus, Mail, Phone, Plane, Hotel, Trash2, AlertCircle, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { createCheckoutSession } from "@/functions/createCheckoutSession";
 
 export default function GroupTravelCoordinator() {
   const navigate = useNavigate();
@@ -82,6 +83,19 @@ export default function GroupTravelCoordinator() {
     addMemberMutation.mutate(memberData);
   };
 
+  const handlePurchase = async () => {
+    try {
+      const response = await createCheckoutSession({ 
+        priceId: 'price_1Sku3BDAiWHJZCc7XlleSbk2',
+        productId: 'group-coordinator'
+      });
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-pink-50 p-6">
       <div className="max-w-6xl mx-auto">
@@ -111,7 +125,10 @@ export default function GroupTravelCoordinator() {
               <p className="text-gray-600 mb-4">
                 This feature requires a one-time purchase of $5.99
               </p>
-              <Button className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700">
+              <Button 
+                onClick={handlePurchase}
+                className="bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700"
+              >
                 Purchase Now - $5.99
               </Button>
             </CardContent>

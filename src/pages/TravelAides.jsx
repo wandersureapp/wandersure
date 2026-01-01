@@ -32,6 +32,19 @@ export default function TravelAides() {
     );
   };
 
+  const handlePurchase = async (aide) => {
+    try {
+      const response = await createCheckoutSession({ 
+        priceId: aide.stripePriceId,
+        productId: aide.id
+      });
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+    }
+  };
+
   const aides = [
     {
       id: 'interactive-checklist',
@@ -228,6 +241,7 @@ export default function TravelAides() {
                     className="w-full" 
                     variant={aide.comingSoon ? "outline" : "default"}
                     disabled={aide.comingSoon}
+                    onClick={() => !aide.comingSoon && handlePurchase(aide)}
                   >
                     {aide.comingSoon ? "Coming Soon" : (
                       <>

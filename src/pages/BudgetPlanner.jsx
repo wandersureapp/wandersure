@@ -11,6 +11,7 @@ import { ArrowLeft, Plus, Camera, Trash2, Receipt, TrendingUp, DollarSign, Alert
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { format } from "date-fns";
+import { createCheckoutSession } from "@/functions/createCheckoutSession";
 
 export default function BudgetPlanner() {
   const navigate = useNavigate();
@@ -103,6 +104,19 @@ export default function BudgetPlanner() {
     addExpenseMutation.mutate(expenseData);
   };
 
+  const handlePurchase = async () => {
+    try {
+      const response = await createCheckoutSession({ 
+        priceId: 'price_1Sku1yDAiWHJZCc7iERsDN69',
+        productId: 'budget-planner'
+      });
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 via-teal-50 to-blue-50 p-6">
       <div className="max-w-6xl mx-auto">
@@ -132,7 +146,10 @@ export default function BudgetPlanner() {
               <p className="text-gray-600 mb-4">
                 This feature requires a one-time purchase of $2.99
               </p>
-              <Button className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700">
+              <Button 
+                onClick={handlePurchase}
+                className="bg-gradient-to-r from-green-600 to-teal-600 hover:from-green-700 hover:to-teal-700"
+              >
                 Purchase Now - $2.99
               </Button>
             </CardContent>

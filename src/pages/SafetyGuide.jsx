@@ -9,6 +9,7 @@ import { ArrowLeft, Shield, Download, Phone, AlertTriangle, MapPin, Heart, FileT
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { generateSafetyGuide } from "@/functions/generateSafetyGuide";
+import { createCheckoutSession } from "@/functions/createCheckoutSession";
 
 export default function SafetyGuide() {
   const navigate = useNavigate();
@@ -59,6 +60,19 @@ export default function SafetyGuide() {
     }
   };
 
+  const handlePurchase = async () => {
+    try {
+      const response = await createCheckoutSession({ 
+        priceId: 'price_1Sku1WDAiWHJZCc7fx5Dn0GI',
+        productId: 'safety-guide'
+      });
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-50 via-orange-50 to-yellow-50 p-6">
       <div className="max-w-5xl mx-auto">
@@ -88,7 +102,10 @@ export default function SafetyGuide() {
               <p className="text-gray-600 mb-4">
                 This feature requires a one-time purchase of $3.99
               </p>
-              <Button className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700">
+              <Button 
+                onClick={handlePurchase}
+                className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700"
+              >
                 Purchase Now - $3.99
               </Button>
             </CardContent>

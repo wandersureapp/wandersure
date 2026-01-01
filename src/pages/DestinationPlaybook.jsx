@@ -9,6 +9,7 @@ import { ArrowLeft, Sparkles, Download, MapPin, Globe, DollarSign, Utensils, Ale
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { generateDestinationPlaybook } from "@/functions/generateDestinationPlaybook";
+import { createCheckoutSession } from "@/functions/createCheckoutSession";
 
 export default function DestinationPlaybook() {
   const navigate = useNavigate();
@@ -59,6 +60,19 @@ export default function DestinationPlaybook() {
     }
   };
 
+  const handlePurchase = async () => {
+    try {
+      const response = await createCheckoutSession({ 
+        priceId: 'price_1Sku0fDAiWHJZCc7s33t0GJl',
+        productId: 'destination-playbook'
+      });
+      window.location.href = response.data.url;
+    } catch (error) {
+      console.error('Checkout error:', error);
+      alert('Failed to start checkout. Please try again.');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-6">
       <div className="max-w-5xl mx-auto">
@@ -88,7 +102,10 @@ export default function DestinationPlaybook() {
               <p className="text-gray-600 mb-4">
                 This feature requires a one-time purchase of $4.99
               </p>
-              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700">
+              <Button 
+                onClick={handlePurchase}
+                className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              >
                 Purchase Now - $4.99
               </Button>
             </CardContent>
