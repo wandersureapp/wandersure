@@ -18,8 +18,13 @@ import {
   Users,
   Check
 } from "lucide-react";
+import UpsellModal from "../components/upsell/UpsellModal";
+import { createCheckoutSession } from "@/functions/createCheckoutSession";
 
 export default function TravelAides() {
+  const [showUpsell, setShowUpsell] = useState(false);
+  const [selectedAide, setSelectedAide] = useState(null);
+
   const { data: purchases = [] } = useQuery({
     queryKey: ['checklist-purchases'],
     queryFn: () => base44.entities.ChecklistPurchase.list()
@@ -32,11 +37,38 @@ export default function TravelAides() {
     );
   };
 
-  const handlePurchase = async (aide) => {
+  const getUpsellSuggestions = (aide) => {
+    const suggestions = {
+      'interactive-checklist': ['destination-playbook', 'safety-guide'],
+      'destination-playbook': ['safety-guide', 'budget-planner'],
+      'safety-guide': ['destination-playbook', 'interactive-checklist'],
+      'budget-planner': ['interactive-checklist', 'group-coordinator'],
+      'group-coordinator': ['interactive-checklist', 'budget-planner'],
+      'photography-guide': ['destination-playbook', 'interactive-checklist']
+    };
+    
+    return (suggestions[aide.id] || [])
+      .map(id => aides.find(a => a.id === id))
+      .filter(a => a && !a.comingSoon && !hasPurchased(a.id));
+  };
+
+  const handlePurchase = (aide) => {
+    const suggestions = getUpsellSuggestions(aide);
+    
+    if (suggestions.length > 0) {
+      setSelectedAide(aide);
+      setShowUpsell(true);
+    } else {
+      proceedToCheckout([aide]);
+    }
+  };
+
+  const proceedToCheckout = async (items) => {
     try {
+      // For now, checkout with first item only - future: support multi-item checkout
       const response = await createCheckoutSession({ 
-        priceId: aide.stripePriceId,
-        productId: aide.id
+        priceId: items[0].stripePriceId,
+        productId: items[0].id
       });
       window.location.href = response.data.url;
     } catch (error) {
@@ -314,6 +346,17 @@ export default function TravelAides() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Upsell Modal */}
+      {showUpsell && selectedAide && (
+        <UpsellModal
+          isOpen={showUpsell}
+          onClose={() => setShowUpsell(false)}
+          selectedProduct={selectedAide}
+          suggestedProducts={getUpsellSuggestions(selectedAide)}
+          onProceedToCheckout={proceedToCheckout}
+        />
+      )}
     </div>
   );
 }
