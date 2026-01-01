@@ -75,12 +75,16 @@ export default function Dashboard() {
               className="flex items-center justify-center"
             >
               <div className="relative">
-                <div className="absolute inset-0 bg-white/30 blur-3xl rounded-full"></div>
-                <img 
-                  src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
-                  alt="WanderSure"
-                  className="relative w-80 h-80 md:w-[450px] md:h-[450px] lg:w-[550px] lg:h-[550px] object-contain drop-shadow-2xl animate-float"
-                />
+                {/* Blue glow effect */}
+                <div className="absolute inset-0 bg-blue-400/40 blur-[80px] rounded-full scale-110"></div>
+                {/* White circular background */}
+                <div className="relative bg-white rounded-full p-8 shadow-2xl">
+                  <img 
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
+                    alt="WanderSure"
+                    className="w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] object-contain animate-float"
+                  />
+                </div>
               </div>
             </motion.div>
 
@@ -155,12 +159,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* Wave divider */}
-        <div className="absolute bottom-0 left-0 right-0">
-          <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full">
-            <path d="M0 120L60 105C120 90 240 60 360 45C480 30 600 30 720 37.5C840 45 960 60 1080 67.5C1200 75 1320 75 1380 75L1440 75V120H1380C1320 120 1200 120 1080 120C960 120 840 120 720 120C600 120 480 120 360 120C240 120 120 120 60 120H0Z" fill="rgb(249, 250, 251)"/>
-          </svg>
-        </div>
+
       </div>
 
       <style>{`
