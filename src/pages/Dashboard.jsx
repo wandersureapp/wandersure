@@ -76,13 +76,13 @@ export default function Dashboard() {
             >
               <div className="relative">
                 {/* Blue glow effect */}
-                <div className="absolute inset-0 bg-blue-400/40 blur-[80px] rounded-full scale-110"></div>
-                {/* White circular background */}
-                <div className="relative bg-white rounded-full p-8 shadow-2xl">
+                <div className="absolute inset-0 bg-blue-400/30 blur-[100px] rounded-full"></div>
+                {/* Circular logo with border */}
+                <div className="relative">
                   <img 
-                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/1c7001d0e_Untitleddesign.png" 
                     alt="WanderSure"
-                    className="w-64 h-64 md:w-80 md:h-80 lg:w-[400px] lg:h-[400px] object-contain animate-float"
+                    className="w-[350px] h-[350px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] object-cover rounded-full shadow-2xl"
                   />
                 </div>
               </div>
