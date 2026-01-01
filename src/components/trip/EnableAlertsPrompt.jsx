@@ -51,9 +51,7 @@ export default function EnableAlertsPrompt({ trip }) {
                 Free basic alerts • Premium from $4.99/mo
               </p>
             </div>
-          </div>
         </div>
-      </CardContent>
     </Card>
   );
 }
