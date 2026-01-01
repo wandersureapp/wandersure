@@ -50,13 +50,19 @@ export default function RiskAlerts({ trips }) {
   };
 
   return (
-    <Card className="border-none shadow-lg">
-      <CardHeader className="bg-gradient-to-br from-orange-500 to-red-500 text-white">
-        <CardTitle className="flex items-center gap-2">
-          <AlertTriangle className="w-5 h-5" />
-          Risk Alerts
-        </CardTitle>
-      </CardHeader>
+    <Card className="border-none shadow-lg overflow-hidden">
+      <div className="relative h-24 overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=800"
+          alt="Risk Monitoring"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-600/90 to-red-600/90"></div>
+        <div className="absolute inset-0 flex items-center px-6">
+          <AlertTriangle className="w-6 h-6 text-white mr-3" />
+          <h3 className="text-xl font-bold text-white">Risk Alerts</h3>
+        </div>
+      </div>
       <CardContent className="p-4">
         {alerts.length > 0 ? (
           <div className="space-y-3">

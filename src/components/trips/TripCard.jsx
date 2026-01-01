@@ -48,8 +48,13 @@ export default function TripCard({ trip, onDelete }) {
       </Button>
 
       <Link to={createPageUrl(`TripDetail?id=${trip.id}`)}>
-        <div className="h-40 bg-gradient-to-br from-blue-500 via-teal-500 to-cyan-500 relative overflow-hidden">
-          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800')] bg-cover bg-center opacity-30"></div>
+        <div className="h-48 bg-gradient-to-br from-blue-500 via-teal-500 to-cyan-500 relative overflow-hidden">
+          <img 
+            src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800" 
+            alt={trip.destination}
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent"></div>
           <div className="relative h-full p-6 flex flex-col justify-between">
             <div className="flex justify-between items-start">
               <Badge className={getStatusColor(trip.status)}>

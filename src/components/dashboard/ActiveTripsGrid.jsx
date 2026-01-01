@@ -37,13 +37,19 @@ export default function ActiveTripsGrid({ trips, isLoading }) {
   };
 
   return (
-    <Card className="border-none shadow-lg">
-      <CardHeader className="border-b">
-        <CardTitle className="flex items-center gap-2">
-          <Plane className="w-5 h-5" />
-          Active Trips
-        </CardTitle>
-      </CardHeader>
+    <Card className="border-none shadow-lg overflow-hidden">
+      <div className="relative h-24 overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=800"
+          alt="Active Trips"
+          className="w-full h-full object-cover"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/90 to-teal-600/90"></div>
+        <div className="absolute inset-0 flex items-center px-6">
+          <Plane className="w-6 h-6 text-white mr-3" />
+          <h3 className="text-xl font-bold text-white">Active Trips</h3>
+        </div>
+      </div>
       <CardContent className="p-6">
         {trips.length > 0 ? (
           <div className="space-y-4">
