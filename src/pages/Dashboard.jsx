@@ -20,6 +20,7 @@ import { motion } from "framer-motion";
 import ActiveTripsGrid from "../components/dashboard/ActiveTripsGrid";
 import RiskAlerts from "../components/dashboard/RiskAlerts";
 import QuickStats from "../components/dashboard/QuickStats";
+import AuthGuard from "../components/AuthGuard";
 
 export default function Dashboard() {
   const { data: trips = [], isLoading: tripsLoading } = useQuery({
@@ -45,6 +46,7 @@ export default function Dashboard() {
   );
 
   return (
+    <AuthGuard>
     <div className="min-h-screen">
       {/* AI Intelligence Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-600">
@@ -295,5 +297,6 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+    </AuthGuard>
   );
 }

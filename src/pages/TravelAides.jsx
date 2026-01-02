@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import UpsellModal from "../components/upsell/UpsellModal";
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
+import AuthGuard from "../components/AuthGuard";
 
 export default function TravelAides() {
   const [showUpsell, setShowUpsell] = useState(false);
@@ -191,6 +192,7 @@ export default function TravelAides() {
   ];
 
   return (
+    <AuthGuard>
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Hero Section */}
@@ -358,5 +360,6 @@ export default function TravelAides() {
         />
       )}
     </div>
+    </AuthGuard>
   );
 }

@@ -27,6 +27,7 @@ import {
   Train
 } from "lucide-react";
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
+import AuthGuard from "../components/AuthGuard";
 
 export default function NotificationSettings() {
   const queryClient = useQueryClient();
@@ -141,6 +142,7 @@ export default function NotificationSettings() {
   }
 
   return (
+    <AuthGuard>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
       <div className="max-w-6xl mx-auto">
         <div className="mb-8">
@@ -586,5 +588,6 @@ export default function NotificationSettings() {
         )}
       </div>
     </div>
+    </AuthGuard>
   );
 }

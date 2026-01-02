@@ -9,6 +9,7 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PlaneTakeoff, Plus, Search } from "lucide-react";
 
 import TripCard from "../components/trips/TripCard";
+import AuthGuard from "../components/AuthGuard";
 
 export default function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -35,6 +36,7 @@ export default function MyTrips() {
   });
 
   return (
+    <AuthGuard>
     <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
@@ -112,5 +114,6 @@ export default function MyTrips() {
         )}
       </div>
     </div>
+    </AuthGuard>
   );
 }
