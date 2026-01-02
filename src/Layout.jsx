@@ -17,6 +17,12 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = React.useState(null);
   const location = useLocation();
 
+  // Public pages that don't need the layout
+  const publicPages = ['Home', 'PrivacyPolicy', 'TermsOfService', 'Legal'];
+  if (publicPages.includes(currentPageName)) {
+    return children;
+  }
+
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));
   }, []);
