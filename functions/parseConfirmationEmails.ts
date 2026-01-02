@@ -9,14 +9,18 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { tripId } = await req.json();
+        const { tripId, accessToken } = await req.json();
 
         if (!tripId) {
             return Response.json({ error: 'Trip ID required' }, { status: 400 });
         }
 
-        // Get Gmail access token
-        const gmailToken = await base44.asServiceRole.connectors.getAccessToken('gmail');
+        if (!accessToken) {
+            return Response.json({ 
+                error: 'Gmail access token required. Please authorize Gmail access.',
+                needsAuth: true 
+            }, { status: 401 });
+        }
 
         // Search for travel confirmation emails in the last 90 days
         const searchQuery = 'subject:(confirmation OR booking OR itinerary OR reservation) (flight OR hotel OR rental OR cruise OR train) newer_than:90d';
@@ -25,11 +29,20 @@ Deno.serve(async (req) => {
             `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(searchQuery)}&maxResults=50`,
             {
                 headers: {
-                    'Authorization': `Bearer ${gmailToken}`,
+                    'Authorization': `Bearer ${accessToken}`,
                     'Accept': 'application/json'
                 }
             }
         );
+
+        if (!searchResponse.ok) {
+            const error = await searchResponse.json();
+            return Response.json({ 
+                error: 'Failed to access Gmail. Please re-authorize.',
+                needsAuth: true,
+                details: error 
+            }, { status: 401 });
+        }
 
         const searchData = await searchResponse.json();
         
@@ -48,7 +61,7 @@ Deno.serve(async (req) => {
                 `https://gmail.googleapis.com/gmail/v1/users/me/messages/${message.id}?format=full`,
                 {
                     headers: {
-                        'Authorization': `Bearer ${gmailToken}`,
+                        'Authorization': `Bearer ${accessToken}`,
                         'Accept': 'application/json'
                     }
                 }
@@ -182,7 +195,7 @@ Extract all relevant booking details.`,
             }
 
             if (Object.keys(updates).length > 0) {
-                await base44.entities.Trip.update(tripId, updates);
+                await base44.asServiceRole.entities.Trip.update(tripId, updates);
             }
         }
 
