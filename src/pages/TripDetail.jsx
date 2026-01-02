@@ -202,12 +202,21 @@ export default function TripDetail() {
                 {trip.airline && (
                   <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
                     <Plane className="w-5 h-5 text-blue-600 mt-1" />
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium text-gray-900">Flight</p>
                       <p className="text-sm text-gray-600">{trip.airline}</p>
                       {trip.flight_number && (
                         <p className="text-sm text-gray-500">Flight {trip.flight_number}</p>
                       )}
+                      <a 
+                        href="https://www.kqzyfj.com/click-101622714-17112391" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
+                      >
+                        Compare flight prices →
+                      </a>
+                      <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
                     </div>
                   </div>
                 )}
