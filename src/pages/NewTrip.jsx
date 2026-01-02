@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ArrowLeft, Loader2, Mail } from "lucide-react";
 import { parseConfirmationEmails } from "@/functions/parseConfirmationEmails";
+import { getGmailAuthUrl } from "@/functions/getGmailAuthUrl";
 
 import TripBasicInfo from "../components/trip/TripBasicInfo";
 import TripTravelDetails from "../components/trip/TripTravelDetails";
@@ -64,14 +65,36 @@ export default function NewTrip() {
     
     setIsParsingEmails(true);
     try {
-      const response = await parseConfirmationEmails({ tripId: createdTripId });
+      // Get current user to check for stored token
+      const user = await base44.auth.me();
+      
+      // Check if we have a valid access token
+      if (!user.gmail_access_token || (user.gmail_token_expiry && user.gmail_token_expiry < Date.now())) {
+        // Need to authorize - get auth URL and redirect
+        const { data } = await getGmailAuthUrl();
+        window.location.href = data.authUrl;
+        return;
+      }
+      
+      // We have a token - proceed with parsing
+      const response = await parseConfirmationEmails({ 
+        tripId: createdTripId,
+        accessToken: user.gmail_access_token 
+      });
+      
       if (response.data.success) {
         queryClient.invalidateQueries({ queryKey: ['trips'] });
         alert('✅ Booking details extracted from your emails!');
+      } else if (response.data.needsAuth) {
+        // Token expired or invalid - re-authorize
+        const { data } = await getGmailAuthUrl();
+        window.location.href = data.authUrl;
       }
     } catch (error) {
-      if (error.response?.status === 401) {
-        alert('Gmail authorization required. Please authorize Gmail access in Settings to use this feature.');
+      if (error.response?.data?.needsAuth) {
+        // Need authorization
+        const { data } = await getGmailAuthUrl();
+        window.location.href = data.authUrl;
       } else {
         alert('Failed to parse emails. Please try again or enter details manually.');
       }

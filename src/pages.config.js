@@ -19,6 +19,7 @@ import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
+import GmailCallback from './pages/GmailCallback';
 import __Layout from './Layout.jsx';
 
 
@@ -44,6 +45,7 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
+    "GmailCallback": GmailCallback,
 }
 
 export const pagesConfig = {
