@@ -21,7 +21,7 @@ export default function Home() {
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/1c7001d0e_Untitleddesign.png" 
                 alt="WanderSure"
-                className="w-16 h-16 object-contain"
+                className="w-28 h-28 object-contain"
               />
               <span className="text-2xl font-bold text-white">WanderSure</span>
             </div>
@@ -302,7 +302,7 @@ export default function Home() {
               <img 
                 src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/1c7001d0e_Untitleddesign.png" 
                 alt="WanderSure"
-                className="w-12 h-12 object-contain"
+                className="w-16 h-16 object-contain"
               />
               <span className="text-xl font-bold">WanderSure</span>
             </div>
