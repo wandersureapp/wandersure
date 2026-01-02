@@ -47,7 +47,7 @@ export const PAGES = {
 }
 
 export const pagesConfig = {
-    mainPage: "PrivacyPolicy",
+    mainPage: "TripDetail",
     Pages: PAGES,
     Layout: __Layout,
 };
