@@ -1,219 +1,227 @@
-import React, { useState } from "react";
+import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, FileText, Info } from "lucide-react";
+import { Shield, FileText } from "lucide-react";
 
 export default function Legal() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Legal Information</h1>
-          <p className="text-xl text-gray-600">Privacy, terms, and disclosures</p>
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Legal</h1>
+          <p className="text-gray-600">Privacy Policy & Terms of Service</p>
         </div>
 
         <Tabs defaultValue="privacy" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
-            <TabsTrigger value="privacy">Privacy Policy</TabsTrigger>
-            <TabsTrigger value="terms">Terms of Service</TabsTrigger>
-            <TabsTrigger value="disclosure">Affiliate Disclosure</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-2 mb-6">
+            <TabsTrigger value="privacy" className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              Privacy Policy
+            </TabsTrigger>
+            <TabsTrigger value="terms" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Terms of Service
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="privacy">
-            <Card className="border-none shadow-xl">
+            <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Shield className="w-5 h-5 text-blue-600" />
-                  Privacy Policy
-                </CardTitle>
+                <CardTitle>Privacy Policy</CardTitle>
+                <p className="text-sm text-gray-600">Last updated: January 2, 2026</p>
               </CardHeader>
               <CardContent className="prose prose-sm max-w-none">
-                <p className="text-gray-600 mb-4">Last updated: December 2024</p>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Information We Collect</h3>
-                <p className="text-gray-700 mb-3">
-                  WanderSure collects information you provide when creating trips and managing your account, including:
+                <h3>1. Information We Collect</h3>
+                <p>
+                  WanderSure collects information you provide directly to us, including:
                 </p>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li>Trip details (destination, dates, travelers)</li>
-                  <li>Contact information (email, phone for alerts)</li>
-                  <li>Insurance preferences and quotes</li>
-                  <li>Account settings and notification preferences</li>
+                <ul>
+                  <li>Account information (name, email address)</li>
+                  <li>Trip details (destinations, dates, booking information)</li>
+                  <li>Payment information (processed securely through Stripe)</li>
+                  <li>Email confirmations (when you authorize Gmail access)</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">How We Use Your Information</h3>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li>Provide AI-powered risk assessments for your trips</li>
-                  <li>Send travel alerts and notifications you've subscribed to</li>
-                  <li>Connect you with insurance provider partners</li>
-                  <li>Improve our service and user experience</li>
+                <h3>2. How We Use Your Information</h3>
+                <p>We use the information we collect to:</p>
+                <ul>
+                  <li>Provide and improve our travel monitoring services</li>
+                  <li>Send you real-time travel alerts and notifications</li>
+                  <li>Analyze travel risks and provide insurance recommendations</li>
+                  <li>Process payments for premium features</li>
+                  <li>Communicate with you about your account and services</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Data Sharing</h3>
-                <p className="text-gray-700 mb-4">
-                  We do not sell your personal information. We share data only with:
+                <h3>3. Information Sharing</h3>
+                <p>
+                  We do not sell your personal information. We may share your information with:
                 </p>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li><strong>Insurance partners</strong> - When you request quotes (with your consent)</li>
-                  <li><strong>Service providers</strong> - For email delivery, analytics, and payment processing</li>
-                  <li><strong>Legal compliance</strong> - When required by law</li>
+                <ul>
+                  <li>Service providers who assist in operating our platform</li>
+                  <li>Insurance providers when you request quotes (with your consent)</li>
+                  <li>Law enforcement when required by law</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Your Rights</h3>
-                <p className="text-gray-700 mb-4">
-                  You have the right to access, update, or delete your personal information at any time through your account settings.
+                <h3>4. Gmail Access</h3>
+                <p>
+                  When you authorize Gmail access, we only read travel confirmation emails to automatically extract booking details. We do not:
+                </p>
+                <ul>
+                  <li>Access or read non-travel related emails</li>
+                  <li>Store email contents beyond what's needed for parsing</li>
+                  <li>Share your email data with third parties</li>
+                  <li>Send emails on your behalf</li>
+                </ul>
+
+                <h3>5. Data Security</h3>
+                <p>
+                  We implement industry-standard security measures to protect your information, including encryption, secure servers, and regular security audits.
                 </p>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Security</h3>
-                <p className="text-gray-700 mb-4">
-                  We use industry-standard encryption and security measures to protect your data.
+                <h3>6. Your Rights</h3>
+                <p>You have the right to:</p>
+                <ul>
+                  <li>Access and download your data</li>
+                  <li>Correct inaccurate information</li>
+                  <li>Delete your account and data</li>
+                  <li>Opt-out of marketing communications</li>
+                  <li>Revoke Gmail authorization at any time</li>
+                </ul>
+
+                <h3>7. Data Retention</h3>
+                <p>
+                  We retain your information for as long as your account is active or as needed to provide services. You may delete your account at any time.
                 </p>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Contact</h3>
-                <p className="text-gray-700">
-                  Questions about privacy? Contact us at <a href="mailto:privacy@wandersure.com" className="text-blue-600 hover:underline">privacy@wandersure.com</a>
+                <h3>8. Cookies and Tracking</h3>
+                <p>
+                  We use cookies and similar technologies to improve user experience, analyze usage, and provide personalized content.
+                </p>
+
+                <h3>9. Children's Privacy</h3>
+                <p>
+                  Our services are not intended for children under 13. We do not knowingly collect information from children.
+                </p>
+
+                <h3>10. Changes to This Policy</h3>
+                <p>
+                  We may update this Privacy Policy periodically. We will notify you of significant changes via email or through the app.
+                </p>
+
+                <h3>11. Contact Us</h3>
+                <p>
+                  For privacy-related questions or concerns, contact us at:{" "}
+                  <a href="mailto:privacy@wandersure.com">privacy@wandersure.com</a>
                 </p>
               </CardContent>
             </Card>
           </TabsContent>
 
           <TabsContent value="terms">
-            <Card className="border-none shadow-xl">
+            <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="w-5 h-5 text-blue-600" />
-                  Terms of Service
-                </CardTitle>
+                <CardTitle>Terms of Service</CardTitle>
+                <p className="text-sm text-gray-600">Last updated: January 2, 2026</p>
               </CardHeader>
               <CardContent className="prose prose-sm max-w-none">
-                <p className="text-gray-600 mb-4">Last updated: December 2024</p>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Acceptance of Terms</h3>
-                <p className="text-gray-700 mb-4">
-                  By using WanderSure, you agree to these terms. If you don't agree, please don't use our service.
+                <h3>1. Acceptance of Terms</h3>
+                <p>
+                  By accessing or using WanderSure, you agree to be bound by these Terms of Service. If you do not agree, do not use our services.
                 </p>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Our Service</h3>
-                <p className="text-gray-700 mb-4">
-                  WanderSure provides:
+                <h3>2. Description of Service</h3>
+                <p>
+                  WanderSure provides AI-powered travel monitoring, risk assessment, and insurance recommendations. Our services include:
                 </p>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li>AI-powered travel risk assessment</li>
-                  <li>Insurance comparison and recommendations</li>
-                  <li>Travel alerts and notifications</li>
-                  <li>Referrals to third-party insurance providers</li>
+                <ul>
+                  <li>Real-time travel alerts and notifications</li>
+                  <li>Risk analysis for destinations and trips</li>
+                  <li>Travel planning tools and checklists</li>
+                  <li>Insurance provider referrals (affiliate relationships)</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Important Disclaimers</h3>
-                <p className="text-gray-700 mb-4">
-                  <strong>WanderSure is NOT an insurance provider.</strong> We are a comparison and referral service. All insurance policies are provided by third-party licensed insurance companies.
-                </p>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li>Risk assessments are estimates based on available data</li>
-                  <li>Insurance recommendations are guidance, not guarantees</li>
-                  <li>Premium estimates may differ from actual quotes</li>
-                  <li>You are responsible for reviewing policy terms with providers</li>
+                <h3>3. User Accounts</h3>
+                <p>You are responsible for:</p>
+                <ul>
+                  <li>Maintaining the confidentiality of your account</li>
+                  <li>All activities that occur under your account</li>
+                  <li>Providing accurate and current information</li>
+                  <li>Notifying us of unauthorized account use</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">User Responsibilities</h3>
-                <p className="text-gray-700 mb-4">You agree to:</p>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li>Provide accurate trip information</li>
-                  <li>Maintain the security of your account</li>
-                  <li>Not misuse or abuse the service</li>
-                  <li>Comply with all applicable laws</li>
+                <h3>4. Acceptable Use</h3>
+                <p>You agree not to:</p>
+                <ul>
+                  <li>Use the service for illegal purposes</li>
+                  <li>Interfere with or disrupt the service</li>
+                  <li>Attempt to gain unauthorized access</li>
+                  <li>Misuse or abuse our AI systems</li>
+                  <li>Share your account with others</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Subscription Terms</h3>
-                <p className="text-gray-700 mb-4">
-                  Premium alert subscriptions:
-                </p>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li>Billed monthly or annually</li>
-                  <li>Cancel anytime (no refunds for partial periods)</li>
-                  <li>Prices subject to change with 30 days notice</li>
+                <h3>5. Payment Terms</h3>
+                <ul>
+                  <li>Premium features require payment as specified</li>
+                  <li>Payments are processed securely through Stripe</li>
+                  <li>Subscriptions renew automatically unless cancelled</li>
+                  <li>Refunds are handled on a case-by-case basis</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Limitation of Liability</h3>
-                <p className="text-gray-700 mb-4">
-                  WanderSure is not liable for decisions you make based on our recommendations, or for issues with third-party insurance providers.
-                </p>
-
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Contact</h3>
-                <p className="text-gray-700">
-                  Questions? Email <a href="mailto:support@wandersure.com" className="text-blue-600 hover:underline">support@wandersure.com</a>
-                </p>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="disclosure">
-            <Card className="border-none shadow-xl">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Info className="w-5 h-5 text-blue-600" />
-                  Affiliate Disclosure
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="prose prose-sm max-w-none">
-                <p className="text-gray-600 mb-4">Last updated: December 2024</p>
-                
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">How We Make Money</h3>
-                <p className="text-gray-700 mb-4">
-                  WanderSure is a free service that earns revenue through affiliate partnerships with insurance providers.
-                </p>
-
-                <div className="bg-blue-50 border-l-4 border-blue-600 p-4 mb-4">
-                  <p className="text-gray-900 font-semibold mb-2">Full Transparency</p>
-                  <p className="text-gray-700">
-                    When you click on provider links and purchase insurance, we may receive a commission from that provider. 
-                    This does NOT increase your price - you pay the same amount you would pay going directly to the provider.
-                  </p>
-                </div>
-
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Our Commitment to You</h3>
-                <ul className="list-disc pl-6 text-gray-700 space-y-2 mb-4">
-                  <li>
-                    <strong>Unbiased recommendations:</strong> Our AI risk assessments and coverage suggestions are based purely on your trip data, 
-                    not on which provider pays higher commissions.
-                  </li>
-                  <li>
-                    <strong>Multiple options:</strong> We show you multiple providers so you can compare and choose the best fit for your needs.
-                  </li>
-                  <li>
-                    <strong>No hidden fees:</strong> Our service is completely free for users. You only pay for insurance if you choose to purchase it from a provider.
-                  </li>
-                  <li>
-                    <strong>Your choice:</strong> We never require you to purchase through us. You're free to search providers directly if you prefer.
-                  </li>
+                <h3>6. Disclaimers</h3>
+                <p><strong>IMPORTANT:</strong></p>
+                <ul>
+                  <li>WanderSure provides <strong>information only</strong>, not insurance coverage</li>
+                  <li>Risk assessments are estimates and may not be accurate</li>
+                  <li>We are not liable for travel disruptions or losses</li>
+                  <li>Always verify information with official sources</li>
+                  <li>We do not guarantee alert delivery or accuracy</li>
                 </ul>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Premium Alerts</h3>
-                <p className="text-gray-700 mb-4">
-                  Our premium alert subscription ($4.99/month) is a separate service that provides enhanced travel notifications. 
-                  This revenue helps us maintain and improve the platform.
+                <h3>7. Insurance Referrals</h3>
+                <p>
+                  WanderSure may receive commissions from insurance providers when you purchase through our referral links. We are not an insurance provider or broker.
                 </p>
 
-                <h3 className="text-lg font-semibold text-gray-900 mt-6 mb-3">Partner Providers</h3>
-                <p className="text-gray-700 mb-4">
-                  We currently work with the following insurance providers:
-                </p>
-                <ul className="list-disc pl-6 text-gray-700 space-y-1 mb-4">
-                  <li>World Nomads</li>
-                  <li>Allianz Travel Insurance</li>
-                  <li>Travel Guard</li>
-                  <li>Seven Corners</li>
-                </ul>
-                <p className="text-gray-700 mb-4">
-                  This list may be updated as we establish new partnerships.
+                <h3>8. Intellectual Property</h3>
+                <p>
+                  All content, features, and functionality are owned by WanderSure and protected by copyright, trademark, and other laws.
                 </p>
 
-                <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mt-6">
-                  <p className="text-gray-700">
-                    <strong>Questions about our affiliate relationships?</strong><br />
-                    We're happy to answer! Email <a href="mailto:affiliates@wandersure.com" className="text-blue-600 hover:underline">affiliates@wandersure.com</a>
-                  </p>
-                </div>
+                <h3>9. Limitation of Liability</h3>
+                <p>
+                  To the maximum extent permitted by law, WanderSure shall not be liable for any indirect, incidental, special, consequential, or punitive damages arising from your use of the service.
+                </p>
+
+                <h3>10. Indemnification</h3>
+                <p>
+                  You agree to indemnify and hold WanderSure harmless from any claims arising from your use of the service or violation of these terms.
+                </p>
+
+                <h3>11. Third-Party Services</h3>
+                <p>
+                  Our service may integrate with third-party services (Gmail, Stripe, etc.). Your use of these services is subject to their own terms and policies.
+                </p>
+
+                <h3>12. Termination</h3>
+                <p>
+                  We may suspend or terminate your account for violation of these terms. You may cancel your account at any time.
+                </p>
+
+                <h3>13. Changes to Terms</h3>
+                <p>
+                  We reserve the right to modify these terms at any time. Continued use after changes constitutes acceptance.
+                </p>
+
+                <h3>14. Governing Law</h3>
+                <p>
+                  These terms are governed by the laws of the United States. Disputes will be resolved in the courts of [Your State/Country].
+                </p>
+
+                <h3>15. Contact Information</h3>
+                <p>
+                  For questions about these Terms of Service, contact:{" "}
+                  <a href="mailto:support@wandersure.com">support@wandersure.com</a>
+                </p>
               </CardContent>
             </Card>
           </TabsContent>

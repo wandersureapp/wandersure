@@ -1,6 +1,9 @@
 import BrowsePlans from './pages/BrowsePlans';
+import BudgetPlanner from './pages/BudgetPlanner';
 import CustomizeInsurance from './pages/CustomizeInsurance';
 import Dashboard from './pages/Dashboard';
+import DestinationPlaybook from './pages/DestinationPlaybook';
+import GroupTravelCoordinator from './pages/GroupTravelCoordinator';
 import Home from './pages/Home';
 import InvestorPitch from './pages/InvestorPitch';
 import InvestorPitchPrint from './pages/InvestorPitchPrint';
@@ -10,20 +13,20 @@ import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import NotificationSettings from './pages/NotificationSettings';
 import PartnerWithUs from './pages/PartnerWithUs';
+import SafetyGuide from './pages/SafetyGuide';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import DestinationPlaybook from './pages/DestinationPlaybook';
-import BudgetPlanner from './pages/BudgetPlanner';
-import SafetyGuide from './pages/SafetyGuide';
-import GroupTravelCoordinator from './pages/GroupTravelCoordinator';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "BrowsePlans": BrowsePlans,
+    "BudgetPlanner": BudgetPlanner,
     "CustomizeInsurance": CustomizeInsurance,
     "Dashboard": Dashboard,
+    "DestinationPlaybook": DestinationPlaybook,
+    "GroupTravelCoordinator": GroupTravelCoordinator,
     "Home": Home,
     "InvestorPitch": InvestorPitch,
     "InvestorPitchPrint": InvestorPitchPrint,
@@ -33,13 +36,10 @@ export const PAGES = {
     "NewTrip": NewTrip,
     "NotificationSettings": NotificationSettings,
     "PartnerWithUs": PartnerWithUs,
+    "SafetyGuide": SafetyGuide,
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "DestinationPlaybook": DestinationPlaybook,
-    "BudgetPlanner": BudgetPlanner,
-    "SafetyGuide": SafetyGuide,
-    "GroupTravelCoordinator": GroupTravelCoordinator,
 }
 
 export const pagesConfig = {
