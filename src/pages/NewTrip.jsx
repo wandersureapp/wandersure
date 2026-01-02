@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Mail } from "lucide-react";
+import { parseConfirmationEmails } from "@/functions/parseConfirmationEmails";
 
 import TripBasicInfo from "../components/trip/TripBasicInfo";
 import TripTravelDetails from "../components/trip/TripTravelDetails";
@@ -15,6 +16,8 @@ export default function NewTrip() {
   const queryClient = useQueryClient();
   const [step, setStep] = useState(1);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [isParsingEmails, setIsParsingEmails] = useState(false);
+  const [createdTripId, setCreatedTripId] = useState(null);
 
   const [tripData, setTripData] = useState({
     trip_name: "",
@@ -38,6 +41,7 @@ export default function NewTrip() {
   const createTripMutation = useMutation({
     mutationFn: async (data) => {
       const trip = await base44.entities.Trip.create(data);
+      setCreatedTripId(trip.id);
       
       setIsAnalyzing(true);
       const riskAnalysis = await analyzeRisk(trip);
@@ -54,6 +58,27 @@ export default function NewTrip() {
       navigate(createPageUrl(`TripDetail?id=${trip.id}`));
     }
   });
+
+  const handleParseEmails = async () => {
+    if (!createdTripId) return;
+    
+    setIsParsingEmails(true);
+    try {
+      const response = await parseConfirmationEmails({ tripId: createdTripId });
+      if (response.data.success) {
+        queryClient.invalidateQueries({ queryKey: ['trips'] });
+        alert('✅ Booking details extracted from your emails!');
+      }
+    } catch (error) {
+      if (error.response?.status === 401) {
+        alert('Gmail authorization required. Please authorize Gmail access in Settings to use this feature.');
+      } else {
+        alert('Failed to parse emails. Please try again or enter details manually.');
+      }
+    } finally {
+      setIsParsingEmails(false);
+    }
+  };
 
   const analyzeRisk = async (trip) => {
     const prompt = `Analyze the travel risk for this trip and provide recommendations:
@@ -191,14 +216,32 @@ Provide detailed reasoning for each risk score.`;
         {isAnalyzing && (
           <Card className="mt-6 border-blue-200 bg-blue-50">
             <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-                <div>
-                  <p className="font-medium text-blue-900">Analyzing your trip...</p>
-                  <p className="text-sm text-blue-700">
-                    We're assessing risks and generating personalized recommendations
-                  </p>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-4">
+                  <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                  <div>
+                    <p className="font-medium text-blue-900">Analyzing your trip...</p>
+                    <p className="text-sm text-blue-700">
+                      We're assessing risks and generating personalized recommendations
+                    </p>
+                  </div>
                 </div>
+                {createdTripId && !isParsingEmails && (
+                  <Button
+                    onClick={handleParseEmails}
+                    variant="outline"
+                    className="border-blue-300 text-blue-700 hover:bg-blue-100"
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    Parse Emails
+                  </Button>
+                )}
+                {isParsingEmails && (
+                  <div className="flex items-center gap-2 text-blue-700">
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    <span className="text-sm">Parsing...</span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
