@@ -188,6 +188,122 @@ export default function TripDetail() {
               </CardContent>
             </Card>
 
+            {/* Risk Summary Card */}
+            {trip.risk_assessment && (
+              <Card className="border-none shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    🎯 Risk Summary
+                  </CardTitle>
+                  <p className="text-sm text-gray-600">
+                    Here's what you need to know about your trip
+                  </p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid md:grid-cols-3 gap-4">
+                    {trip.risk_assessment.flight_delay_risk > 0 && (
+                      <div className={`p-4 rounded-lg ${trip.risk_assessment.flight_delay_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.flight_delay_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <Plane className={`w-5 h-5 ${trip.risk_assessment.flight_delay_risk > 60 ? 'text-red-600' : trip.risk_assessment.flight_delay_risk > 30 ? 'text-yellow-600' : 'text-green-600'}`} />
+                          <span className="font-semibold text-gray-900">Flight Risk</span>
+                        </div>
+                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.flight_delay_risk)}/100</div>
+                        <p className="text-xs text-gray-600">
+                          {trip.risk_assessment.flight_delay_risk > 60 ? 'High delay probability' : trip.risk_assessment.flight_delay_risk > 30 ? 'Moderate delays possible' : 'On-time likely'}
+                        </p>
+                      </div>
+                    )}
+                    
+                    {trip.risk_assessment.weather_risk > 0 && (
+                      <div className={`p-4 rounded-lg ${trip.risk_assessment.weather_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.weather_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xl">🌤️</span>
+                          <span className="font-semibold text-gray-900">Weather</span>
+                        </div>
+                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.weather_risk)}/100</div>
+                        <p className="text-xs text-gray-600">
+                          {trip.risk_assessment.weather_risk > 60 ? 'Severe conditions expected' : trip.risk_assessment.weather_risk > 30 ? 'Unfavorable weather' : 'Good conditions'}
+                        </p>
+                      </div>
+                    )}
+
+                    {trip.risk_assessment.crime_risk > 0 && (
+                      <div className={`p-4 rounded-lg ${trip.risk_assessment.crime_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.crime_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xl">🛡️</span>
+                          <span className="font-semibold text-gray-900">Safety</span>
+                        </div>
+                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.crime_risk)}/100</div>
+                        <p className="text-xs text-gray-600">
+                          {trip.risk_assessment.crime_risk > 60 ? 'Heightened caution needed' : trip.risk_assessment.crime_risk > 30 ? 'Stay alert' : 'Generally safe'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Airline Risk - Flight Affiliate Opportunity */}
+                  {trip.airline && trip.risk_assessment.flight_delay_risk > 50 && (
+                    <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+                      <div className="flex items-start gap-3">
+                        <div className="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <Plane className="w-6 h-6 text-white" />
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-gray-900 mb-1">Flight Risk Detected</h4>
+                          <p className="text-sm text-gray-700 mb-3">
+                            {trip.airline} has elevated delay risk. Consider alternative flights or travel insurance.
+                          </p>
+                          <a 
+                            href="https://www.kqzyfj.com/click-101622714-17112391" 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                          >
+                            <Button className="bg-blue-600 hover:bg-blue-700">
+                              ✈️ Compare Flight Options
+                            </Button>
+                          </a>
+                          <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Safety Guide Upsell */}
+                  {trip.risk_assessment.overall_score > 40 && (
+                    <div className="p-5 bg-gradient-to-r from-purple-100 to-pink-100 border-2 border-purple-300 rounded-lg">
+                      <div className="flex items-start gap-4">
+                        <div className="w-14 h-14 bg-gradient-to-br from-purple-600 to-pink-600 rounded-xl flex items-center justify-center flex-shrink-0 shadow-lg">
+                          <span className="text-3xl">🛡️</span>
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-2">
+                            <h4 className="font-bold text-gray-900 text-lg">Want to Travel Safer?</h4>
+                            <Badge className="bg-purple-600 text-white">Premium Guide</Badge>
+                          </div>
+                          <p className="text-sm text-gray-700 mb-3">
+                            Get our <strong>AI-generated Safety Guide</strong> with local emergency contacts, common scams to avoid, 
+                            safe neighborhoods, hospital locations, and insider tips from travelers who've been there. 
+                            <strong> Know before you go.</strong>
+                          </p>
+                          <div className="flex flex-wrap gap-2 mb-4">
+                            <Badge variant="outline" className="text-xs">🚨 Emergency Contacts</Badge>
+                            <Badge variant="outline" className="text-xs">🎭 Scam Alerts</Badge>
+                            <Badge variant="outline" className="text-xs">🗺️ Safe Areas</Badge>
+                            <Badge variant="outline" className="text-xs">🏥 Medical Info</Badge>
+                          </div>
+                          <Link to={createPageUrl(`SafetyGuide?tripId=${trip.id}`)}>
+                            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg">
+                              🛡️ Generate My Safety Guide ($4.99)
+                            </Button>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             <RiskGauges riskAssessment={trip.risk_assessment} />
 
             {/* Risk Details & Reasoning */}

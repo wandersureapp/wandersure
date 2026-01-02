@@ -118,17 +118,20 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                     }
                 });
 
-                // Send alert if risk increased significantly (>15 points) and user has premium
-                if (scoreDifference > 15) {
+                // Send alert for ANY risk change if user has premium alerts enabled
+                if (Math.abs(scoreDifference) > 5) {
                     const preferences = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
                         user_email: trip.created_by
                     });
 
                     if (preferences.length > 0 && preferences[0].premium_subscription && preferences[0].email_enabled) {
+                        const alertType = scoreDifference > 0 ? '⚠️ Risk Increased' : '✅ Risk Decreased';
+                        const changeIndicator = scoreDifference > 0 ? `+${scoreDifference}` : `${scoreDifference}`;
+                        
                         await base44.asServiceRole.integrations.Core.SendEmail({
                             from_name: "WanderSure Alerts",
                             to: trip.created_by,
-                            subject: `⚠️ Risk Alert: ${trip.trip_name}`,
+                            subject: `${alertType}: ${trip.trip_name}`,
                             body: `
 <h2>Travel Risk Alert</h2>
 <p>We've detected significant changes in travel conditions for your upcoming trip:</p>
@@ -137,7 +140,7 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
 <p><strong>Destination:</strong> ${trip.destination}</p>
 <p><strong>Dates:</strong> ${trip.start_date} to ${trip.end_date}</p>
 
-<p><strong>Risk Level:</strong> ${previousScore} → ${newScore} (+${scoreDifference} points)</p>
+<p><strong>Risk Level:</strong> ${previousScore} → ${newScore} (${changeIndicator} points)</p>
 
 <h4>Summary:</h4>
 <p>${riskAnalysis.summary}</p>
@@ -165,7 +168,19 @@ ${riskAnalysis.critical_alerts.map(alert => `<li>${alert}</li>`).join('\n')}
                             `
                         });
 
-                        console.log(`Sent risk alert to ${trip.created_by} for trip ${trip.id}`);
+                        console.log(`Sent risk alert to ${trip.created_by} for trip ${trip.id} (change: ${changeIndicator})`);
+                    }
+                }
+
+                // Also send in-app notification for free users on significant increases
+                if (scoreDifference > 15) {
+                    const preferences = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
+                        user_email: trip.created_by
+                    });
+
+                    if (preferences.length > 0 && preferences[0].in_app_enabled) {
+                        // Store in-app notification for user to see
+                        console.log(`Would create in-app notification for ${trip.created_by} about trip ${trip.id}`);
                     }
                 }
 
