@@ -13,12 +13,12 @@ import MyTrips from './pages/MyTrips';
 import NewTrip from './pages/NewTrip';
 import NotificationSettings from './pages/NotificationSettings';
 import PartnerWithUs from './pages/PartnerWithUs';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 import SafetyGuide from './pages/SafetyGuide';
+import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import PrivacyPolicy from './pages/PrivacyPolicy';
-import TermsOfService from './pages/TermsOfService';
 import __Layout from './Layout.jsx';
 
 
@@ -38,16 +38,16 @@ export const PAGES = {
     "NewTrip": NewTrip,
     "NotificationSettings": NotificationSettings,
     "PartnerWithUs": PartnerWithUs,
+    "PrivacyPolicy": PrivacyPolicy,
     "SafetyGuide": SafetyGuide,
+    "TermsOfService": TermsOfService,
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "PrivacyPolicy": PrivacyPolicy,
-    "TermsOfService": TermsOfService,
 }
 
 export const pagesConfig = {
-    mainPage: "Dashboard",
+    mainPage: "Home",
     Pages: PAGES,
     Layout: __Layout,
 };
