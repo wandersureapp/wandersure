@@ -26,26 +26,46 @@ Deno.serve(async (req) => {
 
                 // Get real-time data from the web
                 const riskAnalysis = await base44.asServiceRole.integrations.Core.InvokeLLM({
-                    prompt: `You are a travel risk analyst. Analyze current conditions for this trip:
+                    prompt: `You are a travel risk analyst with access to live data sources. Analyze current conditions for this trip:
                     
 Destination: ${trip.destination}, ${trip.destination_country || ''}
 Travel Dates: ${trip.start_date} to ${trip.end_date}
 Airline: ${trip.airline || 'Not specified'}
 Flight: ${trip.flight_number || 'Not specified'}
 
-Provide a comprehensive real-time risk assessment based on:
-- Current flight status and delays for this airline/route
-- Live TSA wait times at departure airport
-- Airport website updates, closures, or critical notices
-- Traffic conditions to/from the airport
-- Airport parking availability and shuttle status
-- Live weather conditions and forecasts
-- Recent crime statistics and safety incidents at destination
-- Political stability and civil unrest
-- Health advisories and disease outbreaks
-- Current travel restrictions or advisories
+CRITICAL: Check these OFFICIAL sources for real-time data:
 
-Check official airport websites, TSA.gov, and local news for the most current information.
+GOVERNMENT & TRAVEL ADVISORIES:
+- US State Department travel advisories (travel.state.gov)
+- CDC health notices (wwwnc.cdc.gov/travel)
+- TSA updates (tsa.gov)
+- Local government websites for destination
+
+CRIME & SAFETY DATABASES:
+- Recent crime reports and statistics for ${trip.destination}
+- Historical crime data trends
+- Local police reports and incident databases
+- Travel safety forums and recent traveler reports
+
+FLIGHT & AIRPORT INTELLIGENCE:
+- Live flight status for ${trip.flight_number || 'this route'}
+- FlightAware/FlightRadar24 delay patterns
+- Current TSA wait times at departure airport
+- Airport website critical updates and closures
+- Traffic conditions and parking availability
+
+NEWS & CURRENT EVENTS:
+- Breaking news for ${trip.destination}
+- Recent incidents affecting travelers
+- Political protests or civil unrest
+- Natural disasters or weather emergencies
+
+WEATHER DATA:
+- Current conditions and hour-by-hour forecasts
+- Severe weather alerts
+- Historical weather patterns for travel dates
+
+Analyze ALL available data points including historical trends and real-time conditions.
 
 Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                     add_context_from_internet: true,
