@@ -18,6 +18,34 @@ export default function TripBasicInfo({ tripData, updateTripData, onNext, onPars
         <p className="text-gray-600">Start with the essential details of your journey</p>
       </div>
 
+      {onParseEmails && (
+        <Card className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-medium text-gray-900 mb-1">Have booking confirmations in your email?</p>
+              <p className="text-sm text-gray-600">We'll automatically fill in your trip details</p>
+            </div>
+            <Button
+              onClick={onParseEmails}
+              disabled={isParsingEmails}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              {isParsingEmails ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Parsing...
+                </>
+              ) : (
+                <>
+                  <Mail className="w-4 h-4 mr-2" />
+                  Parse Emails
+                </>
+              )}
+            </Button>
+          </div>
+        </Card>
+      )}
+
       <div className="space-y-4">
         <div>
           <Label htmlFor="trip_name">Trip Name *</Label>
