@@ -2,9 +2,11 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Mail, Loader2 } from "lucide-react";
+import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 
-export default function TripBasicInfo({ tripData, updateTripData, onNext }) {
+export default function TripBasicInfo({ tripData, updateTripData, onNext, onParseEmails, isParsingEmails }) {
   const isValid = tripData.trip_name && tripData.destination && 
                   tripData.destination_country && tripData.start_date && 
                   tripData.end_date;
