@@ -7,15 +7,8 @@ import { Shield, Sparkles, Bell, Brain, CheckCircle, ArrowRight } from "lucide-r
 import { motion } from "framer-motion";
 
 export default function Home() {
-  const navigate = useNavigate();
-
-  const handleGetStarted = async () => {
-    const isAuth = await base44.auth.isAuthenticated();
-    if (isAuth) {
-      navigate(createPageUrl("Dashboard"));
-    } else {
-      base44.auth.redirectToLogin(createPageUrl("Dashboard"));
-    }
+  const handleLoginToPortal = () => {
+    base44.auth.redirectToLogin(createPageUrl("Dashboard"));
   };
 
   return (

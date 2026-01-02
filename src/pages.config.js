@@ -17,6 +17,8 @@ import SafetyGuide from './pages/SafetyGuide';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import __Layout from './Layout.jsx';
 
 
@@ -40,6 +42,8 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
+    "PrivacyPolicy": PrivacyPolicy,
+    "TermsOfService": TermsOfService,
 }
 
 export const pagesConfig = {
