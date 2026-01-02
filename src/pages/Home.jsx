@@ -19,9 +19,9 @@ export default function Home() {
           <div className="flex justify-between items-center">
             <div className="flex items-center gap-3">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/1c7001d0e_Untitleddesign.png" 
                 alt="WanderSure"
-                className="w-10 h-10 object-contain"
+                className="w-16 h-16 object-contain"
               />
               <span className="text-2xl font-bold text-white">WanderSure</span>
             </div>
@@ -300,9 +300,9 @@ export default function Home() {
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-3">
               <img 
-                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
+                src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/1c7001d0e_Untitleddesign.png" 
                 alt="WanderSure"
-                className="w-8 h-8 object-contain"
+                className="w-12 h-12 object-contain"
               />
               <span className="text-xl font-bold">WanderSure</span>
             </div>
