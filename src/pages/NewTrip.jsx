@@ -50,7 +50,8 @@ export default function NewTrip() {
       
       await base44.entities.Trip.update(trip.id, {
         risk_assessment: riskAnalysis.risk_assessment,
-        recommended_coverage: riskAnalysis.recommended_coverage
+        recommended_coverage: riskAnalysis.recommended_coverage,
+        risk_details: riskAnalysis.risk_details
       });
       
       return trip;
@@ -154,67 +155,117 @@ export default function NewTrip() {
   };
 
   const analyzeRisk = async (trip) => {
-    const prompt = `Analyze the travel risk for this trip and provide recommendations:
-    
-Destination: ${trip.destination}, ${trip.destination_country}
-Travel Dates: ${trip.start_date} to ${trip.end_date}
-Airline: ${trip.airline || 'Not specified'}
-Hotel: ${trip.hotel_name || 'Not specified'}
-Travelers: ${trip.travelers_count}
-Trip Cost: $${trip.trip_cost}
+      const prompt = `You are a travel risk analyst with access to live data sources. Provide a COMPREHENSIVE real-time risk assessment for this trip:
 
-Assess the following risks on a scale of 0-100:
-1. Flight delay risk (based on airline, season, destination)
-2. Crime risk (based on destination safety data)
-3. General disruption risk (weather, political stability, etc.)
-4. Health risk (disease outbreaks, healthcare quality)
+  Destination: ${trip.destination}, ${trip.destination_country}
+  Travel Dates: ${trip.start_date} to ${trip.end_date}
+  Airline: ${trip.airline || 'Not specified'}
+  Flight: ${trip.flight_number || 'Not specified'}
+  Hotel: ${trip.hotel_name || 'Not specified'}
+  Travelers: ${trip.travelers_count}
+  Trip Cost: $${trip.trip_cost}
 
-Also recommend which insurance coverage types would be most important for this trip.
+  CRITICAL: Check these OFFICIAL real-time sources:
 
-Provide detailed reasoning for each risk score.`;
+  GOVERNMENT & TRAVEL ADVISORIES:
+  - US State Department travel advisories for ${trip.destination_country}
+  - CDC health notices and vaccination requirements
+  - TSA updates and security alerts
+  - Local government official websites
 
-    const result = await base44.integrations.Core.InvokeLLM({
-      prompt,
-      add_context_from_internet: true,
-      response_json_schema: {
-        type: "object",
-        properties: {
-          risk_assessment: {
-            type: "object",
-            properties: {
-              overall_score: { type: "number" },
-              flight_delay_risk: { type: "number" },
-              crime_risk: { type: "number" },
-              disruption_risk: { type: "number" },
-              health_risk: { type: "number" },
-              last_updated: { type: "string" }
-            }
-          },
-          recommended_coverage: {
-            type: "array",
-            items: { type: "string" }
-          },
-          risk_details: {
-            type: "object",
-            properties: {
-              flight_delay_reasoning: { type: "string" },
-              crime_reasoning: { type: "string" },
-              disruption_reasoning: { type: "string" },
-              health_reasoning: { type: "string" }
+  CRIME & SAFETY:
+  - Current crime statistics for ${trip.destination}
+  - Recent incidents affecting tourists
+  - Police reports and safety databases
+  - Travel safety forums and recent traveler experiences
+
+  FLIGHT & AIRPORT INTELLIGENCE:
+  - Live flight status for ${trip.airline} ${trip.flight_number || 'to this destination'}
+  - FlightAware/FlightRadar24 current delay patterns
+  - Real-time TSA wait times at departure airport
+  - Airport website for closures, construction, critical updates
+  - Current traffic conditions to airport
+  - Parking availability and shuttle status
+
+  WEATHER CONDITIONS:
+  - Current weather at departure and arrival airports
+  - Hour-by-hour forecast for travel dates
+  - Severe weather alerts or warnings
+  - Historical weather patterns for these dates
+  - Storm tracking and precipitation forecasts
+
+  NEWS & CURRENT EVENTS:
+  - Breaking news in ${trip.destination}
+  - Political protests or civil unrest
+  - Natural disasters or emergencies
+  - Local events causing disruptions
+
+  AIRLINE SPECIFIC:
+  - ${trip.airline || 'Airline'} recent cancellations and delays
+  - Baggage handling issues or lost luggage rates
+  - Customer service problems or labor disputes
+
+  DESTINATION SPECIFIC:
+  - Local laws travelers should know
+  - Scams targeting tourists
+  - Healthcare quality and hospital access
+  - Communication (wifi/phone service)
+
+  Score each risk 0-100 (0=no risk, 100=extreme risk). Be detailed and specific with reasoning based on ACTUAL current data.`;
+
+      const result = await base44.integrations.Core.InvokeLLM({
+        prompt,
+        add_context_from_internet: true,
+        response_json_schema: {
+          type: "object",
+          properties: {
+            risk_assessment: {
+              type: "object",
+              properties: {
+                overall_score: { type: "number" },
+                flight_delay_risk: { type: "number" },
+                weather_risk: { type: "number" },
+                crime_risk: { type: "number" },
+                political_risk: { type: "number" },
+                health_risk: { type: "number" },
+                disruption_risk: { type: "number" },
+                airport_conditions: { type: "string" },
+                tsa_wait_times: { type: "string" },
+                last_updated: { type: "string" }
+              }
+            },
+            recommended_coverage: {
+              type: "array",
+              items: { type: "string" }
+            },
+            risk_details: {
+              type: "object",
+              properties: {
+                flight_delay_reasoning: { type: "string" },
+                weather_reasoning: { type: "string" },
+                crime_reasoning: { type: "string" },
+                political_reasoning: { type: "string" },
+                health_reasoning: { type: "string" },
+                disruption_reasoning: { type: "string" },
+                airport_intel: { type: "string" },
+                critical_alerts: { 
+                  type: "array",
+                  items: { type: "string" }
+                }
+              }
             }
           }
         }
-      }
-    });
+      });
 
-    return {
-      ...result,
-      risk_assessment: {
-        ...result.risk_assessment,
-        last_updated: new Date().toISOString()
-      }
+      return {
+        ...result,
+        risk_assessment: {
+          ...result.risk_assessment,
+          last_updated: new Date().toISOString()
+        }
+      };
     };
-  };
 
   const handleSubmit = () => {
     createTripMutation.mutate(tripData);

@@ -1,3 +1,4 @@
+import Alerts from './pages/Alerts';
 import BrowsePlans from './pages/BrowsePlans';
 import BudgetPlanner from './pages/BudgetPlanner';
 import CustomizeInsurance from './pages/CustomizeInsurance';
@@ -20,11 +21,11 @@ import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import Alerts from './pages/Alerts';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "Alerts": Alerts,
     "BrowsePlans": BrowsePlans,
     "BudgetPlanner": BudgetPlanner,
     "CustomizeInsurance": CustomizeInsurance,
@@ -47,7 +48,6 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "Alerts": Alerts,
 }
 
 export const pagesConfig = {

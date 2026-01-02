@@ -190,6 +190,90 @@ export default function TripDetail() {
 
             <RiskGauges riskAssessment={trip.risk_assessment} />
 
+            {/* Risk Details & Reasoning */}
+            {trip.risk_details && (
+              <Card className="border-none shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    📊 Detailed Risk Analysis
+                  </CardTitle>
+                  {trip.risk_assessment?.last_updated && (
+                    <p className="text-sm text-gray-500">
+                      Last updated: {format(new Date(trip.risk_assessment.last_updated), "MMM d, yyyy 'at' h:mm a")}
+                    </p>
+                  )}
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {trip.risk_details.critical_alerts?.length > 0 && (
+                    <div className="p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+                      <h4 className="font-bold text-red-900 mb-2 flex items-center gap-2">
+                        🚨 Critical Alerts
+                      </h4>
+                      <ul className="space-y-2">
+                        {trip.risk_details.critical_alerts.map((alert, idx) => (
+                          <li key={idx} className="text-sm text-red-800">{alert}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {trip.risk_details.flight_delay_reasoning && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">✈️ Flight Delays & Cancellations</h4>
+                      <p className="text-sm text-gray-700">{trip.risk_details.flight_delay_reasoning}</p>
+                    </div>
+                  )}
+
+                  {trip.risk_details.weather_reasoning && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">🌤️ Weather Conditions</h4>
+                      <p className="text-sm text-gray-700">{trip.risk_details.weather_reasoning}</p>
+                    </div>
+                  )}
+
+                  {trip.risk_details.airport_intel && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">🏢 Airport Intelligence</h4>
+                      <p className="text-sm text-gray-700">{trip.risk_details.airport_intel}</p>
+                      {trip.risk_assessment?.tsa_wait_times && (
+                        <p className="text-sm text-gray-600 mt-2">
+                          <strong>TSA Wait Times:</strong> {trip.risk_assessment.tsa_wait_times}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {trip.risk_details.crime_reasoning && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">🛡️ Safety & Crime</h4>
+                      <p className="text-sm text-gray-700">{trip.risk_details.crime_reasoning}</p>
+                    </div>
+                  )}
+
+                  {trip.risk_details.political_reasoning && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">🏛️ Political Stability</h4>
+                      <p className="text-sm text-gray-700">{trip.risk_details.political_reasoning}</p>
+                    </div>
+                  )}
+
+                  {trip.risk_details.health_reasoning && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">🏥 Health & Medical</h4>
+                      <p className="text-sm text-gray-700">{trip.risk_details.health_reasoning}</p>
+                    </div>
+                  )}
+
+                  {trip.risk_details.disruption_reasoning && (
+                    <div className="p-4 bg-gray-50 rounded-lg">
+                      <h4 className="font-semibold text-gray-900 mb-2">⚠️ Travel Disruptions</h4>
+                      <p className="text-sm text-gray-700">{trip.risk_details.disruption_reasoning}</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Travel Bookings */}
             <Card className="border-none shadow-lg">
               <CardHeader>
