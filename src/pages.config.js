@@ -3,6 +3,7 @@ import BudgetPlanner from './pages/BudgetPlanner';
 import CustomizeInsurance from './pages/CustomizeInsurance';
 import Dashboard from './pages/Dashboard';
 import DestinationPlaybook from './pages/DestinationPlaybook';
+import GmailCallback from './pages/GmailCallback';
 import GroupTravelCoordinator from './pages/GroupTravelCoordinator';
 import Home from './pages/Home';
 import InvestorPitch from './pages/InvestorPitch';
@@ -19,7 +20,6 @@ import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import GmailCallback from './pages/GmailCallback';
 import __Layout from './Layout.jsx';
 
 
@@ -29,6 +29,7 @@ export const PAGES = {
     "CustomizeInsurance": CustomizeInsurance,
     "Dashboard": Dashboard,
     "DestinationPlaybook": DestinationPlaybook,
+    "GmailCallback": GmailCallback,
     "GroupTravelCoordinator": GroupTravelCoordinator,
     "Home": Home,
     "InvestorPitch": InvestorPitch,
@@ -45,7 +46,6 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "GmailCallback": GmailCallback,
 }
 
 export const pagesConfig = {

@@ -38,6 +38,7 @@ export default function NewTrip() {
     cruise_booking_number: "",
     status: "planning"
   });
+  const [emailData, setEmailData] = useState(null);
 
   const createTripMutation = useMutation({
     mutationFn: async (data) => {
@@ -60,43 +61,92 @@ export default function NewTrip() {
     }
   });
 
-  const handleParseEmails = async () => {
-    if (!createdTripId) return;
-    
+  const handleParseEmailsOnStep1 = async () => {
     setIsParsingEmails(true);
     try {
-      // Get current user to check for stored token
       const user = await base44.auth.me();
       
-      // Check if we have a valid access token
       if (!user.gmail_access_token || (user.gmail_token_expiry && user.gmail_token_expiry < Date.now())) {
-        // Need to authorize - get auth URL and redirect
         const { data } = await getGmailAuthUrl();
         window.location.href = data.authUrl;
         return;
       }
       
-      // We have a token - proceed with parsing
+      // Create a temporary trip to parse against
+      const tempTrip = await base44.entities.Trip.create({
+        trip_name: "Temp Trip",
+        destination: "TBD",
+        destination_country: "TBD",
+        start_date: new Date().toISOString().split('T')[0],
+        end_date: new Date().toISOString().split('T')[0],
+        status: "planning"
+      });
+      
       const response = await parseConfirmationEmails({ 
-        tripId: createdTripId,
+        tripId: tempTrip.id,
         accessToken: user.gmail_access_token 
       });
       
-      if (response.data.success) {
-        queryClient.invalidateQueries({ queryKey: ['trips'] });
-        alert('✅ Booking details extracted from your emails!');
-      } else if (response.data.needsAuth) {
-        // Token expired or invalid - re-authorize
-        const { data } = await getGmailAuthUrl();
-        window.location.href = data.authUrl;
+      // Delete temp trip
+      await base44.entities.Trip.delete(tempTrip.id);
+      
+      if (response.data.success && response.data.bookings) {
+        setEmailData(response.data.bookings);
+        
+        // Auto-populate form fields
+        const bookings = response.data.bookings;
+        const updates = {};
+        
+        // Generate trip name from destination
+        if (bookings.flights?.length > 0) {
+          const flight = bookings.flights[0];
+          updates.destination = flight.arrival_airport || "";
+          updates.trip_name = `Trip to ${flight.arrival_airport || 'Destination'}`;
+          updates.airline = flight.airline;
+          updates.flight_number = flight.flight_number;
+        }
+        
+        if (bookings.hotels?.length > 0) {
+          const hotel = bookings.hotels[0];
+          updates.hotel_name = hotel.hotel_name;
+          updates.hotel_booking_number = hotel.booking_number;
+          updates.start_date = hotel.check_in;
+          updates.end_date = hotel.check_out;
+          if (!updates.destination && hotel.address) {
+            updates.destination = hotel.address.split(',')[0];
+            updates.trip_name = `Trip to ${hotel.address.split(',')[0]}`;
+          }
+        }
+        
+        if (bookings.car_rentals?.length > 0) {
+          const rental = bookings.car_rentals[0];
+          updates.car_rental_company = rental.company;
+          updates.car_rental_booking_number = rental.booking_number;
+        }
+        
+        if (bookings.cruises?.length > 0) {
+          const cruise = bookings.cruises[0];
+          updates.cruise_line = cruise.cruise_line;
+          updates.cruise_booking_number = cruise.booking_number;
+          if (!updates.destination) {
+            updates.destination = cruise.departure_port || "";
+            updates.trip_name = `Cruise from ${cruise.departure_port || 'Port'}`;
+          }
+        }
+        
+        setTripData(prev => ({ ...prev, ...updates }));
+        
+        // Auto-advance to step 2 if we have required fields
+        if (updates.destination && updates.start_date && updates.end_date) {
+          setTimeout(() => setStep(2), 500);
+        }
       }
     } catch (error) {
       if (error.response?.data?.needsAuth) {
-        // Need authorization
         const { data } = await getGmailAuthUrl();
         window.location.href = data.authUrl;
       } else {
-        alert('Failed to parse emails. Please try again or enter details manually.');
+        alert('Failed to parse emails. Please enter details manually.');
       }
     } finally {
       setIsParsingEmails(false);
@@ -221,6 +271,8 @@ Provide detailed reasoning for each risk score.`;
                 tripData={tripData}
                 updateTripData={updateTripData}
                 onNext={() => setStep(2)}
+                onParseEmails={handleParseEmailsOnStep1}
+                isParsingEmails={isParsingEmails}
               />
             )}
 
@@ -239,32 +291,14 @@ Provide detailed reasoning for each risk score.`;
         {isAnalyzing && (
           <Card className="mt-6 border-blue-200 bg-blue-50">
             <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                  <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
-                  <div>
-                    <p className="font-medium text-blue-900">Analyzing your trip...</p>
-                    <p className="text-sm text-blue-700">
-                      We're assessing risks and generating personalized recommendations
-                    </p>
-                  </div>
+              <div className="flex items-center gap-4">
+                <Loader2 className="w-6 h-6 animate-spin text-blue-600" />
+                <div>
+                  <p className="font-medium text-blue-900">Analyzing your trip...</p>
+                  <p className="text-sm text-blue-700">
+                    We're assessing risks and generating personalized recommendations
+                  </p>
                 </div>
-                {createdTripId && !isParsingEmails && (
-                  <Button
-                    onClick={handleParseEmails}
-                    variant="outline"
-                    className="border-blue-300 text-blue-700 hover:bg-blue-100"
-                  >
-                    <Mail className="w-4 h-4 mr-2" />
-                    Parse Emails
-                  </Button>
-                )}
-                {isParsingEmails && (
-                  <div className="flex items-center gap-2 text-blue-700">
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                    <span className="text-sm">Parsing...</span>
-                  </div>
-                )}
               </div>
             </CardContent>
           </Card>
