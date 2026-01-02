@@ -1,12 +1,29 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Mail, Loader2 } from "lucide-react";
+import { Mail, Loader2, Search } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
+import { airports } from "../utils/airportData";
 
 export default function TripBasicInfo({ tripData, updateTripData, onNext, onParseEmails, isParsingEmails }) {
+  const [airportSearch, setAirportSearch] = useState('');
+  const [showAirportDropdown, setShowAirportDropdown] = useState(false);
+  
+  const filteredAirports = airports.filter(airport => 
+    airport.code.toLowerCase().includes(airportSearch.toLowerCase()) ||
+    airport.name.toLowerCase().includes(airportSearch.toLowerCase()) ||
+    airport.city.toLowerCase().includes(airportSearch.toLowerCase())
+  ).slice(0, 8);
+
+  const handleAirportSelect = (airport) => {
+    updateTripData('destination', `${airport.city} (${airport.code})`);
+    updateTripData('destination_country', airport.country);
+    setAirportSearch('');
+    setShowAirportDropdown(false);
+  };
+
   const isValid = tripData.trip_name && tripData.destination && 
                   tripData.destination_country && tripData.start_date && 
                   tripData.end_date;
@@ -59,24 +76,55 @@ export default function TripBasicInfo({ tripData, updateTripData, onNext, onPars
         </div>
 
         <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <Label htmlFor="destination">Destination City *</Label>
-            <Input
-              id="destination"
-              placeholder="e.g., Paris"
-              value={tripData.destination}
-              onChange={(e) => updateTripData('destination', e.target.value)}
-              className="mt-1.5"
-            />
+          <div className="relative">
+            <Label htmlFor="airport_search">Destination Airport *</Label>
+            <div className="relative mt-1.5">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Input
+                id="airport_search"
+                placeholder="Search by code or city (e.g., LAX, London)"
+                value={airportSearch || tripData.destination}
+                onChange={(e) => {
+                  setAirportSearch(e.target.value);
+                  setShowAirportDropdown(true);
+                }}
+                onFocus={() => setShowAirportDropdown(true)}
+                className="pl-9"
+              />
+            </div>
+            {showAirportDropdown && airportSearch && filteredAirports.length > 0 && (
+              <div className="absolute z-50 w-full mt-1 bg-white border rounded-lg shadow-lg max-h-64 overflow-y-auto">
+                {filteredAirports.map((airport) => (
+                  <button
+                    key={airport.code}
+                    type="button"
+                    onClick={() => handleAirportSelect(airport)}
+                    className="w-full px-4 py-3 text-left hover:bg-blue-50 border-b last:border-b-0 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-medium text-gray-900">
+                          {airport.code} - {airport.name}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          {airport.city}, {airport.state ? `${airport.state}, ` : ''}{airport.country}
+                        </p>
+                      </div>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
           <div>
-            <Label htmlFor="destination_country">Country *</Label>
+            <Label htmlFor="destination_country">Country / State *</Label>
             <Input
               id="destination_country"
-              placeholder="e.g., France"
+              placeholder="Auto-filled from airport selection"
               value={tripData.destination_country}
               onChange={(e) => updateTripData('destination_country', e.target.value)}
-              className="mt-1.5"
+              className="mt-1.5 bg-gray-50"
+              readOnly
             />
           </div>
         </div>
