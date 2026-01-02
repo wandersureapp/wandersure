@@ -71,30 +71,41 @@ export default function InsuranceRecommendations({ tripId, recommendedCoverage, 
       </Card>
 
       {/* Recommended Coverage */}
-      <Card className="border-none shadow-lg bg-gradient-to-br from-orange-50 to-amber-50">
+      <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-orange-900">
-            <Shield className="w-5 h-5 text-orange-600" />
-            AI Recommendations
+          <CardTitle className="flex items-center gap-2 text-blue-900">
+            <Shield className="w-5 h-5 text-blue-600" />
+            Protect Your Trip
           </CardTitle>
+          <p className="text-sm text-gray-600 mt-1">
+            Based on AI risk analysis, we strongly recommend these coverages
+          </p>
         </CardHeader>
         <CardContent>
           {recommendedCoverage && recommendedCoverage.length > 0 ? (
-            <div className="space-y-2">
-              <p className="text-sm text-gray-700 mb-3">
-                Based on your trip's risk analysis, we recommend:
-              </p>
+            <div className="space-y-3">
+              <div className="p-3 bg-blue-100 border-2 border-blue-300 rounded-lg mb-3">
+                <p className="text-sm text-blue-900 font-semibold mb-1">
+                  🛡️ Your travel deserves protection
+                </p>
+                <p className="text-xs text-blue-800">
+                  As a leading travel risk analysis service, we've identified these critical coverages for your journey.
+                </p>
+              </div>
               {recommendedCoverage.map((coverage, index) => (
-                <div key={index} className="flex items-center gap-2 p-2 bg-white rounded-lg border border-orange-200">
-                  <CheckCircle className="w-4 h-4 text-green-600 flex-shrink-0" />
-                  <span className="text-sm text-gray-700">
+                <div key={index} className="flex items-center gap-2 p-3 bg-white rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
+                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
+                  <span className="text-sm font-medium text-gray-800">
                     {coverageLabels[coverage] || coverage}
                   </span>
                 </div>
               ))}
-              <p className="text-xs text-gray-600 mt-3">
-                💡 Customize these recommendations to fit your exact needs
-              </p>
+              <div className="p-3 bg-yellow-50 border-2 border-yellow-200 rounded-lg mt-4">
+                <p className="text-xs text-yellow-900">
+                  ⚠️ <strong>Important:</strong> WanderSure is a risk intelligence platform. We don't sell insurance, 
+                  but based on our AI analysis, we strongly advise securing these coverages through a reputable provider.
+                </p>
+              </div>
             </div>
           ) : (
             <p className="text-sm text-gray-600">
