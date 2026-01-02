@@ -1,0 +1,154 @@
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
+
+Deno.serve(async (req) => {
+    try {
+        const base44 = createClientFromRequest(req);
+        
+        // Admin-only function for scheduled tasks
+        const user = await base44.auth.me();
+        if (user?.role !== 'admin') {
+            return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
+        }
+
+        // Get all active and booked trips
+        const allTrips = await base44.asServiceRole.entities.Trip.list();
+        const activeTrips = allTrips.filter(trip => 
+            trip.status === 'active' || trip.status === 'booked'
+        );
+
+        console.log(`Refreshing risk assessments for ${activeTrips.length} active trips`);
+
+        const results = [];
+        
+        for (const trip of activeTrips) {
+            try {
+                console.log(`Analyzing trip: ${trip.trip_name} to ${trip.destination}`);
+
+                // Get real-time data from the web
+                const riskAnalysis = await base44.asServiceRole.integrations.Core.InvokeLLM({
+                    prompt: `You are a travel risk analyst. Analyze current conditions for this trip:
+                    
+Destination: ${trip.destination}, ${trip.destination_country || ''}
+Travel Dates: ${trip.start_date} to ${trip.end_date}
+Airline: ${trip.airline || 'Not specified'}
+Flight: ${trip.flight_number || 'Not specified'}
+
+Provide a comprehensive real-time risk assessment based on:
+- Current flight status and delays for this airline/route
+- Live weather conditions and forecasts
+- Recent crime statistics and safety incidents
+- Political stability and civil unrest
+- Health advisories and disease outbreaks
+- Current travel restrictions or advisories
+
+Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
+                    add_context_from_internet: true,
+                    response_json_schema: {
+                        type: "object",
+                        properties: {
+                            overall_score: { type: "number" },
+                            flight_delay_risk: { type: "number" },
+                            weather_risk: { type: "number" },
+                            crime_risk: { type: "number" },
+                            political_risk: { type: "number" },
+                            health_risk: { type: "number" },
+                            disruption_risk: { type: "number" },
+                            summary: { type: "string" },
+                            critical_alerts: {
+                                type: "array",
+                                items: { type: "string" }
+                            },
+                            changes_from_previous: { type: "string" }
+                        }
+                    }
+                });
+
+                // Compare with previous assessment
+                const previousScore = trip.risk_assessment?.overall_score || 0;
+                const newScore = riskAnalysis.overall_score;
+                const scoreDifference = newScore - previousScore;
+                
+                // Update trip with new risk assessment
+                await base44.asServiceRole.entities.Trip.update(trip.id, {
+                    risk_assessment: {
+                        overall_score: riskAnalysis.overall_score,
+                        flight_delay_risk: riskAnalysis.flight_delay_risk,
+                        weather_risk: riskAnalysis.weather_risk,
+                        crime_risk: riskAnalysis.crime_risk,
+                        political_risk: riskAnalysis.political_risk,
+                        health_risk: riskAnalysis.health_risk,
+                        disruption_risk: riskAnalysis.disruption_risk,
+                        last_updated: new Date().toISOString()
+                    }
+                });
+
+                // Send alert if risk increased significantly (>15 points) and user has premium
+                if (scoreDifference > 15) {
+                    const preferences = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
+                        user_email: trip.created_by
+                    });
+
+                    if (preferences.length > 0 && preferences[0].premium_subscription && preferences[0].email_enabled) {
+                        await base44.asServiceRole.integrations.Core.SendEmail({
+                            from_name: "WanderSure Alerts",
+                            to: trip.created_by,
+                            subject: `⚠️ Risk Alert: ${trip.trip_name}`,
+                            body: `
+<h2>Travel Risk Alert</h2>
+<p>We've detected significant changes in travel conditions for your upcoming trip:</p>
+
+<h3>${trip.trip_name}</h3>
+<p><strong>Destination:</strong> ${trip.destination}</p>
+<p><strong>Dates:</strong> ${trip.start_date} to ${trip.end_date}</p>
+
+<p><strong>Risk Level:</strong> ${previousScore} → ${newScore} (+${scoreDifference} points)</p>
+
+<h4>Summary:</h4>
+<p>${riskAnalysis.summary}</p>
+
+${riskAnalysis.critical_alerts?.length > 0 ? `
+<h4>Critical Alerts:</h4>
+<ul>
+${riskAnalysis.critical_alerts.map(alert => `<li>${alert}</li>`).join('\n')}
+</ul>
+` : ''}
+
+<p><a href="${req.headers.get('origin')}/TripDetail?id=${trip.id}">View Trip Details</a></p>
+
+<p style="color: #666; font-size: 12px;">This is a premium alert. Manage your alert settings in the WanderSure app.</p>
+                            `
+                        });
+
+                        console.log(`Sent risk alert to ${trip.created_by} for trip ${trip.id}`);
+                    }
+                }
+
+                results.push({
+                    trip_id: trip.id,
+                    trip_name: trip.trip_name,
+                    previous_score: previousScore,
+                    new_score: newScore,
+                    change: scoreDifference,
+                    alert_sent: scoreDifference > 15
+                });
+
+            } catch (error) {
+                console.error(`Error analyzing trip ${trip.id}:`, error);
+                results.push({
+                    trip_id: trip.id,
+                    error: error.message
+                });
+            }
+        }
+
+        return Response.json({
+            success: true,
+            trips_analyzed: activeTrips.length,
+            results: results
+        });
+
+    } catch (error) {
+        console.error('Risk refresh error:', error);
+        return Response.json({ error: error.message }, { status: 500 });
+    }
+});
