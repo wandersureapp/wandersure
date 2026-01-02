@@ -35,11 +35,17 @@ Flight: ${trip.flight_number || 'Not specified'}
 
 Provide a comprehensive real-time risk assessment based on:
 - Current flight status and delays for this airline/route
+- Live TSA wait times at departure airport
+- Airport website updates, closures, or critical notices
+- Traffic conditions to/from the airport
+- Airport parking availability and shuttle status
 - Live weather conditions and forecasts
-- Recent crime statistics and safety incidents
+- Recent crime statistics and safety incidents at destination
 - Political stability and civil unrest
 - Health advisories and disease outbreaks
 - Current travel restrictions or advisories
+
+Check official airport websites, TSA.gov, and local news for the most current information.
 
 Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                     add_context_from_internet: true,
@@ -53,6 +59,15 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                             political_risk: { type: "number" },
                             health_risk: { type: "number" },
                             disruption_risk: { type: "number" },
+                            airport_status: { 
+                                type: "object",
+                                properties: {
+                                    tsa_wait_time: { type: "string" },
+                                    critical_updates: { type: "array", items: { type: "string" } },
+                                    traffic_status: { type: "string" },
+                                    parking_availability: { type: "string" }
+                                }
+                            },
                             summary: { type: "string" },
                             critical_alerts: {
                                 type: "array",
@@ -78,6 +93,7 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                         political_risk: riskAnalysis.political_risk,
                         health_risk: riskAnalysis.health_risk,
                         disruption_risk: riskAnalysis.disruption_risk,
+                        airport_status: riskAnalysis.airport_status,
                         last_updated: new Date().toISOString()
                     }
                 });
@@ -105,6 +121,16 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
 
 <h4>Summary:</h4>
 <p>${riskAnalysis.summary}</p>
+
+${riskAnalysis.airport_status ? `
+<h4>Airport Intelligence:</h4>
+<ul>
+${riskAnalysis.airport_status.tsa_wait_time ? `<li><strong>TSA Wait:</strong> ${riskAnalysis.airport_status.tsa_wait_time}</li>` : ''}
+${riskAnalysis.airport_status.traffic_status ? `<li><strong>Traffic:</strong> ${riskAnalysis.airport_status.traffic_status}</li>` : ''}
+${riskAnalysis.airport_status.parking_availability ? `<li><strong>Parking:</strong> ${riskAnalysis.airport_status.parking_availability}</li>` : ''}
+${riskAnalysis.airport_status.critical_updates?.length > 0 ? riskAnalysis.airport_status.critical_updates.map(update => `<li>${update}</li>`).join('\n') : ''}
+</ul>
+` : ''}
 
 ${riskAnalysis.critical_alerts?.length > 0 ? `
 <h4>Critical Alerts:</h4>
