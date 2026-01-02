@@ -1,6 +1,6 @@
 import React from "react";
 import { base44 } from "@/api/base44Client";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Shield, Sparkles, Bell, Brain, CheckCircle, ArrowRight } from "lucide-react";
@@ -8,20 +8,14 @@ import { motion } from "framer-motion";
 
 export default function Home() {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = React.useState(false);
 
-  React.useEffect(() => {
-    base44.auth.isAuthenticated().then(auth => {
-      if (auth) {
-        navigate(createPageUrl("Dashboard"));
-      } else {
-        setIsAuthenticated(false);
-      }
-    });
-  }, [navigate]);
-
-  const handleLogin = () => {
-    base44.auth.redirectToLogin(createPageUrl("Dashboard"));
+  const handleGetStarted = async () => {
+    const isAuth = await base44.auth.isAuthenticated();
+    if (isAuth) {
+      navigate(createPageUrl("Dashboard"));
+    } else {
+      base44.auth.redirectToLogin(createPageUrl("Dashboard"));
+    }
   };
 
   return (
@@ -72,28 +66,35 @@ export default function Home() {
                 <span className="text-yellow-900 font-bold text-lg">AI-Powered Travel Intelligence</span>
               </div>
 
-              <p className="text-2xl md:text-3xl text-blue-100 mb-12 max-w-3xl mx-auto leading-relaxed">
+              <p className="text-2xl md:text-3xl text-blue-100 mb-4 max-w-3xl mx-auto leading-relaxed">
                 Real-time flight tracking, smart alerts, and AI risk analysis. 
                 Travel confidently with instant updates that matter.
               </p>
+              
+              <p className="text-lg text-blue-200 mb-12 max-w-2xl mx-auto">
+                WanderSure monitors your trips 24/7, delivering critical alerts for flight delays, weather changes, and safety updates. 
+                Our AI analyzes travel risks and recommends personalized insurance coverage to protect your journey.
+              </p>
 
               {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-16">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
                 <Button 
                   size="lg" 
-                  onClick={handleLogin}
+                  onClick={handleGetStarted}
                   className="bg-white text-blue-600 hover:bg-blue-50 text-xl px-12 py-8 shadow-2xl group"
                 >
                   Get Started Free
                   <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform" />
                 </Button>
-                <Button 
-                  size="lg" 
-                  variant="outline"
-                  className="border-3 border-white text-white hover:bg-white/10 text-xl px-12 py-8 backdrop-blur-sm"
-                >
-                  Watch Demo
-                </Button>
+                <Link to={createPageUrl("Legal")}>
+                  <Button 
+                    size="lg" 
+                    variant="outline"
+                    className="border-3 border-white text-white hover:bg-white/10 text-xl px-12 py-8 backdrop-blur-sm"
+                  >
+                    Privacy Policy
+                  </Button>
+                </Link>
               </div>
 
               {/* Feature Highlights */}
@@ -252,17 +253,22 @@ export default function Home() {
           <h2 className="text-5xl md:text-6xl font-bold text-white mb-6">
             Ready to Travel Smarter?
           </h2>
-          <p className="text-2xl text-blue-100 mb-12">
+          <p className="text-2xl text-blue-100 mb-8">
             Join thousands of travelers who never miss an update
           </p>
-          <Button 
-            size="lg"
-            onClick={handleLogin}
-            className="bg-white text-blue-600 hover:bg-blue-50 text-2xl px-16 py-10 shadow-2xl group"
-          >
-            Start Free Today
-            <ArrowRight className="w-7 h-7 ml-4 group-hover:translate-x-2 transition-transform" />
-          </Button>
+          <div className="flex flex-col items-center gap-4">
+            <Button 
+              size="lg"
+              onClick={handleGetStarted}
+              className="bg-white text-blue-600 hover:bg-blue-50 text-2xl px-16 py-10 shadow-2xl group"
+            >
+              Start Free Today
+              <ArrowRight className="w-7 h-7 ml-4 group-hover:translate-x-2 transition-transform" />
+            </Button>
+            <Link to={createPageUrl("Legal")} className="text-blue-200 hover:text-white underline">
+              Privacy Policy & Terms of Service
+            </Link>
+          </div>
         </div>
       </div>
     </div>
