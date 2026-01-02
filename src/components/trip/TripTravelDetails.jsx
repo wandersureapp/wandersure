@@ -164,6 +164,15 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                   ))}
                 </SelectContent>
               </Select>
+              <a 
+                href="https://www.kqzyfj.com/click-101622714-17112391" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1 mt-2"
+              >
+                Search for flights
+              </a>
+              <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
             </div>
             <div>
               <Label htmlFor="flight_number">Flight Number</Label>
