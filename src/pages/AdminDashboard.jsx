@@ -1,0 +1,341 @@
+import React from "react";
+import { base44 } from "@/api/base44Client";
+import { useQuery } from "@tanstack/react-query";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { 
+  Users, 
+  PlaneTakeoff, 
+  DollarSign, 
+  TrendingUp,
+  Calendar,
+  Shield,
+  Activity,
+  UserPlus
+} from "lucide-react";
+import { format, subDays, isAfter } from "date-fns";
+import AuthGuard from "../components/AuthGuard";
+
+export default function AdminDashboard() {
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
+
+  const { data: users = [] } = useQuery({
+    queryKey: ['admin-users'],
+    queryFn: () => base44.entities.User.list('-created_date'),
+    enabled: user?.role === 'admin'
+  });
+
+  const { data: trips = [] } = useQuery({
+    queryKey: ['admin-trips'],
+    queryFn: () => base44.entities.Trip.list('-created_date'),
+    enabled: user?.role === 'admin'
+  });
+
+  const { data: purchases = [] } = useQuery({
+    queryKey: ['admin-purchases'],
+    queryFn: () => base44.entities.ChecklistPurchase.list('-created_date'),
+    enabled: user?.role === 'admin'
+  });
+
+  const { data: recommendations = [] } = useQuery({
+    queryKey: ['admin-recommendations'],
+    queryFn: () => base44.entities.Recommendation.list('-created_date'),
+    enabled: user?.role === 'admin'
+  });
+
+  if (!user || user.role !== 'admin') {
+    return (
+      <AuthGuard>
+        <div className="min-h-screen flex items-center justify-center">
+          <Card className="max-w-md">
+            <CardContent className="p-8 text-center">
+              <Shield className="w-16 h-16 mx-auto mb-4 text-gray-400" />
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">Access Denied</h2>
+              <p className="text-gray-600">This page is only available to administrators.</p>
+            </CardContent>
+          </Card>
+        </div>
+      </AuthGuard>
+    );
+  }
+
+  // Calculate metrics
+  const last7Days = subDays(new Date(), 7);
+  const last30Days = subDays(new Date(), 30);
+
+  const newUsersLast7Days = users.filter(u => 
+    isAfter(new Date(u.created_date), last7Days)
+  ).length;
+
+  const newUsersLast30Days = users.filter(u => 
+    isAfter(new Date(u.created_date), last30Days)
+  ).length;
+
+  const tripsLast7Days = trips.filter(t => 
+    isAfter(new Date(t.created_date), last7Days)
+  ).length;
+
+  const tripsLast30Days = trips.filter(t => 
+    isAfter(new Date(t.created_date), last30Days)
+  ).length;
+
+  const totalRevenue = purchases.reduce((sum, p) => sum + (p.amount_paid || 0), 0);
+
+  const activeTrips = trips.filter(t => 
+    t.status === 'active' || t.status === 'booked'
+  ).length;
+
+  const highRiskTrips = trips.filter(t => 
+    t.risk_assessment?.overall_score > 60
+  ).length;
+
+  const recentUsers = users.slice(0, 10);
+  const recentTrips = trips.slice(0, 10);
+  const recentPurchases = purchases.slice(0, 10);
+
+  return (
+    <AuthGuard>
+      <div className="min-h-screen py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Header */}
+          <div className="mb-8">
+            <div className="flex items-center gap-3 mb-2">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-blue-600 rounded-xl flex items-center justify-center">
+                <Activity className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+                <p className="text-gray-600">App performance and user analytics</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Key Metrics */}
+          <div className="grid md:grid-cols-4 gap-6 mb-8">
+            <Card className="border-none shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total Users</p>
+                    <p className="text-3xl font-bold text-gray-900">{users.length}</p>
+                    <p className="text-xs text-green-600 mt-1">
+                      +{newUsersLast7Days} last 7 days
+                    </p>
+                  </div>
+                  <Users className="w-10 h-10 text-blue-600" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Total Trips</p>
+                    <p className="text-3xl font-bold text-gray-900">{trips.length}</p>
+                    <p className="text-xs text-green-600 mt-1">
+                      +{tripsLast7Days} last 7 days
+                    </p>
+                  </div>
+                  <PlaneTakeoff className="w-10 h-10 text-cyan-600" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Revenue</p>
+                    <p className="text-3xl font-bold text-gray-900">
+                      ${totalRevenue.toFixed(2)}
+                    </p>
+                    <p className="text-xs text-gray-600 mt-1">
+                      {purchases.length} purchases
+                    </p>
+                  </div>
+                  <DollarSign className="w-10 h-10 text-green-600" />
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg">
+              <CardContent className="p-6">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Active Trips</p>
+                    <p className="text-3xl font-bold text-gray-900">{activeTrips}</p>
+                    <p className="text-xs text-red-600 mt-1">
+                      {highRiskTrips} high risk
+                    </p>
+                  </div>
+                  <TrendingUp className="w-10 h-10 text-purple-600" />
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* 30-Day Growth */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-blue-600" />
+                  30-Day User Growth
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-blue-50 rounded-lg">
+                    <span className="text-sm text-gray-700">New Users</span>
+                    <Badge className="bg-blue-600">{newUsersLast30Days}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-700">Total Users</span>
+                    <Badge variant="outline">{users.length}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-700">Growth Rate</span>
+                    <Badge variant="outline">
+                      {users.length > 0 ? ((newUsersLast30Days / users.length) * 100).toFixed(1) : 0}%
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <PlaneTakeoff className="w-5 h-5 text-cyan-600" />
+                  30-Day Trip Activity
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between p-3 bg-cyan-50 rounded-lg">
+                    <span className="text-sm text-gray-700">New Trips</span>
+                    <Badge className="bg-cyan-600">{tripsLast30Days}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-700">Active Trips</span>
+                    <Badge variant="outline">{activeTrips}</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <span className="text-sm text-gray-700">Avg per User</span>
+                    <Badge variant="outline">
+                      {users.length > 0 ? (trips.length / users.length).toFixed(1) : 0}
+                    </Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Recent Activity */}
+          <div className="grid lg:grid-cols-3 gap-6">
+            {/* Recent Users */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg">Recent Signups</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {recentUsers.map(u => (
+                    <div key={u.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
+                          {u.full_name || 'User'}
+                        </p>
+                        <p className="text-xs text-gray-500 truncate">{u.email}</p>
+                      </div>
+                      <span className="text-xs text-gray-400 ml-2">
+                        {format(new Date(u.created_date), "MMM d")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Trips */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg">Recent Trips</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {recentTrips.map(t => (
+                    <div key={t.id} className="p-2 rounded-lg hover:bg-gray-50">
+                      <p className="text-sm font-medium text-gray-900 truncate">
+                        {t.trip_name}
+                      </p>
+                      <p className="text-xs text-gray-500">{t.destination}</p>
+                      <div className="flex items-center gap-2 mt-1">
+                        <Badge variant="outline" className="text-xs">
+                          {t.status}
+                        </Badge>
+                        {t.risk_assessment?.overall_score && (
+                          <Badge 
+                            className={`text-xs ${
+                              t.risk_assessment.overall_score > 60 
+                                ? 'bg-red-100 text-red-700' 
+                                : t.risk_assessment.overall_score > 30 
+                                ? 'bg-yellow-100 text-yellow-700'
+                                : 'bg-green-100 text-green-700'
+                            }`}
+                          >
+                            Risk: {t.risk_assessment.overall_score}
+                          </Badge>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Recent Purchases */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-lg">Recent Purchases</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-2">
+                  {recentPurchases.length > 0 ? (
+                    recentPurchases.map(p => (
+                      <div key={p.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 truncate">
+                            {p.product_type?.replace(/_/g, ' ')}
+                          </p>
+                          <p className="text-xs text-gray-500 truncate">{p.user_email}</p>
+                        </div>
+                        <div className="text-right ml-2">
+                          <p className="text-sm font-bold text-green-600">
+                            ${p.amount_paid?.toFixed(2)}
+                          </p>
+                          <p className="text-xs text-gray-400">
+                            {format(new Date(p.created_date), "MMM d")}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-sm text-gray-500 text-center py-4">
+                      No purchases yet
+                    </p>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </AuthGuard>
+  );
+}
