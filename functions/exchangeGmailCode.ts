@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
         }
 
         const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID');
-        const clientSecret = Deno.env.get('google_oauth_client_secret');
+        const clientSecret = Deno.env.get('GOOGLE_OAUTH_CLIENT_SECRET');
         const redirectUri = `${new URL(req.url).origin}/gmail-callback`;
 
         // Exchange code for tokens
