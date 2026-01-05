@@ -70,6 +70,24 @@ export default function InsuranceRecommendations({ tripId, recommendedCoverage, 
         </CardContent>
       </Card>
 
+      {/* World Nomads Travel Insurance */}
+      <Card className="border-none shadow-lg overflow-hidden">
+        <div className="relative h-24 bg-gradient-to-r from-orange-500 to-yellow-500">
+          <div className="absolute inset-0 flex items-center px-6">
+            <Shield className="w-8 h-8 text-white mr-3" />
+            <div>
+              <h3 className="text-lg font-bold text-white">Travel Insurance</h3>
+              <p className="text-sm text-white/90">Get coverage from World Nomads</p>
+            </div>
+          </div>
+        </div>
+        <CardContent className="p-6 text-center">
+          <a href="https://www.dpbolvw.net/click-101622714-15379546" target="_blank" rel="noopener noreferrer">
+            <img src="https://www.awltovhc.com/image-101622714-15379546" width="250" height="250" alt="World Nomads Travel Insurance" border="0" className="mx-auto" />
+          </a>
+        </CardContent>
+      </Card>
+
       {/* Recommended Coverage */}
       <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
         <CardHeader>
