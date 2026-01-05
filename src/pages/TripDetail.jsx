@@ -16,7 +16,8 @@ import {
   Hotel,
   Car,
   Activity,
-  ListChecks
+  ListChecks,
+  Bell
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
