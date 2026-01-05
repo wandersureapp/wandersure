@@ -95,10 +95,21 @@ export default function NotificationSettings() {
     saveMutation.mutate(formData);
   };
 
-  const handleUpgrade = async (plan) => {
-    const priceId = plan === 'monthly' 
-        ? 'price_1SmKSbDAiWHJZCc7EpCFEE0K' 
-        : 'price_1SmKV1DAiWHJZCc7BJcVEX2Z';
+  const handleUpgrade = async (tier) => {
+    const priceMapping = {
+      'explorer_monthly': 'price_1SmKSbDAiWHJZCc7EpCFEE0K',
+      'explorer_yearly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ',
+      'globetrotter_monthly': 'price_1SmKV1DAiWHJZCc7BJcVEX2Z',
+      'globetrotter_yearly': 'price_1SmKXNDAiWHJZCc7GBL8h8QU'
+    };
+    
+    const priceId = priceMapping[tier];
+    const plan = tier.includes('globetrotter') ? 'elite' : 'premium';
+    
+    if (!priceId) {
+      alert('Invalid plan selected');
+      return;
+    }
     
     try {
       const response = await createCheckoutSession({ 
@@ -227,7 +238,7 @@ export default function NotificationSettings() {
                   <div className="flex gap-2">
                     <Button 
                       className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                      onClick={() => handleUpgrade('monthly')}
+                      onClick={() => handleUpgrade('explorer_monthly')}
                     >
                       <CreditCard className="w-4 h-4 mr-2" />
                       Monthly
@@ -235,7 +246,7 @@ export default function NotificationSettings() {
                     <Button 
                       variant="outline"
                       className="flex-1 border-2 border-yellow-500 text-yellow-700 hover:bg-yellow-50"
-                      onClick={() => handleUpgrade('yearly')}
+                      onClick={() => handleUpgrade('explorer_yearly')}
                     >
                       Yearly (Save 20%)
                     </Button>
