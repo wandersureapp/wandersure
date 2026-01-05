@@ -7,8 +7,13 @@ import { Shield, Sparkles, Bell, Brain, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 export default function Home() {
-  const handleLoginToPortal = () => {
-    base44.auth.redirectToLogin(createPageUrl("Dashboard"));
+  const handleLoginToPortal = async () => {
+    const isAuth = await base44.auth.isAuthenticated();
+    if (isAuth) {
+      window.location.href = createPageUrl("Dashboard");
+    } else {
+      base44.auth.redirectToLogin(createPageUrl("Dashboard"));
+    }
   };
 
   return (

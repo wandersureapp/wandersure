@@ -1,3 +1,4 @@
+import AdminDashboard from './pages/AdminDashboard';
 import Alerts from './pages/Alerts';
 import BrowsePlans from './pages/BrowsePlans';
 import BudgetPlanner from './pages/BudgetPlanner';
@@ -21,11 +22,11 @@ import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import AdminDashboard from './pages/AdminDashboard';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "AdminDashboard": AdminDashboard,
     "Alerts": Alerts,
     "BrowsePlans": BrowsePlans,
     "BudgetPlanner": BudgetPlanner,
@@ -49,7 +50,6 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "AdminDashboard": AdminDashboard,
 }
 
 export const pagesConfig = {
