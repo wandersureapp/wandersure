@@ -116,10 +116,20 @@ export default function NotificationSettings() {
         priceId, 
         plan 
       });
-      window.location.href = response.data.url;
+      
+      // Handle both response.data.url and response.url patterns
+      const checkoutUrl = response.data?.url || response.url;
+      
+      if (!checkoutUrl) {
+        console.error('No checkout URL in response:', response);
+        alert('Failed to create checkout session. Please try again.');
+        return;
+      }
+      
+      window.location.href = checkoutUrl;
     } catch (error) {
       console.error('Payment error:', error);
-      alert('Payment setup failed. Please try again.');
+      alert(`Payment setup failed: ${error.message || 'Please try again.'}`);
     }
   };
 
