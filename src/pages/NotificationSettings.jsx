@@ -97,10 +97,20 @@ export default function NotificationSettings() {
     saveMutation.mutate(formData);
   };
 
-  const handleUpgrade = async (plan) => {
-    const priceId = plan === 'monthly' 
-        ? 'price_1SkuAWDAiWHJZCc7cYYkBp09' 
-        : 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ';
+  const handleUpgrade = async (tier) => {
+    // Map tier to Stripe price IDs
+    const priceMapping = {
+      'premium_monthly': 'price_1SkuAWDAiWHJZCc7cYYkBp09',
+      'elite_monthly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ'
+    };
+    
+    const priceId = priceMapping[tier];
+    const plan = tier.includes('elite') ? 'elite' : 'premium';
+    
+    if (!priceId) {
+      alert('Invalid plan selected');
+      return;
+    }
     
     try {
       const response = await createCheckoutSession({ 
