@@ -1,5 +1,4 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import { sendPushNotification } from '@/functions/sendPushNotification';
 
 Deno.serve(async (req) => {
   try {
@@ -63,18 +62,6 @@ Deno.serve(async (req) => {
           });
         }
 
-        // Send push notification
-        try {
-          await base44.asServiceRole.functions.invoke('sendPushNotification', {
-            userEmail: trip.created_by,
-            title: '⚠️ High Risk Alert',
-            body: message,
-            data: { tripId: trip.id, type: 'risk_alert' }
-          });
-        } catch (e) {
-          // Push notification failed, but continue
-        }
-
         alertsSent.push({ tripId: trip.id, tripName: trip.trip_name, userEmail: trip.created_by });
       }
 
@@ -97,17 +84,6 @@ Deno.serve(async (req) => {
               <p><a href="${Deno.env.get('APP_URL') || 'https://your-app-url.com'}/TripDetail?id=${trip.id}">View Details</a></p>
             `
           });
-        }
-
-        try {
-          await base44.asServiceRole.functions.invoke('sendPushNotification', {
-            userEmail: trip.created_by,
-            title: '✈️ Flight Delay Risk',
-            body: message,
-            data: { tripId: trip.id, type: 'flight_alert' }
-          });
-        } catch (e) {
-          // Continue on error
         }
 
         alertsSent.push({ tripId: trip.id, type: 'flight_delay', userEmail: trip.created_by });
