@@ -101,7 +101,9 @@ export default function NotificationSettings() {
     // Map tier to Stripe price IDs
     const priceMapping = {
       'premium_monthly': 'price_1SkuAWDAiWHJZCc7cYYkBp09',
-      'elite_monthly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ'
+      'premium_yearly': 'price_PREMIUM_YEARLY_ID', // Replace with actual Stripe price ID
+      'elite_monthly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ',
+      'elite_yearly': 'price_ELITE_YEARLY_ID' // Replace with actual Stripe price ID
     };
     
     const priceId = priceMapping[tier];
@@ -227,13 +229,23 @@ export default function NotificationSettings() {
                 </li>
               </ul>
               {formData.subscription_tier !== 'premium' && formData.subscription_tier !== 'elite' && (
-                <Button 
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
-                  onClick={() => handleUpgrade('premium_monthly')}
-                >
-                  Upgrade
-                </Button>
+                <div className="space-y-2">
+                  <Button 
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
+                    onClick={() => handleUpgrade('premium_monthly')}
+                  >
+                    $9.99/month
+                  </Button>
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
+                    onClick={() => handleUpgrade('premium_yearly')}
+                  >
+                    $94.99/year <Badge className="ml-2 bg-green-600 text-white text-xs">Save 20%</Badge>
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>
@@ -274,13 +286,23 @@ export default function NotificationSettings() {
                 </li>
               </ul>
               {formData.subscription_tier !== 'elite' && (
-                <Button 
-                  size="sm"
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
-                  onClick={() => handleUpgrade('elite_monthly')}
-                >
-                  Upgrade
-                </Button>
+                <div className="space-y-2">
+                  <Button 
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
+                    onClick={() => handleUpgrade('elite_monthly')}
+                  >
+                    $19.99/month
+                  </Button>
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                    onClick={() => handleUpgrade('elite_yearly')}
+                  >
+                    $180.00/year <Badge className="ml-2 bg-green-600 text-white text-xs">Save 25%</Badge>
+                  </Button>
+                </div>
               )}
             </CardContent>
           </Card>
