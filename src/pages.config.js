@@ -23,6 +23,7 @@ import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
 import HowAlertsWork from './pages/HowAlertsWork';
+import AlertMetricsAdmin from './pages/AlertMetricsAdmin';
 import __Layout from './Layout.jsx';
 
 
@@ -52,6 +53,7 @@ export const PAGES = {
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
     "HowAlertsWork": HowAlertsWork,
+    "AlertMetricsAdmin": AlertMetricsAdmin,
 }
 
 export const pagesConfig = {
