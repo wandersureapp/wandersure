@@ -129,7 +129,7 @@ export default function NotificationSettings() {
     { icon: Cloud, label: "Severe weather alerts" }
   ];
 
-  const premiumFeatures = [
+  const explorerFeatures = [
     { icon: Plane, label: "Real-time flight delays & gate changes" },
     { icon: AlertTriangle, label: "Live TSA wait times & airport traffic" },
     { icon: Cloud, label: "Hour-by-hour weather tracking" },
@@ -138,8 +138,14 @@ export default function NotificationSettings() {
     { icon: Car, label: "Rental car availability alerts" },
     { icon: Ship, label: "Cruise departure & port updates" },
     { icon: Train, label: "Rail delays & platform changes" },
-    { icon: CreditCard, label: "Insurance price drop alerts" },
-    { icon: Smartphone, label: "SMS alerts included" }
+    { icon: CreditCard, label: "Insurance price drop alerts" }
+  ];
+
+  const globetrotterFeatures = [
+    { icon: Smartphone, label: "SMS alerts included" },
+    { icon: Sparkles, label: "Escalation priority" },
+    { icon: Shield, label: "Group coordination" },
+    { icon: CheckCircle, label: "24/7 support" }
   ];
 
   if (isLoading || !user) {
@@ -162,34 +168,32 @@ export default function NotificationSettings() {
           <p className="text-xl text-gray-600">Real-time monitoring and intelligent notifications</p>
         </div>
 
-        {/* Free vs Premium Comparison */}
-        <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {/* Three-Tier Comparison */}
+        <div className="grid lg:grid-cols-3 gap-6 mb-8">
           {/* Free Tier */}
           <Card className="border-2 border-gray-200">
             <CardHeader className="bg-gray-50">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl">Basic Alerts</CardTitle>
+                <CardTitle className="text-xl">Basic Alerts</CardTitle>
                 <Badge className="bg-gray-200 text-gray-800">FREE</Badge>
               </div>
-              <p className="text-gray-600 text-sm mt-2">Essential notifications for every traveler</p>
+              <p className="text-gray-600 text-xs mt-2">Essential notifications for every traveler</p>
             </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-4">
+            <CardContent className="p-4">
+              <div className="space-y-3 mb-6">
                 {freeFeatures.map((feature, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Check className="w-4 h-4 text-green-600" />
-                    </div>
-                    <div className="flex-1">
-                      <feature.icon className="w-4 h-4 text-gray-500 mb-1" />
-                      <p className="text-sm text-gray-700">{feature.label}</p>
+                  <div key={idx} className="flex items-start gap-2">
+                    <Check className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-center gap-2">
+                      <feature.icon className="w-3 h-3 text-gray-500" />
+                      <p className="text-xs text-gray-700">{feature.label}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              {!formData.premium_subscription && (
-                <div className="mt-6 pt-6 border-t">
-                  <p className="text-sm text-gray-600 text-center">
+              {formData.subscription_tier === 'free' && (
+                <div className="pt-4 border-t">
+                  <p className="text-xs text-gray-600 text-center">
                     You're currently on Basic Alerts
                   </p>
                 </div>
@@ -197,82 +201,122 @@ export default function NotificationSettings() {
             </CardContent>
           </Card>
 
-          {/* Premium Tier */}
-          <Card className="border-2 border-yellow-400 bg-gradient-to-br from-yellow-50 to-orange-50 relative overflow-hidden">
-            <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-300/30 rounded-full -mr-16 -mt-16"></div>
-            <CardHeader className="relative">
+          {/* Explorer Tier */}
+          <Card className="border-2 border-blue-400 bg-gradient-to-br from-blue-50 to-purple-50">
+            <CardHeader className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-2xl flex items-center gap-2">
-                  <Crown className="w-6 h-6 text-yellow-600" />
-                  Premium Intelligence
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Sparkles className="w-5 h-5" />
+                  Explorer
                 </CardTitle>
-                {formData.premium_subscription ? (
-                  <Badge className="bg-green-600 text-white">ACTIVE</Badge>
+                {formData.subscription_tier === 'premium' ? (
+                  <Badge className="bg-green-600">ACTIVE</Badge>
                 ) : (
-                  <Badge className="bg-yellow-600 text-white">UPGRADE</Badge>
+                  <Badge className="bg-white text-blue-600">$9.99/mo</Badge>
                 )}
               </div>
-              <p className="text-gray-700 text-sm mt-2">Complete real-time travel intelligence</p>
             </CardHeader>
-            <CardContent className="p-6 relative">
-              <div className="space-y-3 mb-6">
-                {premiumFeatures.map((feature, idx) => (
-                  <div key={idx} className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center flex-shrink-0">
-                      <Sparkles className="w-4 h-4 text-yellow-600" />
-                    </div>
-                    <div className="flex-1">
-                      <feature.icon className="w-4 h-4 text-gray-600 mb-1" />
-                      <p className="text-sm text-gray-800 font-medium">{feature.label}</p>
+            <CardContent className="p-4">
+              <p className="text-xs text-gray-600 mb-3">Everything in Basic, plus:</p>
+              <div className="space-y-2 mb-4">
+                {explorerFeatures.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-2">
+                    <Sparkles className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-center gap-2">
+                      <feature.icon className="w-3 h-3 text-gray-600" />
+                      <p className="text-xs text-gray-800">{feature.label}</p>
                     </div>
                   </div>
                 ))}
               </div>
+              {formData.subscription_tier !== 'premium' && formData.subscription_tier !== 'elite' && (
+                <div className="space-y-2">
+                  <Button 
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600"
+                    onClick={() => handleUpgrade('explorer_monthly')}
+                  >
+                    $9.99/month
+                  </Button>
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="w-full border-blue-600 text-blue-600 hover:bg-blue-50"
+                    onClick={() => handleUpgrade('explorer_yearly')}
+                  >
+                    $94.99/year <Badge className="ml-2 bg-green-600 text-white text-xs">Save 20%</Badge>
+                  </Button>
+                </div>
+              )}
+            </CardContent>
+          </Card>
 
-              {!formData.premium_subscription && (
-                <div className="mt-6 pt-6 border-t border-yellow-200">
-                  <div className="text-center mb-4">
-                    <p className="text-3xl font-bold text-gray-900">$9.99<span className="text-lg text-gray-600">/mo</span></p>
-                    <p className="text-sm text-gray-600">or $94.99/year (save 20%)</p>
+          {/* Globetrotter Tier */}
+          <Card className="border-2 border-purple-400 bg-gradient-to-br from-purple-50 to-pink-50">
+            <CardHeader className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-xl flex items-center gap-2">
+                  <Crown className="w-5 h-5" />
+                  Globetrotter
+                </CardTitle>
+                {formData.subscription_tier === 'elite' ? (
+                  <Badge className="bg-green-600">ACTIVE</Badge>
+                ) : (
+                  <Badge className="bg-white text-purple-600">$19.99/mo</Badge>
+                )}
+              </div>
+            </CardHeader>
+            <CardContent className="p-4">
+              <p className="text-xs text-gray-600 mb-3">Everything in Explorer, plus:</p>
+              <div className="space-y-2 mb-4">
+                {globetrotterFeatures.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-2">
+                    <Crown className="w-4 h-4 text-purple-600 mt-0.5 flex-shrink-0" />
+                    <div className="flex items-center gap-2">
+                      <feature.icon className="w-3 h-3 text-gray-600" />
+                      <p className="text-xs text-gray-800 font-medium">{feature.label}</p>
+                    </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button 
-                      className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600"
-                      onClick={() => handleUpgrade('explorer_monthly')}
-                    >
-                      <CreditCard className="w-4 h-4 mr-2" />
-                      Monthly
-                    </Button>
-                    <Button 
-                      variant="outline"
-                      className="flex-1 border-2 border-yellow-500 text-yellow-700 hover:bg-yellow-50"
-                      onClick={() => handleUpgrade('explorer_yearly')}
-                    >
-                      Yearly (Save 20%)
-                    </Button>
-                  </div>
-                  <p className="text-xs text-gray-500 mt-3 text-center">
-                    💳 Secure payment via Stripe • Cancel anytime
-                  </p>
+                ))}
+              </div>
+              {formData.subscription_tier !== 'elite' && (
+                <div className="space-y-2">
+                  <Button 
+                    size="sm"
+                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600"
+                    onClick={() => handleUpgrade('globetrotter_monthly')}
+                  >
+                    $19.99/month
+                  </Button>
+                  <Button 
+                    size="sm"
+                    variant="outline"
+                    className="w-full border-purple-600 text-purple-600 hover:bg-purple-50"
+                    onClick={() => handleUpgrade('globetrotter_yearly')}
+                  >
+                    $180.00/year <Badge className="ml-2 bg-green-600 text-white text-xs">Save 25%</Badge>
+                  </Button>
                 </div>
               )}
             </CardContent>
           </Card>
         </div>
 
-        {formData.premium_subscription && (
+        {(formData.subscription_tier === 'premium' || formData.subscription_tier === 'elite') && (
           <Card className="mb-6 border-2 border-green-300 bg-green-50">
             <CardContent className="p-4 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <CheckCircle className="w-6 h-6 text-green-600" />
                 <div>
-                  <p className="font-bold text-gray-900">Premium Intelligence Active</p>
+                  <p className="font-bold text-gray-900">
+                    {formData.subscription_tier === 'elite' ? 'Globetrotter Active' : 'Explorer Active'}
+                  </p>
                   <p className="text-sm text-gray-600">All real-time features unlocked</p>
                 </div>
               </div>
               <Badge className="bg-green-600 text-white">
                 <Crown className="w-3 h-3 mr-1" />
-                Premium
+                {formData.subscription_tier === 'elite' ? 'Globetrotter' : 'Explorer'}
               </Badge>
             </CardContent>
           </Card>
@@ -321,25 +365,25 @@ export default function NotificationSettings() {
               <div className="p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
-                    <Smartphone className="w-5 h-5 text-green-600" />
+                    <Smartphone className="w-5 h-5 text-purple-600" />
                     <div>
                       <p className="font-medium text-gray-900">SMS Alerts</p>
                       <p className="text-sm text-gray-600">
-                        {formData.premium_subscription ? 'Critical alerts via SMS' : 'Premium feature'}
+                        {formData.subscription_tier === 'elite' ? 'Critical alerts via SMS' : 'Globetrotter feature'}
                       </p>
                     </div>
                   </div>
-                  {!formData.premium_subscription && (
-                    <Badge className="bg-yellow-100 text-yellow-800">Premium</Badge>
+                  {formData.subscription_tier !== 'elite' && (
+                    <Badge className="bg-purple-100 text-purple-800">Globetrotter</Badge>
                   )}
-                  {formData.premium_subscription && (
+                  {formData.subscription_tier === 'elite' && (
                     <Switch
                       checked={formData.sms_enabled}
                       onCheckedChange={(checked) => setFormData({...formData, sms_enabled: checked})}
                     />
                   )}
                 </div>
-                {formData.premium_subscription && formData.sms_enabled && (
+                {formData.subscription_tier === 'elite' && formData.sms_enabled && (
                   <div>
                     <Label htmlFor="sms_number">Phone Number</Label>
                     <Input
@@ -395,14 +439,14 @@ export default function NotificationSettings() {
             </CardContent>
           </Card>
 
-          {/* Premium Alert Types */}
-          <Card className={!formData.premium_subscription ? 'opacity-60' : ''}>
+          {/* Explorer & Globetrotter Alert Types */}
+          <Card className={formData.subscription_tier === 'free' ? 'opacity-60' : ''}>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Sparkles className="w-5 h-5 text-yellow-500" />
-                Premium Intelligence Alerts
-                {!formData.premium_subscription && (
-                  <Badge className="bg-yellow-100 text-yellow-800 ml-2">Upgrade Required</Badge>
+                <Sparkles className="w-5 h-5 text-blue-500" />
+                Explorer & Globetrotter Alerts
+                {formData.subscription_tier === 'free' && (
+                  <Badge className="bg-blue-100 text-blue-800 ml-2">Upgrade Required</Badge>
                 )}
               </CardTitle>
             </CardHeader>
@@ -417,7 +461,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.flight_updates}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, flight_updates: checked}
@@ -435,7 +479,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.airport_intelligence}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, airport_intelligence: checked}
@@ -453,7 +497,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.weather_updates}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, weather_updates: checked}
@@ -471,7 +515,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.destination_safety}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, destination_safety: checked}
@@ -489,7 +533,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.hotel_updates}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, hotel_updates: checked}
@@ -507,7 +551,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.car_rental_updates}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, car_rental_updates: checked}
@@ -525,7 +569,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.cruise_updates}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, cruise_updates: checked}
@@ -543,7 +587,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.rail_updates}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, rail_updates: checked}
@@ -558,7 +602,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.insurance_recommendations}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, insurance_recommendations: checked}
@@ -573,7 +617,7 @@ export default function NotificationSettings() {
                 </div>
                 <Switch
                   checked={formData.alert_types.price_drop_alerts}
-                  disabled={!formData.premium_subscription}
+                  disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
                     alert_types: {...formData.alert_types, price_drop_alerts: checked}
