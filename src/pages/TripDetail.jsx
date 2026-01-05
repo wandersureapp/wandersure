@@ -253,15 +253,24 @@ export default function TripDetail() {
                           <p className="text-sm text-gray-700 mb-3">
                             {trip.airline} has elevated delay risk. Consider alternative flights or travel insurance.
                           </p>
-                          <a 
-                            href="https://www.kqzyfj.com/click-101622714-17112391" 
-                            target="_blank" 
-                            rel="noopener noreferrer"
-                          >
-                            <Button className="bg-blue-600 hover:bg-blue-700">
-                              ✈️ Compare Flight Options
-                            </Button>
-                          </a>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            <a 
+                              href="https://www.kqzyfj.com/click-101622714-17112391" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              <Button className="bg-blue-600 hover:bg-blue-700">
+                                ✈️ Compare Flight Options
+                              </Button>
+                            </a>
+                            <a 
+                              href="https://www.anrdoezrs.net/click-101622714-17100505" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              <img src="https://www.lduhtrp.net/image-101622714-17100505" width="320" height="50" alt="Travel Insurance" border="0" />
+                            </a>
+                          </div>
                           <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
                         </div>
                       </div>
@@ -291,11 +300,20 @@ export default function TripDetail() {
                             <Badge variant="outline" className="text-xs">🗺️ Safe Areas</Badge>
                             <Badge variant="outline" className="text-xs">🏥 Medical Info</Badge>
                           </div>
-                          <Link to={createPageUrl(`SafetyGuide?tripId=${trip.id}`)}>
-                            <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg">
-                              🛡️ Generate My Safety Guide ($4.99)
-                            </Button>
-                          </Link>
+                          <div className="flex flex-wrap gap-2 items-center">
+                            <Link to={createPageUrl(`SafetyGuide?tripId=${trip.id}`)}>
+                              <Button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 shadow-lg">
+                                🛡️ Generate My Safety Guide ($4.99)
+                              </Button>
+                            </Link>
+                            <a 
+                              href="https://www.anrdoezrs.net/click-101622714-17100505" 
+                              target="_blank" 
+                              rel="noopener noreferrer"
+                            >
+                              <img src="https://www.lduhtrp.net/image-101622714-17100505" width="320" height="50" alt="Travel Insurance from World Nomads" border="0" />
+                            </a>
+                          </div>
                         </div>
                       </div>
                     </div>
