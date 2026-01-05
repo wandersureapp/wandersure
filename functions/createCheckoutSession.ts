@@ -18,6 +18,8 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Price ID required' }, { status: 400 });
         }
 
+        console.log('Creating checkout session with:', { priceId, plan, user_email: user.email });
+
         const session = await stripe.checkout.sessions.create({
             customer_email: user.email,
             line_items: [
@@ -40,9 +42,20 @@ Deno.serve(async (req) => {
             }
         });
 
+        console.log('Checkout session created successfully:', session.id);
+
         return Response.json({ url: session.url });
     } catch (error) {
         console.error('Stripe checkout error:', error);
-        return Response.json({ error: error.message }, { status: 500 });
+        console.error('Error details:', {
+            message: error.message,
+            type: error.type,
+            code: error.code,
+            param: error.param
+        });
+        return Response.json({ 
+            error: error.message,
+            details: error.type || 'Unknown error'
+        }, { status: 500 });
     }
 });
