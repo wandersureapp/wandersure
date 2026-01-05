@@ -30,22 +30,26 @@ Deno.serve(async (req) => {
                 user_email: userEmail
             });
 
+            const plan = session.metadata.plan || 'explorer';
+            
             if (prefs.length > 0) {
                 await base44.asServiceRole.entities.UserNotificationPreferences.update(prefs[0].id, {
                     premium_subscription: true,
-                    sms_enabled: true
+                    subscription_tier: plan === 'elite' ? 'elite' : 'premium',
+                    sms_enabled: plan === 'elite'
                 });
             } else {
                 await base44.asServiceRole.entities.UserNotificationPreferences.create({
                     user_email: userEmail,
                     premium_subscription: true,
-                    sms_enabled: true,
+                    subscription_tier: plan === 'elite' ? 'elite' : 'premium',
+                    sms_enabled: plan === 'elite',
                     email_enabled: true,
                     in_app_enabled: true
                 });
             }
 
-            console.log(`Premium activated for ${userEmail}`);
+            console.log(`${plan === 'elite' ? 'Globetrotter' : 'Explorer'} activated for ${userEmail}`);
         } catch (error) {
             console.error('Error updating user preferences:', error);
             return Response.json({ error: 'Database update failed' }, { status: 500 });

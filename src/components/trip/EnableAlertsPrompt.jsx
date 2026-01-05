@@ -48,7 +48,7 @@ export default function EnableAlertsPrompt({ trip }) {
                 </Button>
               </Link>
               <p className="text-sm text-gray-600">
-                Free basic alerts • Premium from $9.99/mo
+                Free basic alerts • Explorer from $9.99/mo
               </p>
             </div>
           </div>

@@ -35,7 +35,7 @@ Deno.serve(async (req) => {
                 : `${req.headers.get('origin')}/NotificationSettings?canceled=true`,
             metadata: {
                 user_email: user.email,
-                plan: plan || 'premium',
+                plan: plan || 'explorer',
                 product_id: productId || ''
             }
         });
