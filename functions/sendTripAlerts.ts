@@ -169,7 +169,10 @@ Deno.serve(async (req) => {
                   <li>Register with local embassy if traveling internationally</li>
                 </ul>
                 
-                <p><a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin: 10px 0;">View Full Details</a></p>
+                <div style="margin: 20px 0;">
+                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin-right: 10px;">View Full Details</a>
+                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">✓ I've Seen This</a>
+                </div>
                 
                 <p style="color: #666; font-size: 12px; margin-top: 20px;">
                   This is a ${escalationCount > 0 ? `follow-up alert (${escalationCount + 1}x)` : 'new alert'}. 
@@ -293,7 +296,10 @@ Deno.serve(async (req) => {
                   ${trip.risk_assessment?.crime_risk > 50 ? `<li>Safety awareness needed (${Math.round(trip.risk_assessment.crime_risk)}/100)</li>` : ''}
                 </ul>
                 
-                <p><a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}">View Detailed Analysis</a></p>
+                <div style="margin: 20px 0;">
+                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block; margin-right: 10px;">View Details</a>
+                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #16a34a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block;">✓ Got it</a>
+                </div>
               `
             });
             emailSuccess = true;

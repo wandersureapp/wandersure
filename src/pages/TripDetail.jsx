@@ -24,6 +24,7 @@ import { format, differenceInDays } from "date-fns";
 import RiskGauges from "../components/trip/RiskGauges";
 import InsuranceRecommendations from "../components/trip/InsuranceRecommendations";
 import EnableAlertsPrompt from "../components/trip/EnableAlertsPrompt";
+import AlertList from "../components/alerts/AlertList";
 
 export default function TripDetail() {
   const navigate = useNavigate();
@@ -164,7 +165,20 @@ export default function TripDetail() {
           {/* Left Column - Risk Assessment */}
           <div className="lg:col-span-2 space-y-6">
             <EnableAlertsPrompt trip={trip} />
-            
+
+            {/* Recent Alerts */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Recent Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AlertList tripId={trip.id} limit={5} />
+              </CardContent>
+            </Card>
+
             {/* Travel Checklist Card */}
             <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
               <CardContent className="p-6">

@@ -21,6 +21,7 @@ import ActiveTripsGrid from "../components/dashboard/ActiveTripsGrid";
 import RiskAlerts from "../components/dashboard/RiskAlerts";
 import QuickStats from "../components/dashboard/QuickStats";
 import AuthGuard from "../components/AuthGuard";
+import AlertList from "../components/alerts/AlertList";
 
 export default function Dashboard() {
   const { data: trips = [], isLoading: tripsLoading } = useQuery({
@@ -215,6 +216,19 @@ export default function Dashboard() {
             transition={{ delay: 0.5 }}
           >
             <RiskAlerts trips={highRiskTrips} />
+
+            {/* Recent Alerts */}
+            <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
+              <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 text-white">
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Recent Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-4">
+                <AlertList limit={3} />
+              </CardContent>
+            </Card>
 
             {/* Upcoming Trips */}
             <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
