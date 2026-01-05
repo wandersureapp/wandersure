@@ -48,7 +48,17 @@ export default function PrivacyPolicy() {
               <li>Communicate with you about your account and services</li>
             </ul>
 
-            <h2>3. Information Sharing</h2>
+            <h2>3. Data Privacy Principles</h2>
+            <p>WanderSure is committed to the following privacy principles:</p>
+            <ul>
+              <li><strong>Data Minimization:</strong> We collect only the data necessary to provide our services</li>
+              <li><strong>Purpose Limitation:</strong> Your data is used solely for the purposes stated in this policy</li>
+              <li><strong>Active-Trip Location Use Only:</strong> Location data is only used during active trips for risk monitoring</li>
+              <li><strong>No Data Resale:</strong> We never sell your personal information to third parties</li>
+              <li><strong>Transparent Processing:</strong> All risk assessments are explainable with clear reasoning</li>
+            </ul>
+
+            <h2>4. Information Sharing</h2>
             <p>
               We do not sell your personal information. We may share your information with:
             </p>
@@ -58,7 +68,7 @@ export default function PrivacyPolicy() {
               <li>Law enforcement when required by law</li>
             </ul>
 
-            <h2>4. Gmail Access</h2>
+            <h2>5. Gmail Access</h2>
             <p>
               When you authorize Gmail access, we only read travel confirmation emails to automatically extract booking details. We do not:
             </p>
@@ -69,12 +79,18 @@ export default function PrivacyPolicy() {
               <li>Send emails on your behalf</li>
             </ul>
 
-            <h2>5. Data Security</h2>
+            <h2>6. Data Security & Integrity Controls</h2>
             <p>
-              We implement industry-standard security measures to protect your information, including encryption, secure servers, and regular security audits.
+              We implement industry-standard security measures to protect your information, including encryption, secure servers, and regular security audits. Additionally, our alert system incorporates:
             </p>
+            <ul>
+              <li><strong>Source Reliability Scoring:</strong> All data sources are evaluated for credibility</li>
+              <li><strong>Multi-Source Confirmation:</strong> Critical alerts require confirmation from multiple sources</li>
+              <li><strong>Confidence Thresholds:</strong> Alerts are only sent when confidence exceeds 60%</li>
+              <li><strong>Deduplication:</strong> Prevents sending the same alert multiple times</li>
+            </ul>
 
-            <h2>6. Your Rights</h2>
+            <h2>7. Your Rights</h2>
             <p>You have the right to:</p>
             <ul>
               <li>Access and download your data</li>
@@ -84,27 +100,32 @@ export default function PrivacyPolicy() {
               <li>Revoke Gmail authorization at any time</li>
             </ul>
 
-            <h2>7. Data Retention</h2>
+            <h2>8. Data Retention</h2>
             <p>
               We retain your information for as long as your account is active or as needed to provide services. You may delete your account at any time.
             </p>
 
-            <h2>8. Cookies and Tracking</h2>
+            <h2>9. Cookies and Tracking</h2>
             <p>
               We use cookies and similar technologies to improve user experience, analyze usage, and provide personalized content.
             </p>
 
-            <h2>9. Children's Privacy</h2>
+            <h2>10. Children's Privacy</h2>
             <p>
               Our services are not intended for children under 13. We do not knowingly collect information from children.
             </p>
 
-            <h2>10. Changes to This Policy</h2>
+            <h2>11. GDPR & CCPA Compliance</h2>
+            <p>
+              WanderSure is designed to comply with GDPR and CCPA requirements. For EU and California residents, additional rights may apply. Contact us for more information.
+            </p>
+
+            <h2>12. Changes to This Policy</h2>
             <p>
               We may update this Privacy Policy periodically. We will notify you of significant changes via email or through the app.
             </p>
 
-            <h2>11. Contact Us</h2>
+            <h2>13. Contact Us</h2>
             <p>
               For privacy-related questions or concerns, contact us at:{" "}
               <a href="mailto:privacy@wandersure.com" className="text-blue-600 hover:underline">
