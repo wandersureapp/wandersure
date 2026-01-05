@@ -83,7 +83,7 @@ export default function InsuranceRecommendations({ tripId, recommendedCoverage, 
         </div>
         <CardContent className="p-6 text-center">
           <a href="https://www.dpbolvw.net/click-101622714-15379546" target="_blank" rel="noopener noreferrer">
-            <img src="https://www.awltovhc.com/image-101622714-15379546" width="250" height="250" alt="World Nomads Travel Insurance" border="0" className="mx-auto" />
+            <img src="https://www.awltovhc.com/image-101622714-15379546" width={250} height={250} alt="World Nomads Travel Insurance" border={0} className="mx-auto" />
           </a>
         </CardContent>
       </Card>

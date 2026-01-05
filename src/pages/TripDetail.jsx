@@ -268,10 +268,10 @@ export default function TripDetail() {
                               target="_blank" 
                               rel="noopener noreferrer"
                             >
-                              <img src="https://www.lduhtrp.net/image-101622714-17100505" width="320" height="50" alt="Travel Insurance" border="0" />
+                              <img src="https://www.lduhtrp.net/image-101622714-17100505" width={320} height={50} alt="Travel Insurance" border={0} />
                             </a>
                           </div>
-                          <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
+                          <img src="https://www.tqlkg.com/image-101622714-17112391" width={1} height={1} border={0} alt="" className="hidden" />
                         </div>
                       </div>
                     </div>
@@ -311,7 +311,7 @@ export default function TripDetail() {
                               target="_blank" 
                               rel="noopener noreferrer"
                             >
-                              <img src="https://www.lduhtrp.net/image-101622714-17100505" width="320" height="50" alt="Travel Insurance from World Nomads" border="0" />
+                              <img src="https://www.lduhtrp.net/image-101622714-17100505" width={320} height={50} alt="Travel Insurance from World Nomads" border={0} />
                             </a>
                           </div>
                         </div>
@@ -434,7 +434,7 @@ export default function TripDetail() {
                       >
                         Compare flight prices →
                       </a>
-                      <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
+                      <img src="https://www.tqlkg.com/image-101622714-17112391" width={1} height={1} border={0} alt="" className="hidden" />
                     </div>
                   </div>
                 )}
@@ -463,7 +463,7 @@ export default function TripDetail() {
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
                     <p className="text-sm font-medium text-gray-900 mb-3">Need a rental car for your trip?</p>
                     <a href="https://www.jdoqocy.com/click-101622714-17126276" target="_blank" rel="noopener noreferrer" className="block">
-                      <img src="https://www.ftjcfx.com/image-101622714-17126276" width="728" height="90" alt="Car Rentals with Full Coverage Insurance" border="0" className="mx-auto" />
+                      <img src="https://www.ftjcfx.com/image-101622714-17126276" width={728} height={90} alt="Car Rentals with Full Coverage Insurance" border={0} className="mx-auto" />
                     </a>
                   </div>
                 )}
