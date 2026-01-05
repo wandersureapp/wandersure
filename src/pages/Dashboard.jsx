@@ -12,7 +12,8 @@ import {
   MapPin,
   Calendar,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Bell
 } from "lucide-react";
 import { format, differenceInDays, isFuture } from "date-fns";
 import { motion } from "framer-motion";

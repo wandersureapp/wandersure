@@ -1,4 +1,5 @@
 import AdminDashboard from './pages/AdminDashboard';
+import AlertMetricsAdmin from './pages/AlertMetricsAdmin';
 import Alerts from './pages/Alerts';
 import BrowsePlans from './pages/BrowsePlans';
 import BudgetPlanner from './pages/BudgetPlanner';
@@ -8,6 +9,7 @@ import DestinationPlaybook from './pages/DestinationPlaybook';
 import GmailCallback from './pages/GmailCallback';
 import GroupTravelCoordinator from './pages/GroupTravelCoordinator';
 import Home from './pages/Home';
+import HowAlertsWork from './pages/HowAlertsWork';
 import InvestorPitch from './pages/InvestorPitch';
 import InvestorPitchPrint from './pages/InvestorPitchPrint';
 import Legal from './pages/Legal';
@@ -22,13 +24,12 @@ import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import HowAlertsWork from './pages/HowAlertsWork';
-import AlertMetricsAdmin from './pages/AlertMetricsAdmin';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
     "AdminDashboard": AdminDashboard,
+    "AlertMetricsAdmin": AlertMetricsAdmin,
     "Alerts": Alerts,
     "BrowsePlans": BrowsePlans,
     "BudgetPlanner": BudgetPlanner,
@@ -38,6 +39,7 @@ export const PAGES = {
     "GmailCallback": GmailCallback,
     "GroupTravelCoordinator": GroupTravelCoordinator,
     "Home": Home,
+    "HowAlertsWork": HowAlertsWork,
     "InvestorPitch": InvestorPitch,
     "InvestorPitchPrint": InvestorPitchPrint,
     "Legal": Legal,
@@ -52,8 +54,6 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "HowAlertsWork": HowAlertsWork,
-    "AlertMetricsAdmin": AlertMetricsAdmin,
 }
 
 export const pagesConfig = {
