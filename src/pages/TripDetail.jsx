@@ -459,6 +459,15 @@ export default function TripDetail() {
                   </div>
                 )}
 
+                {!trip.car_rental_company && (
+                  <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
+                    <p className="text-sm font-medium text-gray-900 mb-3">Need a rental car for your trip?</p>
+                    <a href="https://www.jdoqocy.com/click-101622714-17126276" target="_blank" rel="noopener noreferrer" className="block">
+                      <img src="https://www.ftjcfx.com/image-101622714-17126276" width="728" height="90" alt="Car Rentals with Full Coverage Insurance" border="0" className="mx-auto" />
+                    </a>
+                  </div>
+                )}
+
                 {!trip.airline && !trip.hotel_name && !trip.car_rental_company && (
                   <div className="text-center py-8 text-gray-500">
                     <Plane className="w-12 h-12 mx-auto mb-3 opacity-30" />
