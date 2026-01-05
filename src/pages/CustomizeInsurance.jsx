@@ -192,16 +192,48 @@ export default function CustomizeInsurance() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Compare Insurance Plans
+            WanderSure's Recommended Coverage
           </h1>
           <p className="text-xl text-gray-600">
-            AI-powered recommendations for {trip.trip_name}
+            AI-analyzed protection for {trip.trip_name}
           </p>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Coverage Selection */}
           <div className="lg:col-span-2 space-y-6">
+            {/* WanderSure Recommendation Banner */}
+            <Card className="border-2 border-purple-300 bg-gradient-to-r from-purple-50 to-blue-50">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-blue-600 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Sparkles className="w-6 h-6 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold text-gray-900 mb-2">
+                      🎯 WanderSure's AI Recommendation
+                    </h3>
+                    <p className="text-sm text-gray-700 mb-4">
+                      Based on your trip's risk analysis (score: <strong>{riskScore}/100</strong>), we recommend the coverages highlighted below. 
+                      Our AI has analyzed thousands of trips to identify what protection matters most for your journey.
+                    </p>
+                    {trip.recommended_coverage && trip.recommended_coverage.length > 0 && (
+                      <div className="bg-white rounded-lg p-4 border-2 border-purple-200">
+                        <p className="text-xs text-purple-800 font-semibold mb-2">CRITICAL COVERAGE FOR YOUR TRIP:</p>
+                        <div className="flex flex-wrap gap-2">
+                          {trip.recommended_coverage.map((coverage) => (
+                            <Badge key={coverage} className="bg-purple-600 text-white">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              {coverage.replace(/_/g, ' ')}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             {/* Trip Info */}
             <Card className="border-2 border-blue-200 bg-blue-50">
               <CardContent className="p-6">
@@ -326,6 +358,34 @@ export default function CustomizeInsurance() {
 
           {/* Provider Comparison */}
           <div className="space-y-6">
+            {/* Insurance Partner Banner */}
+            <Card className="border-2 border-green-300 bg-gradient-to-br from-green-50 to-teal-50">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-500 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                  <Shield className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-bold text-gray-900 mb-2">Shop with Our Partners</h3>
+                <p className="text-sm text-gray-700 mb-4">
+                  WanderSure has analyzed your trip. Now get covered through our trusted insurance partners.
+                </p>
+                <a 
+                  href="https://www.anrdoezrs.net/click-101622714-17100505" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <img 
+                    src="https://www.lduhtrp.net/image-101622714-17100505" 
+                    width={320} 
+                    height={50} 
+                    alt="Travel Insurance from World Nomads" 
+                    border={0}
+                    className="mx-auto hover:opacity-80 transition-opacity"
+                  />
+                </a>
+              </CardContent>
+            </Card>
+
             <Card className="sticky top-6 border-2 border-blue-300">
               <CardHeader className="bg-gradient-to-r from-blue-600 to-teal-600 text-white">
                 <CardTitle>Provider Comparison</CardTitle>
