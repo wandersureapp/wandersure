@@ -63,7 +63,7 @@ export default function InsuranceRecommendations({ tripId, recommendedCoverage, 
           <Link to={createPageUrl(`CustomizeInsurance?tripId=${tripId}`)}>
             <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-semibold shadow-lg group">
               <Zap className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
-              Compare Insurance Plans
+              See WanderSure's Recommendations
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
           </Link>
