@@ -24,8 +24,11 @@ import {
   Hotel,
   Car,
   Ship,
-  Train
+  Train,
+  Rss,
+  Copy
 } from "lucide-react";
+import { toast } from "sonner";
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
 import AuthGuard from "../components/AuthGuard";
 
@@ -276,6 +279,35 @@ export default function NotificationSettings() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* RSS Feed */}
+              <div className="p-4 bg-orange-50 border-2 border-orange-200 rounded-lg">
+                <div className="flex items-start gap-3">
+                  <Rss className="w-5 h-5 text-orange-600 mt-1" />
+                  <div className="flex-1">
+                    <h4 className="font-semibold text-gray-900 mb-1">RSS Feed Alerts</h4>
+                    <p className="text-sm text-gray-600 mb-3">
+                      Subscribe to your personal RSS feed in any RSS reader (Feedly, Inoreader, etc.) for instant alerts
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Input 
+                        readOnly 
+                        value={`${window.location.origin}/getTripAlertsRSS`}
+                        className="text-xs"
+                      />
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          navigator.clipboard.writeText(`${window.location.origin}/getTripAlertsRSS`);
+                          toast.success('RSS feed URL copied!');
+                        }}
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-blue-600" />
