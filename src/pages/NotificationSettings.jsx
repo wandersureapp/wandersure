@@ -96,40 +96,53 @@ export default function NotificationSettings() {
   };
 
   const handleUpgrade = async (tier) => {
-    const priceMapping = {
-      'explorer_monthly': 'price_1SmKSbDAiWHJZCc7EpCFEE0K',
-      'explorer_yearly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ',
-      'globetrotter_monthly': 'price_1SmKV1DAiWHJZCc7BJcVEX2Z',
-      'globetrotter_yearly': 'price_1SmKXNDAiWHJZCc7GBL8h8QU'
+    // Use Stripe Payment Links for more reliable checkout
+    const paymentLinks = {
+      'explorer_monthly': 'https://buy.stripe.com/REPLACE_WITH_EXPLORER_MONTHLY_LINK',
+      'explorer_yearly': 'https://buy.stripe.com/REPLACE_WITH_EXPLORER_YEARLY_LINK',
+      'globetrotter_monthly': 'https://buy.stripe.com/REPLACE_WITH_GLOBETROTTER_MONTHLY_LINK',
+      'globetrotter_yearly': 'https://buy.stripe.com/REPLACE_WITH_GLOBETROTTER_YEARLY_LINK'
     };
     
-    const priceId = priceMapping[tier];
-    const plan = tier.includes('globetrotter') ? 'elite' : 'premium';
+    const link = paymentLinks[tier];
     
-    if (!priceId) {
-      alert('Invalid plan selected');
-      return;
-    }
-    
-    try {
-      const response = await createCheckoutSession({ 
-        priceId, 
-        plan 
-      });
+    if (!link || link.includes('REPLACE_WITH')) {
+      // Fallback to API-based checkout
+      const priceMapping = {
+        'explorer_monthly': 'price_1SmKSbDAiWHJZCc7EpCFEE0K',
+        'explorer_yearly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ',
+        'globetrotter_monthly': 'price_1SmKV1DAiWHJZCc7BJcVEX2Z',
+        'globetrotter_yearly': 'price_1SmKXNDAiWHJZCc7GBL8h8QU'
+      };
       
-      // Handle both response.data.url and response.url patterns
-      const checkoutUrl = response.data?.url || response.url;
+      const priceId = priceMapping[tier];
+      const plan = tier.includes('globetrotter') ? 'elite' : 'premium';
       
-      if (!checkoutUrl) {
-        console.error('No checkout URL in response:', response);
-        alert('Failed to create checkout session. Please try again.');
-        return;
+      console.log('Creating checkout for:', { tier, priceId, plan });
+      
+      try {
+        const response = await createCheckoutSession({ 
+          priceId, 
+          plan 
+        });
+        
+        const checkoutUrl = response.data?.url || response.url;
+        
+        if (!checkoutUrl) {
+          console.error('No checkout URL in response:', response);
+          alert('Failed to create checkout session. Please contact support.');
+          return;
+        }
+        
+        window.location.href = checkoutUrl;
+      } catch (error) {
+        console.error('Payment error:', error);
+        alert(`Payment setup failed: ${error.message || 'Please contact support.'}`);
       }
-      
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      console.error('Payment error:', error);
-      alert(`Payment setup failed: ${error.message || 'Please try again.'}`);
+    } else {
+      // Use payment link with prefilled email
+      const encodedEmail = encodeURIComponent(user.email);
+      window.location.href = `${link}?prefilled_email=${encodedEmail}`;
     }
   };
 
