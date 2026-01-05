@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { createCheckoutSession } from "@/functions/createCheckoutSession";
 import AuthGuard from "../components/AuthGuard";
+import PushNotificationManager from "../components/notifications/PushNotificationManager";
 
 export default function NotificationSettings() {
   const queryClient = useQueryClient();
@@ -276,6 +277,8 @@ export default function NotificationSettings() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {/* Browser Push Notifications */}
+              <PushNotificationManager />
               <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
                 <div className="flex items-center gap-3">
                   <Mail className="w-5 h-5 text-blue-600" />
