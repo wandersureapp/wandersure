@@ -96,53 +96,45 @@ export default function NotificationSettings() {
   };
 
   const handleUpgrade = async (tier) => {
-    // Use Stripe Payment Links for more reliable checkout
-    const paymentLinks = {
-      'explorer_monthly': 'https://buy.stripe.com/REPLACE_WITH_EXPLORER_MONTHLY_LINK',
-      'explorer_yearly': 'https://buy.stripe.com/REPLACE_WITH_EXPLORER_YEARLY_LINK',
-      'globetrotter_monthly': 'https://buy.stripe.com/REPLACE_WITH_GLOBETROTTER_MONTHLY_LINK',
-      'globetrotter_yearly': 'https://buy.stripe.com/REPLACE_WITH_GLOBETROTTER_YEARLY_LINK'
+    // Direct Stripe checkout using API
+    const priceMapping = {
+      'explorer_monthly': 'price_1SmKSbDAiWHJZCc7EpCFEE0K',
+      'explorer_yearly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ',
+      'globetrotter_monthly': 'price_1SmKV1DAiWHJZCc7BJcVEX2Z',
+      'globetrotter_yearly': 'price_1SmKXNDAiWHJZCc7GBL8h8QU'
     };
     
-    const link = paymentLinks[tier];
+    const priceId = priceMapping[tier];
+    const plan = tier.includes('globetrotter') ? 'elite' : 'premium';
     
-    if (!link || link.includes('REPLACE_WITH')) {
-      // Fallback to API-based checkout
-      const priceMapping = {
-        'explorer_monthly': 'price_1SmKSbDAiWHJZCc7EpCFEE0K',
-        'explorer_yearly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ',
-        'globetrotter_monthly': 'price_1SmKV1DAiWHJZCc7BJcVEX2Z',
-        'globetrotter_yearly': 'price_1SmKXNDAiWHJZCc7GBL8h8QU'
-      };
+    if (!priceId) {
+      alert('Invalid plan selected');
+      return;
+    }
+    
+    try {
+      const response = await createCheckoutSession({ 
+        priceId, 
+        plan 
+      });
       
-      const priceId = priceMapping[tier];
-      const plan = tier.includes('globetrotter') ? 'elite' : 'premium';
+      const checkoutUrl = response.data?.url || response.url;
       
-      console.log('Creating checkout for:', { tier, priceId, plan });
-      
-      try {
-        const response = await createCheckoutSession({ 
-          priceId, 
-          plan 
-        });
-        
-        const checkoutUrl = response.data?.url || response.url;
-        
-        if (!checkoutUrl) {
-          console.error('No checkout URL in response:', response);
-          alert('Failed to create checkout session. Please contact support.');
-          return;
-        }
-        
-        window.location.href = checkoutUrl;
-      } catch (error) {
-        console.error('Payment error:', error);
-        alert(`Payment setup failed: ${error.message || 'Please contact support.'}`);
+      if (!checkoutUrl) {
+        console.error('No checkout URL in response:', response);
+        alert('Failed to create checkout session. Please try again in a moment.');
+        return;
       }
-    } else {
-      // Use payment link with prefilled email
-      const encodedEmail = encodeURIComponent(user.email);
-      window.location.href = `${link}?prefilled_email=${encodedEmail}`;
+      
+      window.location.href = checkoutUrl;
+    } catch (error) {
+      console.error('Payment error:', error);
+      // 429 rate limit error - ask user to wait
+      if (error.message?.includes('429') || error.message?.includes('Too Many Requests')) {
+        alert('Please wait a moment and try again. Stripe rate limit reached.');
+      } else {
+        alert(`Payment setup failed: ${error.message || 'Please try again.'}`);
+      }
     }
   };
 
