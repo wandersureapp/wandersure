@@ -300,18 +300,19 @@ export default function TripDetail() {
                     <div className="flex items-start gap-3">
                       <Bell className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
                       <div className="flex-1">
-                        <h4 className="font-bold text-gray-900 mb-2">This is Your Initial Risk Assessment</h4>
+                        <h4 className="font-bold text-gray-900 mb-2">Want More Detailed Travel Intelligence?</h4>
                         <p className="text-sm text-gray-700 mb-3">
-                          Based on your trip inputs, but conditions change. Want <strong>live real-time travel alerts and updates</strong> as conditions evolve?
+                          You already get <strong>critical alerts for free</strong> (severe weather, major safety, trip reminders). 
+                          Upgrade for <strong>hourly updates</strong> on flights, airport conditions, hotel changes, and more.
                         </p>
                         <Link to={createPageUrl("NotificationSettings")}>
                           <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
                             <Bell className="w-4 h-4 mr-2" />
-                            Subscribe to Smart Travel Alerts
+                            View Alert Plans
                           </Button>
                         </Link>
                         <p className="text-xs text-gray-600 mt-2">
-                          ✓ Free Basic Alerts • Explorer from $9.99/mo for hourly updates
+                          ✓ Critical alerts free forever • Explorer from $9.99/mo for comprehensive monitoring
                         </p>
                       </div>
                     </div>

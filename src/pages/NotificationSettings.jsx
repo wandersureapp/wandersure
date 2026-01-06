@@ -212,9 +212,9 @@ export default function NotificationSettings() {
                   </div>
                 ))}
               </div>
-              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
-                <p className="text-xs text-yellow-800">
-                  ⚠️ <strong>Static Assessment:</strong> Risk scores are calculated once at trip creation. No live updates.
+              <div className="p-3 bg-green-50 border border-green-300 rounded-lg mb-4">
+                <p className="text-xs text-green-800">
+                  ✅ <strong>Live Critical Alerts:</strong> You'll receive alerts for major safety warnings, severe weather, and trip countdown reminders in real-time.
                 </p>
               </div>
               {formData.subscription_tier === 'free' && (
