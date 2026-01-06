@@ -64,11 +64,19 @@ export default function TripDetail() {
 
   const riskScore = trip.risk_assessment?.overall_score || 0;
   const getRiskLevel = (score) => {
-    if (score < 30) return { label: "Low Risk", color: "text-green-600", bg: "bg-green-50" };
-    if (score < 60) return { label: "Medium Risk", color: "text-yellow-600", bg: "bg-yellow-50" };
-    return { label: "High Risk", color: "text-red-600", bg: "bg-red-50" };
+    if (score <= 25) return { label: "Low Risk", color: "text-green-600", bg: "bg-green-50" };
+    if (score <= 50) return { label: "Moderate Risk", color: "text-yellow-600", bg: "bg-yellow-50" };
+    if (score <= 75) return { label: "High Risk", color: "text-orange-600", bg: "bg-orange-50" };
+    return { label: "Critical Risk", color: "text-red-600", bg: "bg-red-50" };
   };
   const riskLevel = getRiskLevel(riskScore);
+
+  const getRiskColorClasses = (score) => {
+    if (score <= 25) return { bg: 'bg-green-100 border-green-300', text: 'text-green-600', label: 'Low' };
+    if (score <= 50) return { bg: 'bg-yellow-100 border-yellow-300', text: 'text-yellow-600', label: 'Moderate' };
+    if (score <= 75) return { bg: 'bg-orange-100 border-orange-300', text: 'text-orange-600', label: 'High' };
+    return { bg: 'bg-red-100 border-red-300', text: 'text-red-600', label: 'Critical' };
+  };
 
   const daysUntil = differenceInDays(new Date(trip.start_date), new Date());
 
@@ -217,80 +225,68 @@ export default function TripDetail() {
                 <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-3 gap-4">
                     {trip.risk_assessment.flight_delay_risk > 0 && (
-                      <div className={`p-4 rounded-lg ${trip.risk_assessment.flight_delay_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.flight_delay_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.flight_delay_risk).bg}`}>
                         <div className="flex items-center gap-2 mb-2">
-                          <Plane className={`w-5 h-5 ${trip.risk_assessment.flight_delay_risk > 60 ? 'text-red-600' : trip.risk_assessment.flight_delay_risk > 30 ? 'text-yellow-600' : 'text-green-600'}`} />
+                          <Plane className={`w-5 h-5 ${getRiskColorClasses(trip.risk_assessment.flight_delay_risk).text}`} />
                           <span className="font-semibold text-gray-900">Flight Risk</span>
                         </div>
                         <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.flight_delay_risk)}/100</div>
-                        <p className="text-xs text-gray-600">
-                          {trip.risk_assessment.flight_delay_risk > 60 ? 'High delay probability' : trip.risk_assessment.flight_delay_risk > 30 ? 'Moderate delays possible' : 'On-time likely'}
-                        </p>
+                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.flight_delay_risk).label} Risk</p>
                       </div>
                     )}
 
                     {trip.risk_assessment.weather_risk > 0 && (
-                      <div className={`p-4 rounded-lg ${trip.risk_assessment.weather_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.weather_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.weather_risk).bg}`}>
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xl">🌤️</span>
                           <span className="font-semibold text-gray-900">Weather</span>
                         </div>
                         <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.weather_risk)}/100</div>
-                        <p className="text-xs text-gray-600">
-                          {trip.risk_assessment.weather_risk > 60 ? 'Severe conditions expected' : trip.risk_assessment.weather_risk > 30 ? 'Unfavorable weather' : 'Good conditions'}
-                        </p>
+                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.weather_risk).label} Risk</p>
                       </div>
                     )}
 
                     {trip.risk_assessment.crime_risk > 0 && (
-                      <div className={`p-4 rounded-lg ${trip.risk_assessment.crime_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.crime_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.crime_risk).bg}`}>
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xl">🛡️</span>
                           <span className="font-semibold text-gray-900">Safety</span>
                         </div>
                         <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.crime_risk)}/100</div>
-                        <p className="text-xs text-gray-600">
-                          {trip.risk_assessment.crime_risk > 60 ? 'Heightened caution needed' : trip.risk_assessment.crime_risk > 30 ? 'Stay alert' : 'Generally safe'}
-                        </p>
+                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.crime_risk).label} Risk</p>
                       </div>
                     )}
 
                     {trip.risk_assessment.political_risk > 0 && (
-                      <div className={`p-4 rounded-lg ${trip.risk_assessment.political_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.political_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.political_risk).bg}`}>
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xl">🏛️</span>
                           <span className="font-semibold text-gray-900">Political</span>
                         </div>
                         <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.political_risk)}/100</div>
-                        <p className="text-xs text-gray-600">
-                          {trip.risk_assessment.political_risk > 60 ? 'Instability risk' : trip.risk_assessment.political_risk > 30 ? 'Monitor news' : 'Stable'}
-                        </p>
+                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.political_risk).label} Risk</p>
                       </div>
                     )}
 
                     {trip.risk_assessment.health_risk > 0 && (
-                      <div className={`p-4 rounded-lg ${trip.risk_assessment.health_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.health_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.health_risk).bg}`}>
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xl">🏥</span>
                           <span className="font-semibold text-gray-900">Health</span>
                         </div>
                         <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.health_risk)}/100</div>
-                        <p className="text-xs text-gray-600">
-                          {trip.risk_assessment.health_risk > 60 ? 'Health precautions' : trip.risk_assessment.health_risk > 30 ? 'Check advisories' : 'Low risk'}
-                        </p>
+                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.health_risk).label} Risk</p>
                       </div>
                     )}
 
                     {trip.risk_assessment.disruption_risk > 0 && (
-                      <div className={`p-4 rounded-lg ${trip.risk_assessment.disruption_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.disruption_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.disruption_risk).bg}`}>
                         <div className="flex items-center gap-2 mb-2">
                           <span className="text-xl">⚠️</span>
                           <span className="font-semibold text-gray-900">Disruptions</span>
                         </div>
                         <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.disruption_risk)}/100</div>
-                        <p className="text-xs text-gray-600">
-                          {trip.risk_assessment.disruption_risk > 60 ? 'High disruption risk' : trip.risk_assessment.disruption_risk > 30 ? 'Some delays possible' : 'Smooth travel'}
-                        </p>
+                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.disruption_risk).label} Risk</p>
                       </div>
                     )}
                   </div>
