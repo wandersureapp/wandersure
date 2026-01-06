@@ -85,11 +85,12 @@ export default function RiskGauges({ riskAssessment }) {
             {Math.round(overallScore)}
             <span className="text-2xl text-gray-500">/100</span>
           </div>
-          <Progress 
-            value={overallScore} 
-            className="h-3"
-            indicatorClassName={getProgressColor(overallScore)}
-          />
+          <div className="relative w-full h-3 bg-gray-200 rounded-full overflow-hidden">
+            <div 
+              className={`h-full ${getProgressColor(overallScore)} transition-all duration-500`}
+              style={{ width: `${overallScore}%` }}
+            ></div>
+          </div>
         </div>
 
         {/* Individual Risk Metrics - All 6 Categories */}
@@ -109,11 +110,12 @@ export default function RiskGauges({ riskAssessment }) {
                     {Math.round(score)}
                   </span>
                 </div>
-                <Progress 
-                  value={score} 
-                  className="h-2"
-                  indicatorClassName={getProgressColor(score)}
-                />
+                <div className="relative w-full h-2 bg-gray-200 rounded-full overflow-hidden">
+                  <div 
+                    className={`h-full ${getProgressColor(score)} transition-all duration-500`}
+                    style={{ width: `${score}%` }}
+                  ></div>
+                </div>
               </div>
             );
           })}
