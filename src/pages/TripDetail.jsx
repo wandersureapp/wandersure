@@ -332,14 +332,15 @@ export default function TripDetail() {
                           </p>
                           <div className="flex flex-wrap gap-2 mb-3">
                             <a 
-                              href="https://www.kqzyfj.com/click-101622714-17112391" 
-                              target="_blank" 
+                              href="https://www.anrdoezrs.net/click-101622714-17223836" 
+                              target="_top" 
                               rel="noopener noreferrer"
                             >
                               <Button className="bg-blue-600 hover:bg-blue-700">
-                                ✈️ Compare Flight Options
+                                ✈️ Find Better Flights on Expedia
                               </Button>
                             </a>
+                            <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
                             <a 
                               href="https://www.anrdoezrs.net/click-101622714-17100505" 
                               target="_blank" 
@@ -348,7 +349,6 @@ export default function TripDetail() {
                               <img src="https://www.lduhtrp.net/image-101622714-17100505" width={320} height={50} alt="Travel Insurance" border={0} />
                             </a>
                           </div>
-                          <img src="https://www.tqlkg.com/image-101622714-17112391" width={1} height={1} border={0} alt="" className="hidden" />
                         </div>
                       </div>
                     </div>
@@ -505,14 +505,14 @@ export default function TripDetail() {
                         <p className="text-sm text-gray-500">Flight {trip.flight_number}</p>
                       )}
                       <a 
-                        href="https://www.kqzyfj.com/click-101622714-17112391" 
-                        target="_blank" 
+                        href="https://www.anrdoezrs.net/click-101622714-17223836" 
+                        target="_top"
                         rel="noopener noreferrer"
                         className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
                       >
-                        Compare flight prices →
+                        Compare flight options on Expedia →
                       </a>
-                      <img src="https://www.tqlkg.com/image-101622714-17112391" width={1} height={1} border={0} alt="" className="hidden" />
+                      <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
                     </div>
                   </div>
                 )}
@@ -584,9 +584,10 @@ export default function TripDetail() {
                     <Plane className="w-12 h-12 mx-auto mb-3 opacity-30 text-gray-400" />
                     <p className="text-sm text-gray-600 mb-4">No travel bookings added yet</p>
                     <div className="flex flex-col gap-2 max-w-xs mx-auto">
-                      <a href="https://www.kqzyfj.com/click-101622714-17112391" target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" className="w-full">Find Flights</Button>
+                      <a href="https://www.anrdoezrs.net/click-101622714-17223836" target="_top" rel="noopener noreferrer">
+                        <Button variant="outline" className="w-full">Book on Expedia</Button>
                       </a>
+                      <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
                       <a href="https://www.dpbolvw.net/click-101622714-15734399" target="_blank" rel="noopener noreferrer">
                         <Button variant="outline" className="w-full">Book Hotels on HOTELS.COM®</Button>
                       </a>
