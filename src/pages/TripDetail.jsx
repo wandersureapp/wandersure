@@ -208,10 +208,10 @@ export default function TripDetail() {
               <Card className="border-none shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    🎯 Risk Summary
+                    🎯 Initial Risk Assessment
                   </CardTitle>
                   <p className="text-sm text-gray-600">
-                    Here's what you need to know about your trip
+                    Based on your trip details at the time of planning
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
@@ -228,7 +228,7 @@ export default function TripDetail() {
                         </p>
                       </div>
                     )}
-                    
+
                     {trip.risk_assessment.weather_risk > 0 && (
                       <div className={`p-4 rounded-lg ${trip.risk_assessment.weather_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.weather_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
                         <div className="flex items-center gap-2 mb-2">
@@ -254,6 +254,67 @@ export default function TripDetail() {
                         </p>
                       </div>
                     )}
+
+                    {trip.risk_assessment.political_risk > 0 && (
+                      <div className={`p-4 rounded-lg ${trip.risk_assessment.political_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.political_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xl">🏛️</span>
+                          <span className="font-semibold text-gray-900">Political</span>
+                        </div>
+                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.political_risk)}/100</div>
+                        <p className="text-xs text-gray-600">
+                          {trip.risk_assessment.political_risk > 60 ? 'Instability risk' : trip.risk_assessment.political_risk > 30 ? 'Monitor news' : 'Stable'}
+                        </p>
+                      </div>
+                    )}
+
+                    {trip.risk_assessment.health_risk > 0 && (
+                      <div className={`p-4 rounded-lg ${trip.risk_assessment.health_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.health_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xl">🏥</span>
+                          <span className="font-semibold text-gray-900">Health</span>
+                        </div>
+                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.health_risk)}/100</div>
+                        <p className="text-xs text-gray-600">
+                          {trip.risk_assessment.health_risk > 60 ? 'Health precautions' : trip.risk_assessment.health_risk > 30 ? 'Check advisories' : 'Low risk'}
+                        </p>
+                      </div>
+                    )}
+
+                    {trip.risk_assessment.disruption_risk > 0 && (
+                      <div className={`p-4 rounded-lg ${trip.risk_assessment.disruption_risk > 60 ? 'bg-red-100 border-2 border-red-300' : trip.risk_assessment.disruption_risk > 30 ? 'bg-yellow-100 border-2 border-yellow-300' : 'bg-green-100 border-2 border-green-300'}`}>
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="text-xl">⚠️</span>
+                          <span className="font-semibold text-gray-900">Disruptions</span>
+                        </div>
+                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.disruption_risk)}/100</div>
+                        <p className="text-xs text-gray-600">
+                          {trip.risk_assessment.disruption_risk > 60 ? 'High disruption risk' : trip.risk_assessment.disruption_risk > 30 ? 'Some delays possible' : 'Smooth travel'}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Upgrade to Live Monitoring CTA */}
+                  <div className="mt-6 p-5 bg-gradient-to-r from-blue-100 to-cyan-100 border-2 border-blue-300 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Bell className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
+                      <div className="flex-1">
+                        <h4 className="font-bold text-gray-900 mb-2">This is Your Initial Risk Assessment</h4>
+                        <p className="text-sm text-gray-700 mb-3">
+                          Based on your trip inputs, but conditions change. Want <strong>live real-time travel alerts and updates</strong> as conditions evolve?
+                        </p>
+                        <Link to={createPageUrl("NotificationSettings")}>
+                          <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                            <Bell className="w-4 h-4 mr-2" />
+                            Subscribe to Smart Travel Alerts
+                          </Button>
+                        </Link>
+                        <p className="text-xs text-gray-600 mt-2">
+                          ✓ Free Basic Alerts • Explorer from $9.99/mo for hourly updates
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Airline Risk - Flight Affiliate Opportunity */}
@@ -339,18 +400,19 @@ export default function TripDetail() {
 
             <RiskGauges riskAssessment={trip.risk_assessment} />
 
-            {/* Risk Details & Reasoning */}
+            {/* Risk Details & Reasoning - Only show reasoning for initial assessment */}
             {trip.risk_details && (
               <Card className="border-none shadow-lg">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    📊 Detailed Risk Analysis
+                    📊 Initial Risk Analysis Details
                   </CardTitle>
-                  {trip.risk_assessment?.last_updated && (
-                    <p className="text-sm text-gray-500">
-                      Last updated: {format(new Date(trip.risk_assessment.last_updated), "MMM d, yyyy 'at' h:mm a")}
-                    </p>
-                  )}
+                  <p className="text-sm text-gray-500">
+                    Analysis from: {trip.risk_assessment?.last_updated ? format(new Date(trip.risk_assessment.last_updated), "MMM d, yyyy 'at' h:mm a") : 'trip creation'}
+                  </p>
+                  <p className="text-xs text-blue-600 font-medium mt-1">
+                    💡 Subscribe to Smart Alerts for live hourly updates and detailed analysis
+                  </p>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   {trip.risk_details.critical_alerts?.length > 0 && (

@@ -181,6 +181,12 @@ export default function NotificationSettings() {
         <div className="mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-2">AI Travel Alerts</h1>
           <p className="text-xl text-gray-600">Real-time monitoring and intelligent notifications</p>
+          <div className="mt-4 p-4 bg-blue-50 border-2 border-blue-200 rounded-lg">
+            <p className="text-sm text-gray-700">
+              <strong>How it works:</strong> You receive a <strong>one-time initial risk assessment</strong> when you create a trip. 
+              To get <strong>live hourly updates</strong> and alerts as conditions change, subscribe to a Smart Alerts plan below.
+            </p>
+          </div>
         </div>
 
         {/* Three-Tier Comparison */}
@@ -192,7 +198,7 @@ export default function NotificationSettings() {
                 <CardTitle className="text-xl">Basic Alerts</CardTitle>
                 <Badge className="bg-gray-200 text-gray-800">FREE</Badge>
               </div>
-              <p className="text-gray-600 text-xs mt-2">Essential notifications for every traveler</p>
+              <p className="text-gray-600 text-xs mt-2">One-time risk assessment at trip creation</p>
             </CardHeader>
             <CardContent className="p-4">
               <div className="space-y-3 mb-6">
@@ -205,6 +211,11 @@ export default function NotificationSettings() {
                     </div>
                   </div>
                 ))}
+              </div>
+              <div className="p-3 bg-yellow-50 border border-yellow-200 rounded-lg mb-4">
+                <p className="text-xs text-yellow-800">
+                  ⚠️ <strong>Static Assessment:</strong> Risk scores are calculated once at trip creation. No live updates.
+                </p>
               </div>
               {formData.subscription_tier === 'free' && (
                 <div className="pt-4 border-t">
@@ -230,8 +241,14 @@ export default function NotificationSettings() {
                   <Badge className="bg-white text-blue-600">$9.99/mo</Badge>
                 )}
               </div>
+              <p className="text-white text-xs mt-2">⏰ Hourly live updates & real-time alerts</p>
             </CardHeader>
             <CardContent className="p-4">
+              <div className="p-3 bg-green-50 border border-green-300 rounded-lg mb-3">
+                <p className="text-xs text-green-800 font-medium">
+                  ✅ <strong>Live Monitoring:</strong> Risk scores refresh every hour. Get alerts when conditions change.
+                </p>
+              </div>
               <p className="text-xs text-gray-600 mb-3">Everything in Basic, plus:</p>
               <div className="space-y-2 mb-4">
                 {explorerFeatures.map((feature, idx) => (
@@ -280,8 +297,14 @@ export default function NotificationSettings() {
                   <Badge className="bg-white text-purple-600">$19.99/mo</Badge>
                 )}
               </div>
+              <p className="text-white text-xs mt-2">⏰ Hourly live updates + Priority SMS alerts</p>
             </CardHeader>
             <CardContent className="p-4">
+              <div className="p-3 bg-purple-50 border border-purple-300 rounded-lg mb-3">
+                <p className="text-xs text-purple-800 font-medium">
+                  ⚡ <strong>Premium Monitoring:</strong> All alerts + SMS for critical updates + Priority alert delivery
+                </p>
+              </div>
               <p className="text-xs text-gray-600 mb-3">Everything in Explorer, plus:</p>
               <div className="space-y-2 mb-4">
                 {globetrotterFeatures.map((feature, idx) => (
