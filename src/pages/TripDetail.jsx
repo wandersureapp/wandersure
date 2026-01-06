@@ -457,9 +457,42 @@ export default function TripDetail() {
                 {trip.hotel_name && (
                   <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
                     <Hotel className="w-5 h-5 text-purple-600 mt-1" />
-                    <div>
+                    <div className="flex-1">
                       <p className="font-medium text-gray-900">Hotel</p>
                       <p className="text-sm text-gray-600">{trip.hotel_name}</p>
+                      <a 
+                        href="https://www.dpbolvw.net/click-101622714-15734399" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-sm text-purple-600 hover:text-purple-700 font-medium mt-2 inline-block"
+                      >
+                        Find better hotel deals on HOTELS.COM® →
+                      </a>
+                      <img src="https://www.ftjcfx.com/image-101622714-15734399" width={1} height={1} border={0} alt="" className="hidden" />
+                    </div>
+                  </div>
+                )}
+
+                {!trip.hotel_name && (
+                  <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200 rounded-lg">
+                    <div className="flex items-start gap-3">
+                      <Hotel className="w-5 h-5 text-purple-600 mt-1" />
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-gray-900 mb-2">Need a place to stay in {trip.destination}?</p>
+                        <a 
+                          href="https://www.dpbolvw.net/click-101622714-15734399" 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="inline-block"
+                        >
+                          <Button className="bg-purple-600 hover:bg-purple-700">
+                            <Hotel className="w-4 h-4 mr-2" />
+                            Search Hotels on HOTELS.COM®
+                          </Button>
+                        </a>
+                        <img src="https://www.ftjcfx.com/image-101622714-15734399" width={1} height={1} border={0} alt="" className="hidden" />
+                        <p className="text-xs text-gray-500 mt-2">HOTELS.COM is a trademark or registered trademark of Expedia, Inc.</p>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -484,9 +517,18 @@ export default function TripDetail() {
                 )}
 
                 {!trip.airline && !trip.hotel_name && !trip.car_rental_company && (
-                  <div className="text-center py-8 text-gray-500">
-                    <Plane className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                    <p className="text-sm">No travel bookings added yet</p>
+                  <div className="text-center py-8">
+                    <Plane className="w-12 h-12 mx-auto mb-3 opacity-30 text-gray-400" />
+                    <p className="text-sm text-gray-600 mb-4">No travel bookings added yet</p>
+                    <div className="flex flex-col gap-2 max-w-xs mx-auto">
+                      <a href="https://www.kqzyfj.com/click-101622714-17112391" target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline" className="w-full">Find Flights</Button>
+                      </a>
+                      <a href="https://www.dpbolvw.net/click-101622714-15734399" target="_blank" rel="noopener noreferrer">
+                        <Button variant="outline" className="w-full">Book Hotels on HOTELS.COM®</Button>
+                      </a>
+                      <img src="https://www.ftjcfx.com/image-101622714-15734399" width={1} height={1} border={0} alt="" className="hidden" />
+                    </div>
                   </div>
                 )}
               </CardContent>
