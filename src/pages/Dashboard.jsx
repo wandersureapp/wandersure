@@ -46,7 +46,7 @@ export default function Dashboard() {
   const highRiskTrips = trips.filter(trip => 
     (trip.status === 'active' || trip.status === 'booked') && 
     isFuture(new Date(trip.end_date)) &&
-    trip.risk_assessment?.overall_score > 60
+    trip.risk_assessment?.overall_score > 75
   );
 
   return (
