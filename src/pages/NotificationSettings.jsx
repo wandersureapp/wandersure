@@ -26,7 +26,7 @@ import {
   Ship,
   Train
 } from "lucide-react";
-import { createCheckoutSession } from "@/functions/createCheckoutSession";
+
 import AuthGuard from "../components/AuthGuard";
 import PushNotificationManager from "../components/notifications/PushNotificationManager";
 
@@ -95,46 +95,19 @@ export default function NotificationSettings() {
     saveMutation.mutate(formData);
   };
 
-  const handleUpgrade = async (tier) => {
-    // Direct Stripe checkout using API
-    const priceMapping = {
-      'explorer_monthly': 'price_1SmKSbDAiWHJZCc7EpCFEE0K',
-      'explorer_yearly': 'price_1SkuB1DAiWHJZCc7Qg57Y5zZ',
-      'globetrotter_monthly': 'price_1SmKV1DAiWHJZCc7BJcVEX2Z',
-      'globetrotter_yearly': 'price_1SmKXNDAiWHJZCc7GBL8h8QU'
+  const handleUpgrade = (tier) => {
+    const checkoutUrls = {
+      'explorer_monthly': 'https://buy.stripe.com/4gM8wP7y180G9rnbsL9ws04',
+      'explorer_yearly': 'https://buy.stripe.com/00weVd2dHep47jf7cv9ws03',
+      'globetrotter_monthly': 'https://buy.stripe.com/28E6oH9G9ft8bzvbsL9ws02',
+      'globetrotter_yearly': 'https://buy.stripe.com/8x2eVd05z1CieLH2Wf9ws01'
     };
-    
-    const priceId = priceMapping[tier];
-    const plan = tier.includes('globetrotter') ? 'elite' : 'premium';
-    
-    if (!priceId) {
+
+    const url = checkoutUrls[tier];
+    if (url) {
+      window.location.href = url;
+    } else {
       alert('Invalid plan selected');
-      return;
-    }
-    
-    try {
-      const response = await createCheckoutSession({ 
-        priceId, 
-        plan 
-      });
-      
-      const checkoutUrl = response.data?.url || response.url;
-      
-      if (!checkoutUrl) {
-        console.error('No checkout URL in response:', response);
-        alert('Failed to create checkout session. Please try again in a moment.');
-        return;
-      }
-      
-      window.location.href = checkoutUrl;
-    } catch (error) {
-      console.error('Payment error:', error);
-      // 429 rate limit error - ask user to wait
-      if (error.message?.includes('429') || error.message?.includes('Too Many Requests')) {
-        alert('Please wait a moment and try again. Stripe rate limit reached.');
-      } else {
-        alert(`Payment setup failed: ${error.message || 'Please try again.'}`);
-      }
     }
   };
 
