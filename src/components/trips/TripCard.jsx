@@ -10,8 +10,9 @@ import { format, differenceInDays, isFuture } from "date-fns";
 export default function TripCard({ trip, onDelete }) {
   const getRiskColor = (score) => {
     if (!score) return { bg: "bg-gray-100", text: "text-gray-800" };
-    if (score < 30) return { bg: "bg-green-100", text: "text-green-800" };
-    if (score < 60) return { bg: "bg-yellow-100", text: "text-yellow-800" };
+    if (score <= 25) return { bg: "bg-green-100", text: "text-green-800" };
+    if (score <= 50) return { bg: "bg-yellow-100", text: "text-yellow-800" };
+    if (score <= 75) return { bg: "bg-orange-100", text: "text-orange-800" };
     return { bg: "bg-red-100", text: "text-red-800" };
   };
 

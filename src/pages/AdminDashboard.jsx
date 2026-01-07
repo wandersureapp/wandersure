@@ -90,7 +90,7 @@ export default function AdminDashboard() {
   ).length;
 
   const highRiskTrips = trips.filter(t => 
-    t.risk_assessment?.overall_score > 60
+    t.risk_assessment?.overall_score > 75
   ).length;
 
   const recentUsers = users.slice(0, 10);
@@ -282,14 +282,16 @@ export default function AdminDashboard() {
                         {t.risk_assessment?.overall_score && (
                           <Badge 
                             className={`text-xs ${
-                              t.risk_assessment.overall_score > 60 
+                              t.risk_assessment.overall_score > 75 
                                 ? 'bg-red-100 text-red-700' 
-                                : t.risk_assessment.overall_score > 30 
+                                : t.risk_assessment.overall_score > 50 
+                                ? 'bg-orange-100 text-orange-700'
+                                : t.risk_assessment.overall_score > 25 
                                 ? 'bg-yellow-100 text-yellow-700'
                                 : 'bg-green-100 text-green-700'
                             }`}
                           >
-                            Risk: {t.risk_assessment.overall_score}
+                            Risk: {Math.round(t.risk_assessment.overall_score)}
                           </Badge>
                         )}
                       </div>
