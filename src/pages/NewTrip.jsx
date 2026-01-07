@@ -11,6 +11,7 @@ import { getGmailAuthUrl } from "@/functions/getGmailAuthUrl";
 
 import TripBasicInfo from "../components/trip/TripBasicInfo";
 import TripTravelDetails from "../components/trip/TripTravelDetails";
+import { trackEvent } from "../components/analytics/MetaPixel";
 
 export default function NewTrip() {
   const navigate = useNavigate();
@@ -44,6 +45,13 @@ export default function NewTrip() {
     mutationFn: async (data) => {
       const trip = await base44.entities.Trip.create(data);
       setCreatedTripId(trip.id);
+      
+      trackEvent('Lead', {
+        content_name: 'Trip Created',
+        content_category: 'trip',
+        value: data.trip_cost || 0,
+        currency: 'USD'
+      });
       
       setIsAnalyzing(true);
       const riskAnalysis = await analyzeRisk(trip);
