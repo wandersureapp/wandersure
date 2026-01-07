@@ -26,6 +26,8 @@ import RiskGauges from "../components/trip/RiskGauges";
 import InsuranceRecommendations from "../components/trip/InsuranceRecommendations";
 import EnableAlertsPrompt from "../components/trip/EnableAlertsPrompt";
 import AlertList from "../components/alerts/AlertList";
+import SocialShare from "../components/social/SocialShare";
+import { trackEvent } from "../components/analytics/MetaPixel";
 
 export default function TripDetail() {
   const navigate = useNavigate();
@@ -37,6 +39,18 @@ export default function TripDetail() {
     queryFn: () => base44.entities.Trip.list().then(trips => trips.find(t => t.id === tripId)),
     enabled: !!tripId
   });
+
+  React.useEffect(() => {
+    if (trip) {
+      trackEvent('ViewContent', {
+        content_name: trip.trip_name,
+        content_category: 'trip',
+        content_ids: [trip.id],
+        value: trip.trip_cost || 0,
+        currency: 'USD'
+      });
+    }
+  }, [trip]);
 
   if (isLoading) {
     return (
@@ -174,6 +188,13 @@ export default function TripDetail() {
           {/* Left Column - Risk Assessment */}
           <div className="lg:col-span-2 space-y-6">
             <EnableAlertsPrompt trip={trip} />
+
+            {/* Social Share */}
+            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-purple-50">
+              <CardContent className="p-6">
+                <SocialShare trip={trip} />
+              </CardContent>
+            </Card>
 
             {/* Recent Alerts */}
             <Card className="border-none shadow-lg">

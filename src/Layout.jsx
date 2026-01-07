@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import MetaPixel from "./components/analytics/MetaPixel";
 
 export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -20,12 +21,17 @@ export default function Layout({ children, currentPageName }) {
   // Public pages that don't need the layout
   const publicPages = ['Home', 'PrivacyPolicy', 'TermsOfService', 'Legal'];
   if (publicPages.includes(currentPageName)) {
-    return children;
-  }
+    return (
+      <>
+        <MetaPixel />
+        {children}
+      </>
+    );
+    }
 
-  React.useEffect(() => {
+    React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));
-  }, []);
+    }, []);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -49,8 +55,10 @@ export default function Layout({ children, currentPageName }) {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
-      <style>{`
+    <>
+      <MetaPixel />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+        <style>{`
         :root {
           --primary-50: #eff6ff;
           --primary-100: #dbeafe;
@@ -232,10 +240,12 @@ export default function Layout({ children, currentPageName }) {
             <div className="flex gap-6 text-sm text-gray-500">
               <Link to={createPageUrl("Legal")} className="hover:text-blue-600 transition-colors">Privacy & Terms</Link>
               <a href="mailto:support@wandersure.com" className="hover:text-blue-600 transition-colors">Support</a>
+              <a href="https://www.facebook.com/profile.php?id=61586342544620" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600 transition-colors">Facebook</a>
             </div>
           </div>
         </div>
       </footer>
-    </div>
-  );
-}
+      </div>
+      </>
+      );
+      }
