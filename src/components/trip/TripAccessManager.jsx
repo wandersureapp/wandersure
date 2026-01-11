@@ -37,20 +37,8 @@ export default function TripAccessManager({ trip }) {
   const hasOneTimeAccess = !!tripAccess;
   const hasAnyAccess = hasSubscription || hasOneTimeAccess;
 
-  const handlePurchase = async (plan, amount, priceId) => {
-    setLoading(true);
-    try {
-      const { data } = await createCheckoutSession({
-        priceId,
-        plan,
-        tripId: trip.id
-      });
-      window.location.href = data.url;
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Failed to start checkout. Please try again.');
-      setLoading(false);
-    }
+  const handlePurchase = (url) => {
+    window.location.href = url;
   };
 
   if (hasSubscription) {
@@ -103,12 +91,11 @@ export default function TripAccessManager({ trip }) {
                 Add SMS alerts, priority support, and escalation for just <strong>+$10</strong> ($29.99 total)
               </p>
               <Button 
-                onClick={() => handlePurchase('globetrotter', 29.99, 'price_GLOBETROTTER_ONETIME')}
-                disabled={loading}
+                onClick={() => handlePurchase('https://buy.stripe.com/dRm5kDdWpa8O6fb2Wf9ws06')}
                 className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
               >
                 <Crown className="w-4 h-4 mr-2" />
-                {loading ? 'Processing...' : 'Upgrade to Globetrotter (+$10)'}
+                Upgrade to Globetrotter (+$10)
               </Button>
             </div>
           )}
@@ -161,12 +148,11 @@ export default function TripAccessManager({ trip }) {
               ✓ Coverage through {new Date(new Date(trip.end_date).getTime() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString()}
             </p>
             <Button 
-              onClick={() => handlePurchase('explorer', 19.99, 'price_1QomwOKHr9Xz6M8pQOuN7W9i')}
-              disabled={loading}
+              onClick={() => handlePurchase('https://buy.stripe.com/fZu28r19D5Sy1YVeEX9ws05')}
               className="w-full bg-blue-600 hover:bg-blue-700"
             >
               <Zap className="w-4 h-4 mr-2" />
-              {loading ? 'Processing...' : 'Get Explorer Access - $19.99'}
+              Get Explorer Access - $19.99
             </Button>
           </div>
 
@@ -185,12 +171,11 @@ export default function TripAccessManager({ trip }) {
               ✓ Coverage through {new Date(new Date(trip.end_date).getTime() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString()}
             </p>
             <Button 
-              onClick={() => handlePurchase('globetrotter', 29.99, 'price_GLOBETROTTER_ONETIME')}
-              disabled={loading}
+              onClick={() => handlePurchase('https://buy.stripe.com/dRm5kDdWpa8O6fb2Wf9ws06')}
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
               <Crown className="w-4 h-4 mr-2" />
-              {loading ? 'Processing...' : 'Get Globetrotter Access - $29.99'}
+              Get Globetrotter Access - $29.99
             </Button>
           </div>
         </div>
