@@ -162,6 +162,53 @@ export default function NotificationSettings() {
           </div>
         </div>
 
+        {/* One-Time Trip Payment Option */}
+        <Card className="mb-8 border-2 border-purple-300 bg-gradient-to-br from-purple-50 to-pink-50">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+                <Sparkles className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h3 className="text-xl font-bold text-gray-900">One-Time Trip Monitoring</h3>
+                <p className="text-sm text-gray-600">Pay per trip, no subscription needed</p>
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4 mb-4">
+              <div className="p-4 bg-white rounded-lg border-2 border-blue-300">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-bold text-gray-900">Explorer - One Trip</p>
+                  <Badge className="bg-blue-600 text-white">$19.99</Badge>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">
+                  ✓ Real-time alerts for ONE trip<br />
+                  ✓ Hourly monitoring until 3 days after trip<br />
+                  ✓ Flight, weather, hotel tracking
+                </p>
+              </div>
+
+              <div className="p-4 bg-white rounded-lg border-2 border-purple-300">
+                <div className="flex items-center justify-between mb-2">
+                  <p className="font-bold text-gray-900">Globetrotter - One Trip</p>
+                  <Badge className="bg-purple-600 text-white">$29.99</Badge>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">
+                  ✓ Everything in Explorer<br />
+                  ✓ SMS critical alerts<br />
+                  ✓ Priority support & escalation
+                </p>
+              </div>
+            </div>
+
+            <div className="p-3 bg-blue-50 border border-blue-300 rounded-lg">
+              <p className="text-sm text-gray-700">
+                💡 <strong>How it works:</strong> Select any trip from your dashboard, then choose Explorer or Globetrotter access. Perfect for occasional travelers!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Three-Tier Comparison */}
         <div className="grid lg:grid-cols-3 gap-6 mb-8">
           {/* Free Tier */}
