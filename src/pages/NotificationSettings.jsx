@@ -181,11 +181,17 @@ export default function NotificationSettings() {
                   <p className="font-bold text-gray-900">Explorer - One Trip</p>
                   <Badge className="bg-blue-600 text-white">$19.99</Badge>
                 </div>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-xs text-gray-600 mb-3">
                   ✓ Real-time alerts for ONE trip<br />
                   ✓ Hourly monitoring until 3 days after trip<br />
                   ✓ Flight, weather, hotel tracking
                 </p>
+                <Button 
+                  onClick={() => window.location.href = 'https://buy.stripe.com/fZu28r19D5Sy1YVeEX9ws05'}
+                  className="w-full bg-blue-600 hover:bg-blue-700"
+                >
+                  Purchase Explorer - $19.99
+                </Button>
               </div>
 
               <div className="p-4 bg-white rounded-lg border-2 border-purple-300">
@@ -193,11 +199,17 @@ export default function NotificationSettings() {
                   <p className="font-bold text-gray-900">Globetrotter - One Trip</p>
                   <Badge className="bg-purple-600 text-white">$29.99</Badge>
                 </div>
-                <p className="text-xs text-gray-600 mb-2">
+                <p className="text-xs text-gray-600 mb-3">
                   ✓ Everything in Explorer<br />
                   ✓ SMS critical alerts<br />
                   ✓ Priority support & escalation
                 </p>
+                <Button 
+                  onClick={() => window.location.href = 'https://buy.stripe.com/dRm5kDdWpa8O6fb2Wf9ws06'}
+                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                >
+                  Purchase Globetrotter - $29.99
+                </Button>
               </div>
             </div>
 
