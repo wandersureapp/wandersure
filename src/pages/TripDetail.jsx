@@ -27,6 +27,7 @@ import InsuranceRecommendations from "../components/trip/InsuranceRecommendation
 import EnableAlertsPrompt from "../components/trip/EnableAlertsPrompt";
 import AlertList from "../components/alerts/AlertList";
 import SocialShare from "../components/social/SocialShare";
+import TripAccessManager from "../components/trip/TripAccessManager";
 import { trackEvent } from "../components/analytics/MetaPixel";
 
 export default function TripDetail() {
@@ -187,6 +188,9 @@ export default function TripDetail() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Risk Assessment */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Trip Access Manager */}
+            <TripAccessManager trip={trip} />
+
             <EnableAlertsPrompt trip={trip} />
 
             {/* Social Share */}
