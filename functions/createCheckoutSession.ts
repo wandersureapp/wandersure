@@ -12,13 +12,15 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { priceId, plan, productId } = await req.json();
+        const { priceId, plan, productId, tripId } = await req.json();
 
         if (!priceId) {
             return Response.json({ error: 'Price ID required' }, { status: 400 });
         }
 
-        console.log('Creating checkout session with:', { priceId, plan, user_email: user.email });
+        console.log('Creating checkout session with:', { priceId, plan, tripId, user_email: user.email });
+
+        const isOneTimeTrip = tripId && !productId;
 
         const session = await stripe.checkout.sessions.create({
             customer_email: user.email,
@@ -28,17 +30,23 @@ Deno.serve(async (req) => {
                     quantity: 1,
                 },
             ],
-            mode: productId ? 'payment' : 'subscription',
-            success_url: productId 
-                ? `${req.headers.get('origin')}/TravelAides?success=true`
-                : `${req.headers.get('origin')}/NotificationSettings?success=true`,
-            cancel_url: productId
-                ? `${req.headers.get('origin')}/TravelAides?canceled=true`
-                : `${req.headers.get('origin')}/NotificationSettings?canceled=true`,
+            mode: (productId || isOneTimeTrip) ? 'payment' : 'subscription',
+            success_url: isOneTimeTrip
+                ? `${req.headers.get('origin')}/TripDetail?id=${tripId}&access=success`
+                : productId 
+                    ? `${req.headers.get('origin')}/TravelAides?success=true`
+                    : `${req.headers.get('origin')}/NotificationSettings?success=true`,
+            cancel_url: isOneTimeTrip
+                ? `${req.headers.get('origin')}/TripDetail?id=${tripId}&access=canceled`
+                : productId
+                    ? `${req.headers.get('origin')}/TravelAides?canceled=true`
+                    : `${req.headers.get('origin')}/NotificationSettings?canceled=true`,
             metadata: {
                 user_email: user.email,
                 plan: plan || 'explorer',
-                product_id: productId || ''
+                product_id: productId || '',
+                trip_id: tripId || '',
+                payment_type: isOneTimeTrip ? 'one_time_trip' : (productId ? 'one_time_product' : 'subscription')
             }
         });
 
