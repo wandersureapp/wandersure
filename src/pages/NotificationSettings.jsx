@@ -35,16 +35,22 @@ export default function NotificationSettings() {
   const [user, setUser] = useState(null);
 
   React.useEffect(() => {
-    base44.auth.me().then(setUser);
+    base44.auth.me()
+      .then(setUser)
+      .catch(() => {
+        window.location.href = '/';
+      });
   }, []);
 
   const { data: preferences, isLoading } = useQuery({
     queryKey: ['notification-preferences'],
     queryFn: async () => {
+      if (!user?.email) return null;
       const prefs = await base44.entities.UserNotificationPreferences.list();
       return prefs.find(p => p.user_email === user?.email) || null;
     },
-    enabled: !!user
+    enabled: !!user?.email,
+    retry: 1
   });
 
   const [formData, setFormData] = useState({
