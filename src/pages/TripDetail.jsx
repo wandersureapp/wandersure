@@ -35,10 +35,19 @@ export default function TripDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const tripId = urlParams.get('id');
 
-  const { data: trip, isLoading } = useQuery({
+  const { data: trip, isLoading, error } = useQuery({
     queryKey: ['trip', tripId],
-    queryFn: () => base44.entities.Trip.list().then(trips => trips.find(t => t.id === tripId)),
-    enabled: !!tripId
+    queryFn: async () => {
+      if (!tripId) return null;
+      const trips = await base44.entities.Trip.list();
+      const foundTrip = trips.find(t => t.id === tripId);
+      if (!foundTrip) {
+        console.error('Trip not found. Trip ID:', tripId, 'Available trips:', trips.length);
+      }
+      return foundTrip || null;
+    },
+    enabled: !!tripId,
+    retry: 1
   });
 
   React.useEffect(() => {
