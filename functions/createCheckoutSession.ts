@@ -32,15 +32,15 @@ Deno.serve(async (req) => {
             ],
             mode: (productId || isOneTimeTrip) ? 'payment' : 'subscription',
             success_url: isOneTimeTrip
-                ? `${req.headers.get('origin')}/TripDetail?id=${tripId}&access=success`
+                ? `${Deno.env.get('APP_URL')}/TripDetail?id=${tripId}&access=success`
                 : productId 
-                    ? `${req.headers.get('origin')}/TravelAides?success=true`
-                    : `${req.headers.get('origin')}/NotificationSettings?success=true`,
+                    ? `${Deno.env.get('APP_URL')}/TravelAides?success=true`
+                    : `${Deno.env.get('APP_URL')}/NotificationSettings?success=true`,
             cancel_url: isOneTimeTrip
-                ? `${req.headers.get('origin')}/TripDetail?id=${tripId}&access=canceled`
+                ? `${Deno.env.get('APP_URL')}/TripDetail?id=${tripId}&access=canceled`
                 : productId
-                    ? `${req.headers.get('origin')}/TravelAides?canceled=true`
-                    : `${req.headers.get('origin')}/NotificationSettings?canceled=true`,
+                    ? `${Deno.env.get('APP_URL')}/TravelAides?canceled=true`
+                    : `${Deno.env.get('APP_URL')}/NotificationSettings?canceled=true`,
             metadata: {
                 user_email: user.email,
                 plan: plan || 'explorer',
