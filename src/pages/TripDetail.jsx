@@ -116,7 +116,15 @@ export default function TripDetail() {
     return { bg: 'bg-red-100 border-red-300', text: 'text-red-600', label: 'Critical' };
   };
 
-  const daysUntil = differenceInDays(new Date(trip.start_date), new Date());
+  const safeDate = (dateString) => {
+    if (!dateString) return null;
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) ? null : date;
+  };
+
+  const daysUntil = trip.start_date && safeDate(trip.start_date) 
+    ? differenceInDays(safeDate(trip.start_date), new Date()) 
+    : 0;
 
   return (
     <div className="min-h-screen py-8">
