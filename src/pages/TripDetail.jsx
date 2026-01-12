@@ -39,15 +39,17 @@ export default function TripDetail() {
     queryKey: ['trip', tripId],
     queryFn: async () => {
       if (!tripId) return null;
-      const trips = await base44.entities.Trip.list();
-      const foundTrip = trips.find(t => t.id === tripId);
-      if (!foundTrip) {
-        console.error('Trip not found. Trip ID:', tripId, 'Available trips:', trips.length);
+      try {
+        const trips = await base44.entities.Trip.filter({ id: tripId });
+        return trips[0] || null;
+      } catch (err) {
+        console.error('Error fetching trip:', err);
+        throw err;
       }
-      return foundTrip || null;
     },
     enabled: !!tripId,
-    retry: 1
+    retry: 2,
+    staleTime: 30000
   });
 
   React.useEffect(() => {
