@@ -26,7 +26,7 @@ Deno.serve(async (req) => {
         const searchQuery = '(subject:(confirmation OR itinerary OR booking OR reservation) (flight OR hotel OR car OR rental OR cruise)) OR from:(expedia.com OR booking.com OR hotels.com OR kayak.com OR priceline.com OR airbnb.com OR vrbo.com OR united.com OR delta.com OR aa.com OR southwest.com OR jetblue.com OR spirit.com OR alaskaair.com OR marriott.com OR hilton.com OR hyatt.com OR ihg.com OR hertz.com OR enterprise.com OR avis.com OR budget.com OR carnival.com OR royalcaribbean.com OR ncl.com) newer_than:90d';
         
         const searchResponse = await fetch(
-            `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(searchQuery)}&maxResults=50`,
+            `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(searchQuery)}&maxResults=20`,
             {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
