@@ -73,6 +73,20 @@ export default function TripDetail() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-600 mb-2">Error loading trip</p>
+          <p className="text-sm text-gray-600 mb-4">{error.message}</p>
+          <Button onClick={() => navigate(createPageUrl("Dashboard"))} className="mt-4">
+            Return to Dashboard
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
   if (!trip) {
     return (
       <div className="min-h-screen flex items-center justify-center">
