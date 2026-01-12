@@ -21,15 +21,33 @@ Deno.serve(async (req) => {
         return Response.json({ error: 'Invalid signature' }, { status: 400 });
     }
 
+    console.log('Webhook received event type:', event.type);
+    
     if (event.type === 'checkout.session.completed') {
         const session = event.data.object;
-        const userEmail = session.metadata.user_email;
+        console.log('Checkout session completed:', {
+            session_id: session.id,
+            customer_email: session.customer_email,
+            metadata: session.metadata,
+            amount_total: session.amount_total,
+            payment_status: session.payment_status
+        });
+        
+        const userEmail = session.metadata.user_email || session.customer_email;
         const paymentType = session.metadata.payment_type;
         const tripId = session.metadata.trip_id;
+
+        console.log('Extracted data:', { userEmail, paymentType, tripId });
+
+        if (!userEmail) {
+            console.error('No user email found in session');
+            return Response.json({ error: 'No user email' }, { status: 400 });
+        }
 
         try {
             // Handle one-time trip purchase
             if (paymentType === 'one_time_trip' && tripId) {
+                console.log('Processing one-time trip purchase for trip:', tripId);
                 const trips = await base44.asServiceRole.entities.Trip.filter({ id: tripId });
                 if (trips.length === 0) {
                     console.error('Trip not found:', tripId);
@@ -41,7 +59,16 @@ Deno.serve(async (req) => {
                 const accessEndDate = new Date(trip.end_date);
                 accessEndDate.setDate(accessEndDate.getDate() + 3);
 
-                await base44.asServiceRole.entities.TripAccess.create({
+                console.log('Creating TripAccess record:', {
+                    trip_id: tripId,
+                    user_email: userEmail,
+                    access_level: plan === 'globetrotter' ? 'globetrotter' : 'explorer',
+                    payment_type: 'one_time',
+                    amount_paid: session.amount_total / 100,
+                    access_end_date: accessEndDate.toISOString()
+                });
+
+                const accessRecord = await base44.asServiceRole.entities.TripAccess.create({
                     trip_id: tripId,
                     user_email: userEmail,
                     access_level: plan === 'globetrotter' ? 'globetrotter' : 'explorer',
@@ -52,8 +79,9 @@ Deno.serve(async (req) => {
                     access_end_date: accessEndDate.toISOString()
                 });
 
+                console.log(`✅ TripAccess record created successfully:`, accessRecord);
                 console.log(`One-time ${plan} access activated for trip ${tripId} for ${userEmail}`);
-                return Response.json({ received: true });
+                return Response.json({ received: true, access_granted: true });
             }
 
             // Handle subscription purchase
