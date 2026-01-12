@@ -66,7 +66,13 @@ export default function NewTrip() {
     },
     onSuccess: (trip) => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
+      setIsAnalyzing(false);
       navigate(createPageUrl(`TripDetail?id=${trip.id}`));
+    },
+    onError: (error) => {
+      console.error('Trip creation error:', error);
+      setIsAnalyzing(false);
+      alert('Failed to create trip. Please try again.');
     }
   });
 
