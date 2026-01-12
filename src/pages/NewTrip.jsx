@@ -43,36 +43,52 @@ export default function NewTrip() {
 
   const createTripMutation = useMutation({
     mutationFn: async (data) => {
-      const trip = await base44.entities.Trip.create(data);
-      setCreatedTripId(trip.id);
-      
-      trackEvent('Lead', {
-        content_name: 'Trip Created',
-        content_category: 'trip',
-        value: data.trip_cost || 0,
-        currency: 'USD'
-      });
-      
-      setIsAnalyzing(true);
-      const riskAnalysis = await analyzeRisk(trip);
-      
-      await base44.entities.Trip.update(trip.id, {
-        risk_assessment: riskAnalysis.risk_assessment,
-        recommended_coverage: riskAnalysis.recommended_coverage,
-        risk_details: riskAnalysis.risk_details
-      });
-      
-      return trip;
+      try {
+        const trip = await base44.entities.Trip.create(data);
+        setCreatedTripId(trip.id);
+        
+        trackEvent('Lead', {
+          content_name: 'Trip Created',
+          content_category: 'trip',
+          value: data.trip_cost || 0,
+          currency: 'USD'
+        });
+        
+        setIsAnalyzing(true);
+        
+        try {
+          const riskAnalysis = await Promise.race([
+            analyzeRisk(trip),
+            new Promise((_, reject) => 
+              setTimeout(() => reject(new Error('Risk analysis timeout')), 60000)
+            )
+          ]);
+          
+          await base44.entities.Trip.update(trip.id, {
+            risk_assessment: riskAnalysis.risk_assessment,
+            recommended_coverage: riskAnalysis.recommended_coverage,
+            risk_details: riskAnalysis.risk_details
+          });
+        } catch (analysisError) {
+          console.error('Risk analysis failed:', analysisError);
+          // Trip still created, just navigate without risk data
+        }
+        
+        return trip;
+      } catch (error) {
+        console.error('Trip creation failed:', error);
+        throw error;
+      }
     },
     onSuccess: (trip) => {
-      queryClient.invalidateQueries({ queryKey: ['trips'] });
       setIsAnalyzing(false);
+      queryClient.invalidateQueries({ queryKey: ['trips'] });
       navigate(createPageUrl(`TripDetail?id=${trip.id}`));
     },
     onError: (error) => {
-      console.error('Trip creation error:', error);
+      console.error('Trip mutation error:', error);
       setIsAnalyzing(false);
-      alert('Failed to create trip. Please try again.');
+      alert('Failed to create trip: ' + (error.message || 'Unknown error'));
     }
   });
 
