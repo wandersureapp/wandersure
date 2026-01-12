@@ -28,26 +28,36 @@ export default function TripAccessManager({ trip }) {
     queryKey: ['trip-access', trip.id, user?.email],
     queryFn: async () => {
       if (!user?.email) return null;
-      const access = await base44.entities.TripAccess.filter({ 
-        trip_id: trip.id,
-        user_email: user.email
-      });
-      const validAccess = access.find(a => new Date(a.access_end_date) > new Date());
-      console.log('Trip access check:', { trip_id: trip.id, user_email: user.email, found: access.length, valid: !!validAccess });
-      return validAccess || null;
+      try {
+        const access = await base44.entities.TripAccess.filter({ 
+          trip_id: trip.id,
+          user_email: user.email
+        });
+        console.log('Trip access check - All records:', access);
+        const validAccess = access.find(a => new Date(a.access_end_date) > new Date());
+        console.log('Trip access check - Valid access:', validAccess);
+        return validAccess || null;
+      } catch (err) {
+        console.error('Error fetching trip access:', err);
+        return null;
+      }
     },
     enabled: !!user?.email,
     staleTime: 0,
-    refetchOnMount: true
+    refetchOnMount: 'always'
   });
 
   React.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get('access') === 'success') {
-      console.log('Payment success detected, refetching access...');
-      setTimeout(() => {
-        refetchAccess();
-      }, 1000);
+      console.log('Payment success detected, refetching access in 2 seconds...');
+      const intervals = [1000, 2000, 3000, 5000];
+      intervals.forEach(delay => {
+        setTimeout(() => {
+          console.log('Refetching access...');
+          refetchAccess();
+        }, delay);
+      });
     }
   }, [refetchAccess]);
 
