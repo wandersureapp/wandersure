@@ -199,7 +199,9 @@ export default function TripDetail() {
                 <div>
                   <p className="text-sm text-gray-600">Duration</p>
                   <p className="text-lg font-semibold">
-                    {differenceInDays(new Date(trip.end_date), new Date(trip.start_date))} days
+                    {trip.start_date && trip.end_date && safeDate(trip.start_date) && safeDate(trip.end_date)
+                      ? `${differenceInDays(safeDate(trip.end_date), safeDate(trip.start_date))} days`
+                      : 'TBD'}
                   </p>
                 </div>
               </div>
