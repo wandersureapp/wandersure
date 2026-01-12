@@ -22,8 +22,8 @@ Deno.serve(async (req) => {
             }, { status: 401 });
         }
 
-        // Search for ANY confirmation/itinerary emails - broader search to catch all travel bookings
-        const searchQuery = 'subject:(confirmation OR itinerary OR booking OR reservation) (flight OR hotel OR airline OR travel OR trip) newer_than:90d';
+        // Search for ANY travel-related emails in the last 90 days
+        const searchQuery = '{confirmation itinerary booking reservation receipt travel trip flight airline hotel} newer_than:90d';
         
         const searchResponse = await fetch(
             `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(searchQuery)}&maxResults=20`,
@@ -54,9 +54,9 @@ Deno.serve(async (req) => {
             });
         }
 
-        // Get full email content for each message
+        // Get full email content for each message (limit to 30 most recent)
         const emailContents = [];
-        for (const message of searchData.messages.slice(0, 10)) {
+        for (const message of searchData.messages.slice(0, 30)) {
             const emailResponse = await fetch(
                 `https://gmail.googleapis.com/gmail/v1/users/me/messages/${message.id}?format=full`,
                 {
