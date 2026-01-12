@@ -155,7 +155,9 @@ export default function TripDetail() {
                   <div className="flex items-center gap-2">
                     <Calendar className="w-5 h-5" />
                     <span>
-                      {format(new Date(trip.start_date), "MMM d")} - {format(new Date(trip.end_date), "MMM d, yyyy")}
+                      {trip.start_date && safeDate(trip.start_date) && trip.end_date && safeDate(trip.end_date)
+                        ? `${format(safeDate(trip.start_date), "MMM d")} - ${format(safeDate(trip.end_date), "MMM d, yyyy")}`
+                        : 'Dates TBD'}
                     </span>
                   </div>
                 </div>
