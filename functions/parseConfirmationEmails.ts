@@ -22,9 +22,8 @@ Deno.serve(async (req) => {
             }, { status: 401 });
         }
 
-        // Search for ANY emails with travel booking information in the last 180 days
-        // Searches both subject and body for booking keywords
-        const searchQuery = '{confirmation booking itinerary reservation receipt travel trip airline flight hotel airbnb vrbo rental car hertz enterprise budget avis cruise carnival royal norwegian train amtrak expedia priceline kayak travelocity orbitz booking.com hotels.com united delta american southwest jetblue spirit frontier alaska hawaiian lufthansa british airways air france klm marriott hilton hyatt ihg best western holiday inn doubletree hampton courtyard residence sheraton westin} newer_than:180d';
+        // Search for confirmation emails from known travel providers only
+        const searchQuery = '(subject:(confirmation OR itinerary OR booking OR reservation) (flight OR hotel OR car OR rental OR cruise)) OR from:(expedia.com OR booking.com OR hotels.com OR kayak.com OR priceline.com OR airbnb.com OR vrbo.com OR united.com OR delta.com OR aa.com OR southwest.com OR jetblue.com OR spirit.com OR alaskaair.com OR marriott.com OR hilton.com OR hyatt.com OR ihg.com OR hertz.com OR enterprise.com OR avis.com OR budget.com OR carnival.com OR royalcaribbean.com OR ncl.com) newer_than:90d';
         
         const searchResponse = await fetch(
             `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(searchQuery)}&maxResults=50`,
