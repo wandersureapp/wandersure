@@ -37,9 +37,7 @@ export default function NotificationSettings() {
   React.useEffect(() => {
     base44.auth.me()
       .then(setUser)
-      .catch(() => {
-        window.location.href = '/';
-      });
+      .catch(() => setUser(null));
   }, []);
 
   const { data: preferences, isLoading } = useQuery({
