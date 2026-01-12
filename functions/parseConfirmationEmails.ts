@@ -89,14 +89,23 @@ Deno.serve(async (req) => {
 
         // Use AI to extract booking information
         const extractedData = await base44.integrations.Core.InvokeLLM({
-            prompt: `Extract all travel booking information from these confirmation emails. Look for:
-- Flight numbers, airlines, departure/arrival times and airports
-- Hotel names, addresses, confirmation/booking numbers
-- Rental car companies, pickup/dropoff locations, confirmation numbers
-- Cruise lines, ship names, booking numbers
-- Train/rail bookings
+            prompt: `You are a travel booking parser. Extract ONLY confirmed travel bookings from these emails. 
 
-Emails:
+CRITICAL RULES:
+- ONLY extract if the email is a booking confirmation with a confirmation/booking number
+- DO NOT extract if email is just marketing, newsletter, or general information
+- DO NOT extract if someone mentions travel/cruise/hotel in passing conversation
+- ONLY extract from known travel booking providers (airlines, hotels, car rental companies, etc.)
+
+Look for actual bookings with:
+- Flight numbers, airlines, departure/arrival times and airports + confirmation number
+- Hotel names, addresses, check-in/out dates + booking number
+- Rental car companies, pickup/dropoff locations + confirmation number
+- Cruise bookings with cruise line, ship name, departure date + booking number
+
+If an email does NOT have a confirmation/booking number, DO NOT extract it as a booking.
+
+Emails to analyze:
 ${emailContents.map((e, i) => `
 Email ${i + 1}:
 From: ${e.from}
@@ -104,7 +113,7 @@ Subject: ${e.subject}
 Body: ${e.body}
 `).join('\n---\n')}
 
-Extract all relevant booking details.`,
+Return ONLY actual confirmed bookings with confirmation numbers.`,
             response_json_schema: {
                 type: "object",
                 properties: {
