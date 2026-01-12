@@ -16,10 +16,24 @@ export default function MyTrips() {
   const [filterStatus, setFilterStatus] = useState("all");
   const queryClient = useQueryClient();
 
-  const { data: trips = [], isLoading } = useQuery({
+  const { data: trips = [], isLoading, error } = useQuery({
     queryKey: ['trips'],
     queryFn: () => base44.entities.Trip.list('-created_date'),
+    retry: 1
   });
+
+  if (error) {
+    return (
+      <AuthGuard>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <p className="text-red-600 mb-4">Error loading trips: {error.message}</p>
+            <Button onClick={() => window.location.reload()}>Reload Page</Button>
+          </div>
+        </div>
+      </AuthGuard>
+    );
+  }
 
   const deleteMutation = useMutation({
     mutationFn: (tripId) => base44.entities.Trip.delete(tripId),
