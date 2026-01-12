@@ -24,14 +24,32 @@ export default function TripAccessManager({ trip }) {
     enabled: !!user
   });
 
-  const { data: tripAccess } = useQuery({
-    queryKey: ['trip-access', trip.id],
+  const { data: tripAccess, refetch: refetchAccess } = useQuery({
+    queryKey: ['trip-access', trip.id, user?.email],
     queryFn: async () => {
-      const access = await base44.entities.TripAccess.filter({ trip_id: trip.id });
-      return access.find(a => a.user_email === user?.email && new Date(a.access_end_date) > new Date()) || null;
+      if (!user?.email) return null;
+      const access = await base44.entities.TripAccess.filter({ 
+        trip_id: trip.id,
+        user_email: user.email
+      });
+      const validAccess = access.find(a => new Date(a.access_end_date) > new Date());
+      console.log('Trip access check:', { trip_id: trip.id, user_email: user.email, found: access.length, valid: !!validAccess });
+      return validAccess || null;
     },
-    enabled: !!user
+    enabled: !!user?.email,
+    staleTime: 0,
+    refetchOnMount: true
   });
+
+  React.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('access') === 'success') {
+      console.log('Payment success detected, refetching access...');
+      setTimeout(() => {
+        refetchAccess();
+      }, 1000);
+    }
+  }, [refetchAccess]);
 
   const hasSubscription = preferences?.subscription_tier === 'premium' || preferences?.subscription_tier === 'elite';
   const hasOneTimeAccess = !!tripAccess;
