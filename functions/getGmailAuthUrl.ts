@@ -10,7 +10,8 @@ Deno.serve(async (req) => {
         }
 
         const clientId = Deno.env.get('GOOGLE_OAUTH_CLIENT_ID');
-        const redirectUri = `${new URL(req.url).origin}/gmail-callback`;
+        const appUrl = Deno.env.get('APP_URL');
+        const redirectUri = `${appUrl}/GmailCallback`;
         const scope = 'https://www.googleapis.com/auth/gmail.readonly';
 
         const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` +
