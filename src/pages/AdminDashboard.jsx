@@ -17,11 +17,11 @@ import { format, subDays, isAfter } from "date-fns";
 import AuthGuard from "../components/AuthGuard";
 
 export default function AdminDashboard() {
-  const [user, setUser] = React.useState(null);
-
-  React.useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => setUser(null));
-  }, []);
+  const { data: user, isLoading: userLoading } = useQuery({
+    queryKey: ['current-user'],
+    queryFn: () => base44.auth.me(),
+    retry: 1
+  });
 
   const { data: users = [] } = useQuery({
     queryKey: ['admin-users'],
@@ -46,6 +46,19 @@ export default function AdminDashboard() {
     queryFn: () => base44.entities.Recommendation.list('-created_date'),
     enabled: user?.role === 'admin'
   });
+
+  if (userLoading) {
+    return (
+      <AuthGuard>
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading...</p>
+          </div>
+        </div>
+      </AuthGuard>
+    );
+  }
 
   if (!user || user.role !== 'admin') {
     return (
