@@ -22,8 +22,8 @@ Deno.serve(async (req) => {
             }, { status: 401 });
         }
 
-        // Search for travel confirmation emails in the last 90 days
-        const searchQuery = 'subject:(confirmation OR booking OR itinerary OR reservation) (flight OR hotel OR rental OR cruise OR train) newer_than:90d';
+        // Search for travel confirmation emails in the last 180 days
+        const searchQuery = '(confirmation OR booking OR itinerary OR reservation OR receipt) (flight OR airline OR hotel OR airbnb OR vrbo OR rental OR car OR hertz OR enterprise OR budget OR cruise OR train OR amtrak OR trip) newer_than:180d';
         
         const searchResponse = await fetch(
             `https://gmail.googleapis.com/gmail/v1/users/me/messages?q=${encodeURIComponent(searchQuery)}&maxResults=50`,
