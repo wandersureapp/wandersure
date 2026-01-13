@@ -2,7 +2,6 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, PlaneTakeoff, Shield, Bell, Menu, X, LogOut, User } from "lucide-react";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import {
