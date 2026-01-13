@@ -117,21 +117,37 @@ export default function AdminDashboard() {
   const last7Days = subDays(new Date(), 7);
   const last30Days = subDays(new Date(), 30);
 
-  const newUsersLast7Days = users.filter(u => 
-    isAfter(new Date(u.created_date), last7Days)
-  ).length;
+  const newUsersLast7Days = users.filter(u => {
+    try {
+      return u.created_date && isAfter(new Date(u.created_date), last7Days);
+    } catch {
+      return false;
+    }
+  }).length;
 
-  const newUsersLast30Days = users.filter(u => 
-    isAfter(new Date(u.created_date), last30Days)
-  ).length;
+  const newUsersLast30Days = users.filter(u => {
+    try {
+      return u.created_date && isAfter(new Date(u.created_date), last30Days);
+    } catch {
+      return false;
+    }
+  }).length;
 
-  const tripsLast7Days = trips.filter(t => 
-    isAfter(new Date(t.created_date), last7Days)
-  ).length;
+  const tripsLast7Days = trips.filter(t => {
+    try {
+      return t.created_date && isAfter(new Date(t.created_date), last7Days);
+    } catch {
+      return false;
+    }
+  }).length;
 
-  const tripsLast30Days = trips.filter(t => 
-    isAfter(new Date(t.created_date), last30Days)
-  ).length;
+  const tripsLast30Days = trips.filter(t => {
+    try {
+      return t.created_date && isAfter(new Date(t.created_date), last30Days);
+    } catch {
+      return false;
+    }
+  }).length;
 
   const checklistRevenue = purchases.reduce((sum, p) => sum + (p.amount_paid || 0), 0);
   const tripAccessRevenue = tripAccess.reduce((sum, p) => sum + (p.amount_paid || 0), 0);
@@ -153,7 +169,13 @@ export default function AdminDashboard() {
   const allPurchases = [
     ...purchases.map(p => ({ ...p, source: 'checklist', date: p.created_date })),
     ...tripAccess.map(p => ({ ...p, source: 'trip_access', date: p.created_date }))
-  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+  ].filter(p => p.date).sort((a, b) => {
+    try {
+      return new Date(b.date) - new Date(a.date);
+    } catch {
+      return 0;
+    }
+  });
   const recentPurchases = allPurchases.slice(0, 10);
 
   return (
@@ -352,7 +374,7 @@ export default function AdminDashboard() {
                         <p className="text-xs text-gray-500 truncate">{u.email}</p>
                       </div>
                       <span className="text-xs text-gray-400 ml-2">
-                        {format(new Date(u.created_date), "MMM d")}
+                        {u.created_date ? format(new Date(u.created_date), "MMM d") : 'N/A'}
                       </span>
                     </div>
                   ))}
@@ -422,7 +444,7 @@ export default function AdminDashboard() {
                             ${p.amount_paid?.toFixed(2)}
                           </p>
                           <p className="text-xs text-gray-400">
-                            {format(new Date(p.date), "MMM d")}
+                            {p.date ? format(new Date(p.date), "MMM d") : 'N/A'}
                           </p>
                         </div>
                       </div>
