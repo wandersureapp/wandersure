@@ -2,6 +2,7 @@ import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, PlaneTakeoff, Shield, Bell, Menu, X, LogOut, User } from "lucide-react";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import {
@@ -30,8 +31,23 @@ export default function Layout({ children, currentPageName }) {
     }
 
     React.useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => setUser(null));
+      base44.auth.me().then(setUser).catch(() => setUser(null));
     }, []);
+
+    const [subscriptionTier, setSubscriptionTier] = React.useState('free');
+
+    React.useEffect(() => {
+      if (user?.email) {
+        base44.entities.UserNotificationPreferences.list()
+          .then(prefs => {
+            const userPref = prefs.find(p => p.user_email === user.email);
+            if (userPref?.subscription_tier) {
+              setSubscriptionTier(userPref.subscription_tier);
+            }
+          })
+          .catch(() => setSubscriptionTier('free'));
+      }
+    }, [user]);
 
   React.useEffect(() => {
     const handleScroll = () => {
