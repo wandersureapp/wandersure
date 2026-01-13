@@ -172,10 +172,23 @@ export default function Layout({ children, currentPageName }) {
                       <User className="w-5 h-5" />
                     </Button>
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <div className="px-2 py-1.5 text-sm text-gray-600">
-                      {user.email}
+                  <DropdownMenuContent align="end" className="w-56">
+                    <div className="px-2 py-2 border-b">
+                      <p className="text-sm font-medium text-gray-900">{user.full_name || 'User'}</p>
+                      <p className="text-xs text-gray-500 truncate">{user.email}</p>
                     </div>
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to={createPageUrl("Profile")} className="flex items-center w-full">
+                        <User className="w-4 h-4 mr-2" />
+                        Profile
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild className="cursor-pointer">
+                      <Link to={createPageUrl("NotificationSettings")} className="flex items-center w-full">
+                        <Bell className="w-4 h-4 mr-2" />
+                        {subscriptionTier === 'elite' ? 'Globetrotter Plan' : subscriptionTier === 'premium' ? 'Explorer Plan' : 'Basic Alerts'}
+                      </Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => base44.auth.logout()}
                       className="text-red-600 cursor-pointer"
