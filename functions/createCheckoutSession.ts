@@ -22,6 +22,8 @@ Deno.serve(async (req) => {
 
         const isOneTimeTrip = tripId && !productId;
 
+        const appUrl = Deno.env.get('APP_URL') || 'https://wandersure.app';
+        
         const session = await stripe.checkout.sessions.create({
             customer_email: user.email,
             line_items: [
@@ -32,15 +34,15 @@ Deno.serve(async (req) => {
             ],
             mode: (productId || isOneTimeTrip) ? 'payment' : 'subscription',
             success_url: isOneTimeTrip
-                ? `${Deno.env.get('APP_URL')}/TripDetail?id=${tripId}&access=success`
+                ? `${appUrl}/TripDetail?id=${tripId}&access=success`
                 : productId 
-                    ? `${Deno.env.get('APP_URL')}/TravelAides?success=true`
-                    : `${Deno.env.get('APP_URL')}/NotificationSettings?success=true`,
+                    ? `${appUrl}/TravelAides?success=true`
+                    : `${appUrl}/NotificationSettings?success=true`,
             cancel_url: isOneTimeTrip
-                ? `${Deno.env.get('APP_URL')}/TripDetail?id=${tripId}&access=canceled`
+                ? `${appUrl}/TripDetail?id=${tripId}&access=canceled`
                 : productId
-                    ? `${Deno.env.get('APP_URL')}/TravelAides?canceled=true`
-                    : `${Deno.env.get('APP_URL')}/NotificationSettings?canceled=true`,
+                    ? `${appUrl}/TravelAides?canceled=true`
+                    : `${appUrl}/NotificationSettings?canceled=true`,
             metadata: {
                 user_email: user.email,
                 plan: plan || 'explorer',
@@ -48,6 +50,11 @@ Deno.serve(async (req) => {
                 trip_id: tripId || '',
                 payment_type: isOneTimeTrip ? 'one_time_trip' : (productId ? 'one_time_product' : 'subscription')
             }
+        });
+        
+        console.log('Checkout session URLs:', {
+            success_url: session.success_url,
+            cancel_url: session.cancel_url
         });
 
         console.log('Checkout session created successfully:', session.id);
