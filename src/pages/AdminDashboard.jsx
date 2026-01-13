@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Users, 
   PlaneTakeoff, 
@@ -11,16 +14,38 @@ import {
   Calendar,
   Shield,
   Activity,
-  UserPlus
+  UserPlus,
+  Zap
 } from "lucide-react";
 import { format, subDays, isAfter } from "date-fns";
+import { toast } from "sonner";
 import AuthGuard from "../components/AuthGuard";
 
 export default function AdminDashboard() {
+  const [manualEmail, setManualEmail] = useState('');
+  const [manualTier, setManualTier] = useState('premium');
+  
   const { data: user, isLoading: userLoading } = useQuery({
     queryKey: ['current-user'],
     queryFn: () => base44.auth.me(),
     retry: 1
+  });
+
+  const activateSubscriptionMutation = useMutation({
+    mutationFn: async ({ user_email, subscription_tier }) => {
+      const response = await base44.functions.invoke('manualSubscriptionActivation', {
+        user_email,
+        subscription_tier
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(data.message || 'Subscription activated successfully');
+      setManualEmail('');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to activate subscription');
+    }
   });
 
   const { data: users = [] } = useQuery({
@@ -147,6 +172,45 @@ export default function AdminDashboard() {
               </div>
             </div>
           </div>
+
+          {/* Manual Subscription Activation */}
+          <Card className="border-none shadow-lg mb-8 bg-gradient-to-br from-purple-50 to-blue-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-purple-600" />
+                Manual Subscription Activation
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex gap-3">
+                <Input
+                  placeholder="User email"
+                  value={manualEmail}
+                  onChange={(e) => setManualEmail(e.target.value)}
+                  className="flex-1"
+                />
+                <Select value={manualTier} onValueChange={setManualTier}>
+                  <SelectTrigger className="w-40">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="premium">Explorer</SelectItem>
+                    <SelectItem value="elite">Globetrotter</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button
+                  onClick={() => activateSubscriptionMutation.mutate({ 
+                    user_email: manualEmail, 
+                    subscription_tier: manualTier 
+                  })}
+                  disabled={!manualEmail || activateSubscriptionMutation.isPending}
+                  className="bg-purple-600 hover:bg-purple-700"
+                >
+                  {activateSubscriptionMutation.isPending ? 'Activating...' : 'Activate'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Key Metrics */}
           <div className="grid md:grid-cols-4 gap-6 mb-8">
