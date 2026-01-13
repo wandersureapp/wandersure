@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { User, Mail, MapPin, Phone, Calendar, Save, Crown, Sparkles } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AuthGuard from "../components/AuthGuard";
+import { airports } from "../components/utils/airportData";
 
 export default function Profile() {
   const queryClient = useQueryClient();
@@ -30,7 +31,12 @@ export default function Profile() {
 
   const [formData, setFormData] = useState({
     full_name: "",
-    home_address: "",
+    street_address: "",
+    city: "",
+    state: "",
+    zip_code: "",
+    country: "",
+    home_airport: "",
     phone_number: "",
     date_of_birth: "",
     passport_number: "",
@@ -49,7 +55,12 @@ export default function Profile() {
     if (user) {
       setFormData({
         full_name: user.full_name || "",
-        home_address: user.home_address || "",
+        street_address: user.street_address || "",
+        city: user.city || "",
+        state: user.state || "",
+        zip_code: user.zip_code || "",
+        country: user.country || "",
+        home_airport: user.home_airport || "",
         phone_number: user.phone_number || "",
         date_of_birth: user.date_of_birth || "",
         passport_number: user.passport_number || "",
@@ -156,13 +167,69 @@ export default function Profile() {
                   </div>
                 </div>
                 <div>
-                  <Label htmlFor="home_address">Home Address</Label>
+                  <Label htmlFor="street_address">Street Address</Label>
                   <Input
-                    id="home_address"
-                    value={formData.home_address}
-                    onChange={(e) => setFormData({...formData, home_address: e.target.value})}
-                    placeholder="123 Main St, City, State, ZIP"
+                    id="street_address"
+                    value={formData.street_address}
+                    onChange={(e) => setFormData({...formData, street_address: e.target.value})}
+                    placeholder="123 Main St"
                   />
+                </div>
+                <div className="grid md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="city">City</Label>
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      placeholder="City"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="state">State/Province</Label>
+                    <Input
+                      id="state"
+                      value={formData.state}
+                      onChange={(e) => setFormData({...formData, state: e.target.value})}
+                      placeholder="State"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="zip_code">ZIP/Postal Code</Label>
+                    <Input
+                      id="zip_code"
+                      value={formData.zip_code}
+                      onChange={(e) => setFormData({...formData, zip_code: e.target.value})}
+                      placeholder="ZIP"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="country">Country</Label>
+                  <Input
+                    id="country"
+                    value={formData.country}
+                    onChange={(e) => setFormData({...formData, country: e.target.value})}
+                    placeholder="United States"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="home_airport">Home or Preferred Airport</Label>
+                  <Select
+                    value={formData.home_airport}
+                    onValueChange={(value) => setFormData({...formData, home_airport: value})}
+                  >
+                    <SelectTrigger id="home_airport">
+                      <SelectValue placeholder="Select your home airport" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {airports.map((airport) => (
+                        <SelectItem key={airport.code} value={airport.code}>
+                          {airport.code} - {airport.name} ({airport.city})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div>
                   <Label htmlFor="date_of_birth">Date of Birth</Label>
