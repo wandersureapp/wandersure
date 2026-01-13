@@ -467,7 +467,7 @@ export default function TripDetail() {
                     📊 Initial Risk Analysis Details
                   </CardTitle>
                   <p className="text-sm text-gray-500">
-                    Analysis from: {trip.risk_assessment?.last_updated ? format(new Date(trip.risk_assessment.last_updated), "MMM d, yyyy 'at' h:mm a") : 'trip creation'}
+                    Analysis from: {trip.risk_assessment?.last_updated && safeDate(trip.risk_assessment.last_updated) ? format(safeDate(trip.risk_assessment.last_updated), "MMM d, yyyy 'at' h:mm a") : 'trip creation'}
                   </p>
                   <p className="text-xs text-blue-600 font-medium mt-1">
                     💡 Subscribe to Smart Alerts for live hourly updates and detailed analysis
