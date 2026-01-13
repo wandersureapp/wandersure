@@ -19,8 +19,12 @@ Deno.serve(async (req) => {
             user_email: user_email
         });
 
+        console.log('Looking for existing preferences for:', user_email);
+        console.log('Found preferences:', prefs);
+
         let result;
         if (prefs.length > 0) {
+            console.log('Updating existing preference with id:', prefs[0].id);
             result = await base44.asServiceRole.entities.UserNotificationPreferences.update(prefs[0].id, {
                 subscription_tier: subscription_tier,
                 sms_enabled: subscription_tier === 'elite',
@@ -39,28 +43,36 @@ Deno.serve(async (req) => {
                     price_drop_alerts: true
                 }
             });
+            console.log('Update result:', result);
         } else {
-            result = await base44.asServiceRole.entities.UserNotificationPreferences.create({
-                user_email: user_email,
-                subscription_tier: subscription_tier,
-                email_enabled: true,
-                in_app_enabled: true,
-                sms_enabled: subscription_tier === 'elite',
-                alert_types: {
-                    trip_reminders: true,
-                    major_risk_alerts: true,
-                    flight_updates: true,
-                    airport_intelligence: true,
-                    weather_updates: true,
-                    destination_safety: true,
-                    hotel_updates: true,
-                    car_rental_updates: true,
-                    cruise_updates: true,
-                    rail_updates: true,
-                    insurance_recommendations: true,
-                    price_drop_alerts: true
-                }
-            });
+            console.log('Creating new preference for:', user_email);
+            try {
+                result = await base44.asServiceRole.entities.UserNotificationPreferences.create({
+                    user_email: user_email,
+                    subscription_tier: subscription_tier,
+                    email_enabled: true,
+                    in_app_enabled: true,
+                    sms_enabled: subscription_tier === 'elite',
+                    alert_types: {
+                        trip_reminders: true,
+                        major_risk_alerts: true,
+                        flight_updates: true,
+                        airport_intelligence: true,
+                        weather_updates: true,
+                        destination_safety: true,
+                        hotel_updates: true,
+                        car_rental_updates: true,
+                        cruise_updates: true,
+                        rail_updates: true,
+                        insurance_recommendations: true,
+                        price_drop_alerts: true
+                    }
+                });
+                console.log('Create result:', result);
+            } catch (createError) {
+                console.error('Create error details:', createError);
+                throw createError;
+            }
         }
 
         return Response.json({ 
