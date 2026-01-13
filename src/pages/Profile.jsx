@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { User, Mail, MapPin, Phone, Calendar, Save, Crown, Sparkles } from "lucide-react";
+import { User, Mail, MapPin, Phone, Calendar, Save, Crown, Sparkles, Plus, Trash2 } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import AuthGuard from "../components/AuthGuard";
 import { airports } from "../components/utils/airportData";
@@ -43,10 +43,7 @@ export default function Profile() {
     passport_expiry: "",
     emergency_contact_name: "",
     emergency_contact_phone: "",
-    preferred_airline: "",
-    frequent_flyer_numbers: "",
-    preferred_hotel_chain: "",
-    hotel_loyalty_numbers: "",
+    travel_preferences: [],
     dietary_restrictions: "",
     medical_conditions: "",
   });
@@ -67,15 +64,33 @@ export default function Profile() {
         passport_expiry: user.passport_expiry || "",
         emergency_contact_name: user.emergency_contact_name || "",
         emergency_contact_phone: user.emergency_contact_phone || "",
-        preferred_airline: user.preferred_airline || "",
-        frequent_flyer_numbers: user.frequent_flyer_numbers || "",
-        preferred_hotel_chain: user.preferred_hotel_chain || "",
-        hotel_loyalty_numbers: user.hotel_loyalty_numbers || "",
+        travel_preferences: user.travel_preferences || [],
         dietary_restrictions: user.dietary_restrictions || "",
         medical_conditions: user.medical_conditions || "",
       });
     }
   }, [user]);
+
+  const addTravelPreference = () => {
+    setFormData({
+      ...formData,
+      travel_preferences: [
+        ...formData.travel_preferences,
+        { type: "airline", provider: "", loyalty_number: "" }
+      ]
+    });
+  };
+
+  const removeTravelPreference = (index) => {
+    const newPrefs = formData.travel_preferences.filter((_, i) => i !== index);
+    setFormData({ ...formData, travel_preferences: newPrefs });
+  };
+
+  const updateTravelPreference = (index, field, value) => {
+    const newPrefs = [...formData.travel_preferences];
+    newPrefs[index] = { ...newPrefs[index], [field]: value };
+    setFormData({ ...formData, travel_preferences: newPrefs });
+  };
 
   const updateMutation = useMutation({
     mutationFn: (data) => base44.auth.updateMe(data),
@@ -311,52 +326,80 @@ export default function Profile() {
             {/* Travel Preferences */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="w-5 h-5" />
-                  Travel Preferences
+                <CardTitle className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-5 h-5" />
+                    Travel Preferences
+                  </div>
+                  <Button
+                    type="button"
+                    onClick={addTravelPreference}
+                    variant="outline"
+                    size="sm"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Add
+                  </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="preferred_airline">Preferred Airline</Label>
-                    <Input
-                      id="preferred_airline"
-                      value={formData.preferred_airline}
-                      onChange={(e) => setFormData({...formData, preferred_airline: e.target.value})}
-                      placeholder="Delta, United, etc."
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="frequent_flyer_numbers">Frequent Flyer Numbers</Label>
-                    <Input
-                      id="frequent_flyer_numbers"
-                      value={formData.frequent_flyer_numbers}
-                      onChange={(e) => setFormData({...formData, frequent_flyer_numbers: e.target.value})}
-                      placeholder="Delta: 123456789"
-                    />
-                  </div>
-                </div>
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="preferred_hotel_chain">Preferred Hotel Chain</Label>
-                    <Input
-                      id="preferred_hotel_chain"
-                      value={formData.preferred_hotel_chain}
-                      onChange={(e) => setFormData({...formData, preferred_hotel_chain: e.target.value})}
-                      placeholder="Marriott, Hilton, etc."
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="hotel_loyalty_numbers">Hotel Loyalty Numbers</Label>
-                    <Input
-                      id="hotel_loyalty_numbers"
-                      value={formData.hotel_loyalty_numbers}
-                      onChange={(e) => setFormData({...formData, hotel_loyalty_numbers: e.target.value})}
-                      placeholder="Marriott: 987654321"
-                    />
-                  </div>
-                </div>
+                {formData.travel_preferences.length === 0 ? (
+                  <p className="text-sm text-gray-500 text-center py-4">
+                    No travel preferences added yet. Click "Add" to get started.
+                  </p>
+                ) : (
+                  formData.travel_preferences.map((pref, index) => (
+                    <div key={index} className="p-4 border rounded-lg bg-gray-50 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <Label>Preference #{index + 1}</Label>
+                        <Button
+                          type="button"
+                          onClick={() => removeTravelPreference(index)}
+                          variant="ghost"
+                          size="sm"
+                          className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      <div className="grid md:grid-cols-3 gap-3">
+                        <div>
+                          <Label>Type</Label>
+                          <Select
+                            value={pref.type}
+                            onValueChange={(value) => updateTravelPreference(index, 'type', value)}
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="airline">Airline</SelectItem>
+                              <SelectItem value="hotel">Hotel</SelectItem>
+                              <SelectItem value="cruise">Cruise Line</SelectItem>
+                              <SelectItem value="car_rental">Car Rental</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label>Provider Name</Label>
+                          <Input
+                            value={pref.provider}
+                            onChange={(e) => updateTravelPreference(index, 'provider', e.target.value)}
+                            placeholder="e.g., Delta, Marriott"
+                          />
+                        </div>
+                        <div>
+                          <Label>Loyalty Number</Label>
+                          <Input
+                            value={pref.loyalty_number}
+                            onChange={(e) => updateTravelPreference(index, 'loyalty_number', e.target.value)}
+                            placeholder="123456789"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  ))
+                )}
               </CardContent>
             </Card>
 
