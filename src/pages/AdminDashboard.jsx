@@ -41,6 +41,18 @@ export default function AdminDashboard() {
     enabled: user?.role === 'admin'
   });
 
+  const { data: tripAccess = [] } = useQuery({
+    queryKey: ['admin-trip-access'],
+    queryFn: () => base44.entities.TripAccess.list('-created_date'),
+    enabled: user?.role === 'admin'
+  });
+
+  const { data: notificationPrefs = [] } = useQuery({
+    queryKey: ['admin-notification-prefs'],
+    queryFn: () => base44.entities.UserNotificationPreferences.list('-created_date'),
+    enabled: user?.role === 'admin'
+  });
+
   const { data: recommendations = [] } = useQuery({
     queryKey: ['admin-recommendations'],
     queryFn: () => base44.entities.Recommendation.list('-created_date'),
@@ -96,7 +108,12 @@ export default function AdminDashboard() {
     isAfter(new Date(t.created_date), last30Days)
   ).length;
 
-  const totalRevenue = purchases.reduce((sum, p) => sum + (p.amount_paid || 0), 0);
+  const checklistRevenue = purchases.reduce((sum, p) => sum + (p.amount_paid || 0), 0);
+  const tripAccessRevenue = tripAccess.reduce((sum, p) => sum + (p.amount_paid || 0), 0);
+  const subscriptionRevenue = notificationPrefs
+    .filter(p => p.subscription_tier === 'premium' || p.subscription_tier === 'elite')
+    .length * 9.99; // Approximate monthly revenue
+  const totalRevenue = checklistRevenue + tripAccessRevenue + subscriptionRevenue;
 
   const activeTrips = trips.filter(t => 
     t.status === 'active' || t.status === 'booked'
@@ -108,7 +125,11 @@ export default function AdminDashboard() {
 
   const recentUsers = users.slice(0, 10);
   const recentTrips = trips.slice(0, 10);
-  const recentPurchases = purchases.slice(0, 10);
+  const allPurchases = [
+    ...purchases.map(p => ({ ...p, source: 'checklist', date: p.created_date })),
+    ...tripAccess.map(p => ({ ...p, source: 'trip_access', date: p.created_date }))
+  ].sort((a, b) => new Date(b.date) - new Date(a.date));
+  const recentPurchases = allPurchases.slice(0, 10);
 
   return (
     <AuthGuard>
@@ -168,7 +189,7 @@ export default function AdminDashboard() {
                       ${totalRevenue.toFixed(2)}
                     </p>
                     <p className="text-xs text-gray-600 mt-1">
-                      {purchases.length} purchases
+                      {purchases.length + tripAccess.length} purchases
                     </p>
                   </div>
                   <DollarSign className="w-10 h-10 text-green-600" />
@@ -326,7 +347,9 @@ export default function AdminDashboard() {
                       <div key={p.id} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50">
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-gray-900 truncate">
-                            {p.product_type?.replace(/_/g, ' ')}
+                            {p.source === 'trip_access' 
+                              ? `${p.access_level} - ${p.payment_type === 'one_time' ? 'One-Time' : 'Subscription'}`
+                              : p.product_type?.replace(/_/g, ' ')}
                           </p>
                           <p className="text-xs text-gray-500 truncate">{p.user_email}</p>
                         </div>
@@ -335,7 +358,7 @@ export default function AdminDashboard() {
                             ${p.amount_paid?.toFixed(2)}
                           </p>
                           <p className="text-xs text-gray-400">
-                            {format(new Date(p.created_date), "MMM d")}
+                            {format(new Date(p.date), "MMM d")}
                           </p>
                         </div>
                       </div>
