@@ -28,16 +28,34 @@ Deno.serve(async (req) => {
         console.log('Checkout session completed:', {
             session_id: session.id,
             customer_email: session.customer_email,
+            customer_details: session.customer_details,
             metadata: session.metadata,
             amount_total: session.amount_total,
-            payment_status: session.payment_status
+            payment_status: session.payment_status,
+            mode: session.mode,
+            line_items: session.line_items
         });
         
-        const userEmail = session.metadata.user_email || session.customer_email;
-        const paymentType = session.metadata.payment_type;
-        const tripId = session.metadata.trip_id;
+        const userEmail = session.metadata?.user_email || session.customer_details?.email || session.customer_email;
+        let paymentType = session.metadata?.payment_type;
+        const tripId = session.metadata?.trip_id;
 
-        console.log('Extracted data:', { userEmail, paymentType, tripId });
+        // Detect payment type from session mode if not in metadata
+        if (!paymentType) {
+            if (session.mode === 'subscription') {
+                paymentType = 'subscription';
+            } else if (session.mode === 'payment') {
+                // Check amount to determine if it's a trip purchase
+                const amount = session.amount_total / 100;
+                if (amount === 19.99 || amount === 29.99) {
+                    paymentType = 'one_time_trip';
+                } else {
+                    paymentType = 'one_time_product';
+                }
+            }
+        }
+
+        console.log('Extracted data:', { userEmail, paymentType, tripId, mode: session.mode, amount: session.amount_total / 100 });
 
         if (!userEmail) {
             console.error('No user email found in session');
@@ -85,31 +103,61 @@ Deno.serve(async (req) => {
             }
 
             // Handle subscription purchase
-            if (paymentType !== 'one_time_product') {
+            if (paymentType === 'subscription' || session.mode === 'subscription') {
+                console.log('Processing subscription purchase...');
                 const prefs = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
                     user_email: userEmail
                 });
 
-                const plan = session.metadata.plan || 'explorer';
+                // Determine plan from metadata or amount
+                let plan = session.metadata?.plan;
+                if (!plan) {
+                    const amount = session.amount_total / 100;
+                    // Monthly: $9.99 = explorer, $19.99 = globetrotter
+                    // Yearly: $94.99 = explorer, $180 = globetrotter
+                    if (amount === 19.99 || amount === 180) {
+                        plan = 'globetrotter';
+                    } else {
+                        plan = 'explorer';
+                    }
+                }
+
+                console.log('Determined plan:', plan);
+                
+                const subscriptionTier = plan === 'globetrotter' ? 'elite' : 'premium';
                 
                 if (prefs.length > 0) {
+                    console.log('Updating existing preferences for:', userEmail);
                     await base44.asServiceRole.entities.UserNotificationPreferences.update(prefs[0].id, {
-                        premium_subscription: true,
-                        subscription_tier: plan === 'elite' || plan === 'globetrotter' ? 'elite' : 'premium',
-                        sms_enabled: plan === 'elite' || plan === 'globetrotter'
+                        subscription_tier: subscriptionTier,
+                        sms_enabled: plan === 'globetrotter'
                     });
                 } else {
+                    console.log('Creating new preferences for:', userEmail);
                     await base44.asServiceRole.entities.UserNotificationPreferences.create({
                         user_email: userEmail,
-                        premium_subscription: true,
-                        subscription_tier: plan === 'elite' || plan === 'globetrotter' ? 'elite' : 'premium',
-                        sms_enabled: plan === 'elite' || plan === 'globetrotter',
+                        subscription_tier: subscriptionTier,
+                        sms_enabled: plan === 'globetrotter',
                         email_enabled: true,
-                        in_app_enabled: true
+                        in_app_enabled: true,
+                        alert_types: {
+                            trip_reminders: true,
+                            major_risk_alerts: true,
+                            flight_updates: true,
+                            airport_intelligence: true,
+                            weather_updates: true,
+                            destination_safety: true,
+                            hotel_updates: true,
+                            car_rental_updates: true,
+                            cruise_updates: true,
+                            rail_updates: true,
+                            insurance_recommendations: true,
+                            price_drop_alerts: true
+                        }
                     });
                 }
 
-                console.log(`${plan === 'elite' || plan === 'globetrotter' ? 'Globetrotter' : 'Explorer'} subscription activated for ${userEmail}`);
+                console.log(`✅ ${plan === 'globetrotter' ? 'Globetrotter (Elite)' : 'Explorer (Premium)'} subscription activated for ${userEmail}`);
             }
         } catch (error) {
             console.error('Error processing payment:', error);
