@@ -19,12 +19,12 @@ import NewTrip from './pages/NewTrip';
 import NotificationSettings from './pages/NotificationSettings';
 import PartnerWithUs from './pages/PartnerWithUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
+import Profile from './pages/Profile';
 import SafetyGuide from './pages/SafetyGuide';
 import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
-import Profile from './pages/Profile';
 import __Layout from './Layout.jsx';
 
 
@@ -50,12 +50,12 @@ export const PAGES = {
     "NotificationSettings": NotificationSettings,
     "PartnerWithUs": PartnerWithUs,
     "PrivacyPolicy": PrivacyPolicy,
+    "Profile": Profile,
     "SafetyGuide": SafetyGuide,
     "TermsOfService": TermsOfService,
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
-    "Profile": Profile,
 }
 
 export const pagesConfig = {

@@ -202,7 +202,10 @@ export default function Layout({ children, currentPageName }) {
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => base44.auth.logout()}
+                      onClick={() => {
+                        base44.auth.logout();
+                        window.location.href = createPageUrl("Home");
+                      }}
                       className="text-red-600 cursor-pointer"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
