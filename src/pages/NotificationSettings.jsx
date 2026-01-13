@@ -56,7 +56,7 @@ export default function NotificationSettings() {
     in_app_enabled: true,
     sms_enabled: false,
     sms_number: "",
-    premium_subscription: false,
+    subscription_tier: 'free',
     alert_types: {
       trip_reminders: true,
       major_risk_alerts: true,
