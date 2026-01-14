@@ -49,6 +49,19 @@ export default function AdminDashboard() {
     }
   });
 
+  const refreshRisksMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('refreshTripRisks', {});
+      return response.data;
+    },
+    onSuccess: (data) => {
+      toast.success(`Refreshed ${data.trips_analyzed} trips successfully`);
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to refresh risks');
+    }
+  });
+
   const { data: users = [] } = useQuery({
     queryKey: ['admin-users'],
     queryFn: () => base44.entities.User.list('-created_date'),
