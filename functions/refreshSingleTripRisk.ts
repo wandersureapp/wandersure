@@ -93,7 +93,7 @@ Provide detailed reasoning for each risk category based on REAL data you find.`;
 
         await base44.entities.Trip.update(trip.id, {
             risk_assessment: {
-                overall_score: riskData.overall_score,
+                overall_score: overallScore,
                 flight_delay_risk: riskData.flight_delay_risk,
                 weather_risk: riskData.weather_risk,
                 crime_risk: riskData.crime_risk,
@@ -116,15 +116,15 @@ Provide detailed reasoning for each risk category based on REAL data you find.`;
             }
         });
 
-        console.log(`[${new Date().toISOString()}] Updated risk score: ${previousScore} → ${riskData.overall_score}`);
+        console.log(`[${new Date().toISOString()}] Updated risk score: ${previousScore} → ${overallScore}`);
 
         return Response.json({
             success: true,
             trip_id: trip.id,
             trip_name: trip.trip_name,
             previous_score: previousScore,
-            new_score: riskData.overall_score,
-            risk_change: riskData.overall_score - previousScore,
+            new_score: overallScore,
+            risk_change: overallScore - previousScore,
             updated_at: new Date().toISOString()
         });
     } catch (error) {
