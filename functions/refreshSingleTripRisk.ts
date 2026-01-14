@@ -54,7 +54,6 @@ Provide detailed reasoning for each risk category based on REAL data you find.`;
             response_json_schema: {
                 type: "object",
                 properties: {
-                    overall_score: { type: "number", description: "0-100 overall risk score" },
                     flight_delay_risk: { type: "number", description: "0-100" },
                     weather_risk: { type: "number", description: "0-100" },
                     crime_risk: { type: "number", description: "0-100" },
@@ -78,6 +77,17 @@ Provide detailed reasoning for each risk category based on REAL data you find.`;
                 }
             }
         });
+
+        // Calculate overall score as weighted average
+        // Safety (crime/political) and health are more critical, so weighted higher
+        const overallScore = Math.round(
+            (riskData.flight_delay_risk * 1.0 +
+             riskData.weather_risk * 1.0 +
+             riskData.crime_risk * 1.5 +
+             riskData.political_risk * 1.5 +
+             riskData.health_risk * 1.3 +
+             riskData.disruption_risk * 0.7) / 7.0
+        );
 
         const previousScore = trip.risk_assessment?.overall_score || 0;
 
