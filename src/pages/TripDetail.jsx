@@ -34,6 +34,7 @@ import { trackEvent } from "../components/analytics/MetaPixel";
 
 export default function TripDetail() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const urlParams = new URLSearchParams(window.location.search);
   const tripId = urlParams.get('id');
 
@@ -52,6 +53,22 @@ export default function TripDetail() {
     enabled: !!tripId,
     retry: 2,
     staleTime: 30000
+  });
+
+  const refreshRiskMutation = useMutation({
+    mutationFn: async () => {
+      const response = await base44.functions.invoke('refreshSingleTripRisk', {
+        trip_id: tripId
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({ queryKey: ['trip', tripId] });
+      toast.success(`Risk data refreshed! Score: ${Math.round(data.new_score)}`);
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to refresh risk data');
+    }
   });
 
   React.useEffect(() => {
