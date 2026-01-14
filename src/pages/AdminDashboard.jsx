@@ -209,44 +209,79 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {/* Manual Subscription Activation */}
-          <Card className="border-none shadow-lg mb-8 bg-gradient-to-br from-purple-50 to-blue-50">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-purple-600" />
-                Manual Subscription Activation
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex gap-3">
-                <Input
-                  placeholder="User email"
-                  value={manualEmail}
-                  onChange={(e) => setManualEmail(e.target.value)}
-                  className="flex-1"
-                />
-                <Select value={manualTier} onValueChange={setManualTier}>
-                  <SelectTrigger className="w-40">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="premium">Explorer</SelectItem>
-                    <SelectItem value="elite">Globetrotter</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button
-                  onClick={() => activateSubscriptionMutation.mutate({ 
-                    user_email: manualEmail, 
-                    subscription_tier: manualTier 
-                  })}
-                  disabled={!manualEmail || activateSubscriptionMutation.isPending}
-                  className="bg-purple-600 hover:bg-purple-700"
-                >
-                  {activateSubscriptionMutation.isPending ? 'Activating...' : 'Activate'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+          {/* Admin Actions */}
+          <div className="grid md:grid-cols-2 gap-6 mb-8">
+            <Card className="border-none shadow-lg bg-gradient-to-br from-purple-50 to-blue-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="w-5 h-5 text-purple-600" />
+                  Manual Subscription Activation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex gap-3">
+                  <Input
+                    placeholder="User email"
+                    value={manualEmail}
+                    onChange={(e) => setManualEmail(e.target.value)}
+                    className="flex-1"
+                  />
+                  <Select value={manualTier} onValueChange={setManualTier}>
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="premium">Explorer</SelectItem>
+                      <SelectItem value="elite">Globetrotter</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    onClick={() => activateSubscriptionMutation.mutate({ 
+                      user_email: manualEmail, 
+                      subscription_tier: manualTier 
+                    })}
+                    disabled={!manualEmail || activateSubscriptionMutation.isPending}
+                    className="bg-purple-600 hover:bg-purple-700"
+                  >
+                    {activateSubscriptionMutation.isPending ? 'Activating...' : 'Activate'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="border-none shadow-lg bg-gradient-to-br from-cyan-50 to-teal-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <RefreshCw className="w-5 h-5 text-cyan-600" />
+                  Refresh Risk Assessments
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-600">
+                    Manually trigger risk data refresh for all active trips
+                  </p>
+                  <Button
+                    onClick={() => refreshRisksMutation.mutate()}
+                    disabled={refreshRisksMutation.isPending}
+                    className="bg-cyan-600 hover:bg-cyan-700 w-full"
+                  >
+                    {refreshRisksMutation.isPending ? (
+                      <>
+                        <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                        Refreshing...
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="w-4 h-4 mr-2" />
+                        Refresh All Trips
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           {/* Key Metrics */}
           <div className="grid md:grid-cols-4 gap-6 mb-8">
