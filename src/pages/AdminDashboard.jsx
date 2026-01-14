@@ -15,7 +15,8 @@ import {
   Shield,
   Activity,
   UserPlus,
-  Zap
+  Zap,
+  RefreshCw
 } from "lucide-react";
 import { format, subDays, isAfter } from "date-fns";
 import { toast } from "sonner";
