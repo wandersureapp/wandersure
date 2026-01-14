@@ -63,7 +63,7 @@ export default function TripDetail() {
       return response.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({ queryKey: ['trip', tripId] });
+      queryClient.refetchQueries({ queryKey: ['trip', tripId] });
       toast.success(`Risk data refreshed! Score: ${Math.round(data.new_score)}`);
     },
     onError: (error) => {
