@@ -296,12 +296,37 @@ export default function TripDetail() {
             {trip.risk_assessment && (
               <Card className="border-none shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    🎯 Initial Risk Assessment
-                  </CardTitle>
-                  <p className="text-sm text-gray-600">
-                    Based on your trip details at the time of planning
-                  </p>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        🎯 Risk Assessment
+                      </CardTitle>
+                      <p className="text-sm text-gray-600 mt-1">
+                        Last updated: {trip.risk_assessment?.last_updated && safeDate(trip.risk_assessment.last_updated) 
+                          ? format(safeDate(trip.risk_assessment.last_updated), "MMM d 'at' h:mm a") 
+                          : 'at creation'}
+                      </p>
+                    </div>
+                    <Button
+                      onClick={() => refreshRiskMutation.mutate()}
+                      disabled={refreshRiskMutation.isPending}
+                      variant="outline"
+                      size="sm"
+                      className="bg-white hover:bg-orange-50"
+                    >
+                      {refreshRiskMutation.isPending ? (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2 animate-spin" />
+                          Updating...
+                        </>
+                      ) : (
+                        <>
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          Refresh
+                        </>
+                      )}
+                    </Button>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="grid md:grid-cols-3 gap-4">
