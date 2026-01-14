@@ -4,12 +4,7 @@ Deno.serve(async (req) => {
     try {
         const base44 = createClientFromRequest(req);
         
-        // Admin-only function for scheduled tasks
-        const user = await base44.auth.me();
-        if (user?.role !== 'admin') {
-            return Response.json({ error: 'Forbidden: Admin access required' }, { status: 403 });
-        }
-
+        // Service role function for scheduled tasks (no user auth needed)
         // Get all active and booked trips
         const allTrips = await base44.asServiceRole.entities.Trip.list();
         const activeTrips = allTrips.filter(trip => 
