@@ -85,11 +85,11 @@ export default function TripCard({ trip, onDelete }) {
             <div className="flex items-center gap-2 text-gray-600">
               <Calendar className="w-4 h-4" />
               <span className="text-sm">
-                {format(new Date(trip.start_date), "MMM d")} - {format(new Date(trip.end_date), "MMM d, yyyy")}
+                {startDate && !isNaN(startDate) ? format(startDate, "MMM d") : "TBD"} - {trip.end_date && !isNaN(new Date(trip.end_date)) ? format(new Date(trip.end_date), "MMM d, yyyy") : "TBD"}
               </span>
             </div>
 
-            {isTripUpcoming && daysUntil >= 0 && (
+            {isTripUpcoming && daysUntil !== null && daysUntil >= 0 && (
               <div className="pt-3 border-t">
                 <p className="text-sm font-medium text-blue-600">
                   {daysUntil === 0 ? "Departing today!" : `Departing in ${daysUntil} days`}
