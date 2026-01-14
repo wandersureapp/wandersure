@@ -28,8 +28,10 @@ export default function TripCard({ trip, onDelete }) {
   };
 
   const riskInfo = getRiskColor(trip.risk_assessment?.overall_score);
-  const daysUntil = differenceInDays(new Date(trip.start_date), new Date());
-  const isTripUpcoming = isFuture(new Date(trip.start_date));
+  
+  const startDate = trip.start_date ? new Date(trip.start_date) : null;
+  const daysUntil = startDate && !isNaN(startDate) ? differenceInDays(startDate, new Date()) : null;
+  const isTripUpcoming = startDate && !isNaN(startDate) ? isFuture(startDate) : false;
 
   return (
     <Card className="h-full border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden relative">
