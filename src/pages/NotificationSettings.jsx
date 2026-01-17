@@ -81,14 +81,33 @@ export default function NotificationSettings() {
 
   const saveMutation = useMutation({
     mutationFn: async (data) => {
+      // Check if SMS was just enabled
+      const smsJustEnabled = data.sms_enabled && 
+        (!preferences || !preferences.sms_enabled) && 
+        data.sms_number;
+
+      let result;
       if (preferences) {
-        return base44.entities.UserNotificationPreferences.update(preferences.id, data);
+        result = await base44.entities.UserNotificationPreferences.update(preferences.id, data);
       } else {
-        return base44.entities.UserNotificationPreferences.create({
+        result = await base44.entities.UserNotificationPreferences.create({
           ...data,
           user_email: user.email
         });
       }
+
+      // Send SMS welcome message if just enabled
+      if (smsJustEnabled) {
+        try {
+          await base44.functions.invoke('sendSMSWelcome', {
+            phone_number: data.sms_number
+          });
+        } catch (err) {
+          console.error('Failed to send SMS welcome:', err);
+        }
+      }
+
+      return result;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['notification-preferences'] });
