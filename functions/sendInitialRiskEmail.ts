@@ -67,6 +67,61 @@ Deno.serve(async (req) => {
                             </table>
                         </div>
 
+                        <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                            <h3 style="margin-top: 0; color: #1f2937;">📋 Initial Risk Analysis Details</h3>
+                            <p style="color: #6b7280; font-size: 13px; margin-top: 5px;">Analysis from: ${trip.risk_assessment?.last_updated ? new Date(trip.risk_assessment.last_updated).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) + ' at ' + new Date(trip.risk_assessment.last_updated).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' }) : 'trip creation'}</p>
+                            <p style="color: #2563eb; font-size: 12px; margin: 5px 0 20px 0;">💡 Subscribe to Smart Alerts for live hourly updates and detailed analysis</p>
+
+                            ${trip.risk_details?.critical_alerts?.length > 0 ? `
+                            <div style="background: #fef2f2; padding: 15px; border-left: 4px solid #dc2626; margin-bottom: 15px; border-radius: 4px;">
+                                <h4 style="margin: 0 0 10px 0; color: #991b1b; font-size: 15px;">🚨 Critical Alerts</h4>
+                                ${trip.risk_details.critical_alerts.map(alert => `<p style="margin: 5px 0; color: #7f1d1d; font-size: 13px;">• ${alert}</p>`).join('')}
+                            </div>` : ''}
+
+                            ${trip.risk_details?.flight_delay_reasoning ? `
+                            <div style="margin-bottom: 15px;">
+                                <h4 style="margin: 0 0 8px 0; color: #374151; font-size: 14px;">✈️ Flight Delays & Cancellations</h4>
+                                <p style="margin: 0; color: #4b5563; font-size: 13px; line-height: 1.5;">${trip.risk_details.flight_delay_reasoning}</p>
+                            </div>` : ''}
+
+                            ${trip.risk_details?.weather_reasoning ? `
+                            <div style="margin-bottom: 15px;">
+                                <h4 style="margin: 0 0 8px 0; color: #374151; font-size: 14px;">🌤️ Weather Conditions</h4>
+                                <p style="margin: 0; color: #4b5563; font-size: 13px; line-height: 1.5;">${trip.risk_details.weather_reasoning}</p>
+                            </div>` : ''}
+
+                            ${trip.risk_details?.airport_intel ? `
+                            <div style="margin-bottom: 15px;">
+                                <h4 style="margin: 0 0 8px 0; color: #374151; font-size: 14px;">🏢 Airport Intelligence</h4>
+                                <p style="margin: 0; color: #4b5563; font-size: 13px; line-height: 1.5;">${trip.risk_details.airport_intel}</p>
+                                ${trip.risk_assessment?.tsa_wait_times ? `<p style="margin: 5px 0 0 0; color: #6b7280; font-size: 13px;"><strong>TSA Wait Times:</strong> ${trip.risk_assessment.tsa_wait_times}</p>` : ''}
+                            </div>` : ''}
+
+                            ${trip.risk_details?.crime_reasoning ? `
+                            <div style="margin-bottom: 15px;">
+                                <h4 style="margin: 0 0 8px 0; color: #374151; font-size: 14px;">🛡️ Safety & Crime</h4>
+                                <p style="margin: 0; color: #4b5563; font-size: 13px; line-height: 1.5;">${trip.risk_details.crime_reasoning}</p>
+                            </div>` : ''}
+
+                            ${trip.risk_details?.political_reasoning ? `
+                            <div style="margin-bottom: 15px;">
+                                <h4 style="margin: 0 0 8px 0; color: #374151; font-size: 14px;">🏛️ Political Stability</h4>
+                                <p style="margin: 0; color: #4b5563; font-size: 13px; line-height: 1.5;">${trip.risk_details.political_reasoning}</p>
+                            </div>` : ''}
+
+                            ${trip.risk_details?.health_reasoning ? `
+                            <div style="margin-bottom: 15px;">
+                                <h4 style="margin: 0 0 8px 0; color: #374151; font-size: 14px;">🏥 Health & Medical</h4>
+                                <p style="margin: 0; color: #4b5563; font-size: 13px; line-height: 1.5;">${trip.risk_details.health_reasoning}</p>
+                            </div>` : ''}
+
+                            ${trip.risk_details?.disruption_reasoning ? `
+                            <div style="margin-bottom: 0;">
+                                <h4 style="margin: 0 0 8px 0; color: #374151; font-size: 14px;">⚠️ Travel Disruptions</h4>
+                                <p style="margin: 0; color: #4b5563; font-size: 13px; line-height: 1.5;">${trip.risk_details.disruption_reasoning}</p>
+                            </div>` : ''}
+                        </div>
+
                         <div style="text-align: center; margin: 30px 0;">
                             <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: linear-gradient(135deg, #2563eb 0%, #0d9488 100%); color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">📱 View Full Details</a>
                         </div>
