@@ -38,14 +38,18 @@ Deno.serve(async (req) => {
             }
         );
 
+        const responseData = await twilioResponse.json();
+        console.log('Twilio response:', JSON.stringify(responseData, null, 2));
+
         if (!twilioResponse.ok) {
-            const error = await twilioResponse.text();
-            throw new Error(`Twilio error: ${error}`);
+            throw new Error(`Twilio error: ${JSON.stringify(responseData)}`);
         }
 
         return Response.json({
             success: true,
-            message: 'SMS welcome message sent successfully'
+            message: 'SMS welcome message sent successfully',
+            twilioMessageSid: responseData.sid,
+            twilioStatus: responseData.status
         });
     } catch (error) {
         console.error('Error sending SMS welcome:', error);
