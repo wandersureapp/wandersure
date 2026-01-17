@@ -67,7 +67,6 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                     response_json_schema: {
                         type: "object",
                         properties: {
-                            overall_score: { type: "number" },
                             flight_delay_risk: { type: "number" },
                             weather_risk: { type: "number" },
                             crime_risk: { type: "number" },
