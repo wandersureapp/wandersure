@@ -93,15 +93,25 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                     }
                 });
 
+                // Calculate overall score as weighted average
+                const overallScore = Math.round(
+                    (riskAnalysis.flight_delay_risk * 1.0 +
+                     riskAnalysis.weather_risk * 1.0 +
+                     riskAnalysis.crime_risk * 1.5 +
+                     riskAnalysis.political_risk * 1.5 +
+                     riskAnalysis.health_risk * 1.3 +
+                     riskAnalysis.disruption_risk * 0.7) / 7.0
+                );
+
                 // Compare with previous assessment
                 const previousScore = trip.risk_assessment?.overall_score || 0;
-                const newScore = riskAnalysis.overall_score;
+                const newScore = overallScore;
                 const scoreDifference = newScore - previousScore;
                 
                 // Update trip with new risk assessment
                 await base44.asServiceRole.entities.Trip.update(trip.id, {
                     risk_assessment: {
-                        overall_score: riskAnalysis.overall_score,
+                        overall_score: overallScore,
                         flight_delay_risk: riskAnalysis.flight_delay_risk,
                         weather_risk: riskAnalysis.weather_risk,
                         crime_risk: riskAnalysis.crime_risk,
@@ -119,7 +129,10 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                         user_email: trip.created_by
                     });
 
-                    if (preferences.length > 0 && preferences[0].premium_subscription && preferences[0].email_enabled) {
+                    const userPrefs = preferences[0] || { subscription_tier: 'free', email_enabled: true };
+                    const isPremiumUser = userPrefs.subscription_tier === 'premium' || userPrefs.subscription_tier === 'elite';
+
+                    if (isPremiumUser && userPrefs.email_enabled) {
                         const alertType = scoreDifference > 0 ? '⚠️ Risk Increased' : '✅ Risk Decreased';
                         const changeIndicator = scoreDifference > 0 ? `+${scoreDifference}` : `${scoreDifference}`;
                         
