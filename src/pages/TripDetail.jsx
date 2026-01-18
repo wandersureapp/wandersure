@@ -23,6 +23,7 @@ import {
 import { Link } from "react-router-dom";
 import { format, differenceInDays } from "date-fns";
 import { toast } from "sonner";
+import ReactMarkdown from "react-markdown";
 
 import RiskGauges from "../components/trip/RiskGauges";
 import InsuranceRecommendations from "../components/trip/InsuranceRecommendations";
@@ -534,21 +535,21 @@ export default function TripDetail() {
                   {trip.risk_details.flight_delay_reasoning && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">✈️ Flight Delays & Cancellations</h4>
-                      <p className="text-sm text-gray-700">{trip.risk_details.flight_delay_reasoning}</p>
+                      <ReactMarkdown className="text-sm text-gray-700 prose prose-sm max-w-none">{trip.risk_details.flight_delay_reasoning}</ReactMarkdown>
                     </div>
                   )}
 
                   {trip.risk_details.weather_reasoning && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">🌤️ Weather Conditions</h4>
-                      <p className="text-sm text-gray-700">{trip.risk_details.weather_reasoning}</p>
+                      <ReactMarkdown className="text-sm text-gray-700 prose prose-sm max-w-none">{trip.risk_details.weather_reasoning}</ReactMarkdown>
                     </div>
                   )}
 
                   {trip.risk_details.airport_intel && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">🏢 Airport Intelligence</h4>
-                      <p className="text-sm text-gray-700">{trip.risk_details.airport_intel}</p>
+                      <ReactMarkdown className="text-sm text-gray-700 prose prose-sm max-w-none">{trip.risk_details.airport_intel}</ReactMarkdown>
                       {trip.risk_assessment?.tsa_wait_times && (
                         <p className="text-sm text-gray-600 mt-2">
                           <strong>TSA Wait Times:</strong> {trip.risk_assessment.tsa_wait_times}
@@ -560,28 +561,28 @@ export default function TripDetail() {
                   {trip.risk_details.crime_reasoning && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">🛡️ Safety & Crime</h4>
-                      <p className="text-sm text-gray-700">{trip.risk_details.crime_reasoning}</p>
+                      <ReactMarkdown className="text-sm text-gray-700 prose prose-sm max-w-none">{trip.risk_details.crime_reasoning}</ReactMarkdown>
                     </div>
                   )}
 
                   {trip.risk_details.political_reasoning && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">🏛️ Political Stability</h4>
-                      <p className="text-sm text-gray-700">{trip.risk_details.political_reasoning}</p>
+                      <ReactMarkdown className="text-sm text-gray-700 prose prose-sm max-w-none">{trip.risk_details.political_reasoning}</ReactMarkdown>
                     </div>
                   )}
 
                   {trip.risk_details.health_reasoning && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">🏥 Health & Medical</h4>
-                      <p className="text-sm text-gray-700">{trip.risk_details.health_reasoning}</p>
+                      <ReactMarkdown className="text-sm text-gray-700 prose prose-sm max-w-none">{trip.risk_details.health_reasoning}</ReactMarkdown>
                     </div>
                   )}
 
                   {trip.risk_details.disruption_reasoning && (
                     <div className="p-4 bg-gray-50 rounded-lg">
                       <h4 className="font-semibold text-gray-900 mb-2">⚠️ Travel Disruptions</h4>
-                      <p className="text-sm text-gray-700">{trip.risk_details.disruption_reasoning}</p>
+                      <ReactMarkdown className="text-sm text-gray-700 prose prose-sm max-w-none">{trip.risk_details.disruption_reasoning}</ReactMarkdown>
                     </div>
                   )}
                 </CardContent>
