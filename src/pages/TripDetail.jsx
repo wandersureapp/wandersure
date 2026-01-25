@@ -172,13 +172,13 @@ export default function TripDetail() {
   const { data: notificationPrefs = [] } = useQuery({
     queryKey: ['notification-preferences'],
     queryFn: () => base44.entities.UserNotificationPreferences.list(),
-    enabled: !!user?.email
+    enabled: !!user
   });
 
   const { data: tripAccess = [] } = useQuery({
-    queryKey: ['trip-access', trip?.id],
-    queryFn: () => base44.entities.TripAccess.filter({ trip_id: trip.id }),
-    enabled: !!trip?.id
+    queryKey: ['trip-access', tripId],
+    queryFn: () => base44.entities.TripAccess.filter({ trip_id: tripId }),
+    enabled: !!tripId
   });
 
   const userPrefs = Array.isArray(notificationPrefs) ? notificationPrefs.find(p => p.user_email === user?.email) : null;
