@@ -60,7 +60,7 @@ export default function InsuranceRecommendations({ tripId, recommendedCoverage, 
             </div>
           </div>
 
-          <Link to={createPageUrl(`CustomizeInsurance?tripId=${tripId}`)}>
+          <Link to={createPageUrl("CustomizeInsurance")}>
             <Button className="w-full bg-white text-blue-600 hover:bg-blue-50 font-semibold shadow-lg group">
               <Zap className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
               See WanderSure's Recommendations
@@ -85,97 +85,6 @@ export default function InsuranceRecommendations({ tripId, recommendedCoverage, 
           <a href="https://www.dpbolvw.net/click-101622714-15379546" target="_blank" rel="noopener noreferrer">
             <img src="https://www.awltovhc.com/image-101622714-15379546" width={250} height={250} alt="World Nomads Travel Insurance" border={0} className="mx-auto" />
           </a>
-        </CardContent>
-      </Card>
-
-      {/* Recommended Coverage */}
-      <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-blue-900">
-            <Shield className="w-5 h-5 text-blue-600" />
-            Protect Your Trip
-          </CardTitle>
-          <p className="text-sm text-gray-600 mt-1">
-            Based on AI risk analysis, we strongly recommend these coverages
-          </p>
-        </CardHeader>
-        <CardContent>
-          {recommendedCoverage && recommendedCoverage.length > 0 ? (
-            <div className="space-y-3">
-              <div className="p-3 bg-blue-100 border-2 border-blue-300 rounded-lg mb-3">
-                <p className="text-sm text-blue-900 font-semibold mb-1">
-                  🛡️ Your travel deserves protection
-                </p>
-                <p className="text-xs text-blue-800">
-                  As a leading travel risk analysis service, we've identified these critical coverages for your journey.
-                </p>
-              </div>
-              {recommendedCoverage.map((coverage, index) => (
-                <div key={index} className="flex items-center gap-2 p-3 bg-white rounded-lg border-2 border-blue-200 hover:border-blue-400 transition-colors">
-                  <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                  <span className="text-sm font-medium text-gray-800">
-                    {coverageLabels[coverage] || coverage}
-                  </span>
-                </div>
-              ))}
-              <div className="p-3 bg-yellow-50 border-2 border-yellow-200 rounded-lg mt-4">
-                <p className="text-xs text-yellow-900">
-                  ⚠️ <strong>Important:</strong> WanderSure is a risk intelligence platform. We don't sell insurance, 
-                  but based on our AI analysis, we strongly advise securing these coverages through a reputable provider.
-                </p>
-              </div>
-            </div>
-          ) : (
-            <p className="text-sm text-gray-600">
-              Complete risk assessment to get personalized recommendations
-            </p>
-          )}
-        </CardContent>
-      </Card>
-
-      {/* Quick Stats */}
-      <Card className="border-none shadow-lg">
-        <CardContent className="p-6">
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Trip Value</span>
-              <span className="font-bold text-gray-900">${tripCost?.toLocaleString() || 0}</span>
-            </div>
-            <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-600">Est. Custom Plan</span>
-              <span className="font-bold text-blue-600">${estimateMin} - ${estimateMax}</span>
-            </div>
-            <div className="pt-3 border-t">
-              <p className="text-xs text-gray-500">
-                Final price based on your selected coverage and risk level
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Why Customize */}
-      <Card className="border-2 border-dashed border-gray-200 bg-gray-50">
-        <CardContent className="p-6">
-          <h4 className="font-semibold text-gray-900 mb-3 text-sm">Why Customize?</h4>
-          <ul className="space-y-2 text-xs text-gray-600">
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600">✓</span>
-              <span>Save money by skipping coverage you don't need</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600">✓</span>
-              <span>Get maximum protection where risks are highest</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600">✓</span>
-              <span>Transparent pricing for each coverage type</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-blue-600">✓</span>
-              <span>Adjust anytime before your trip starts</span>
-            </li>
-          </ul>
         </CardContent>
       </Card>
     </div>
