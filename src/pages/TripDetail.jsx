@@ -105,6 +105,28 @@ export default function TripDetail() {
     }
   });
 
+  const userPrefs = React.useMemo(() => {
+    return Array.isArray(notificationPrefs) ? notificationPrefs.find(p => p.user_email === user?.email) : null;
+  }, [notificationPrefs, user]);
+
+  const userTripAccess = React.useMemo(() => {
+    return Array.isArray(tripAccess) ? tripAccess.find(ta => ta.user_email === user?.email) : null;
+  }, [tripAccess, user]);
+  
+  const hasSubscription = userPrefs && (userPrefs.subscription_tier === 'premium' || userPrefs.subscription_tier === 'elite');
+  const hasTripAccess = userTripAccess !== undefined && userTripAccess !== null;
+  const hasActiveAccess = hasSubscription || hasTripAccess;
+  const alertsEnabled = userPrefs?.in_app_enabled || userPrefs?.email_enabled;
+  
+  const tierName = React.useMemo(() => {
+    if (userPrefs?.subscription_tier === 'elite') return 'Globetrotter';
+    if (userPrefs?.subscription_tier === 'premium') return 'Explorer';
+    if (hasTripAccess && userTripAccess) {
+      return userTripAccess.access_level === 'globetrotter' ? 'Globetrotter' : 'Explorer';
+    }
+    return null;
+  }, [userPrefs, hasTripAccess, userTripAccess]);
+
   React.useEffect(() => {
     if (trip) {
       trackEvent('ViewContent', {
@@ -180,28 +202,6 @@ export default function TripDetail() {
   const daysUntil = trip.start_date && safeDate(trip.start_date) 
     ? differenceInDays(safeDate(trip.start_date), new Date()) 
     : 0;
-
-  const userPrefs = React.useMemo(() => {
-    return Array.isArray(notificationPrefs) ? notificationPrefs.find(p => p.user_email === user?.email) : null;
-  }, [notificationPrefs, user]);
-
-  const userTripAccess = React.useMemo(() => {
-    return Array.isArray(tripAccess) ? tripAccess.find(ta => ta.user_email === user?.email) : null;
-  }, [tripAccess, user]);
-  
-  const hasSubscription = userPrefs && (userPrefs.subscription_tier === 'premium' || userPrefs.subscription_tier === 'elite');
-  const hasTripAccess = userTripAccess !== undefined && userTripAccess !== null;
-  const hasActiveAccess = hasSubscription || hasTripAccess;
-  const alertsEnabled = userPrefs?.in_app_enabled || userPrefs?.email_enabled;
-  
-  const tierName = React.useMemo(() => {
-    if (userPrefs?.subscription_tier === 'elite') return 'Globetrotter';
-    if (userPrefs?.subscription_tier === 'premium') return 'Explorer';
-    if (hasTripAccess && userTripAccess) {
-      return userTripAccess.access_level === 'globetrotter' ? 'Globetrotter' : 'Explorer';
-    }
-    return null;
-  }, [userPrefs, hasTripAccess, userTripAccess]);
 
   return (
     <div className="min-h-screen py-8">
