@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,6 +17,10 @@ import { trackEvent } from "../components/analytics/MetaPixel";
 export default function NewTrip() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
+  const urlParams = new URLSearchParams(window.location.search);
+  const editTripId = urlParams.get('edit');
+  const isEditMode = !!editTripId;
+  
   const [step, setStep] = useState(1);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isParsingEmails, setIsParsingEmails] = useState(false);
@@ -40,54 +45,80 @@ export default function NewTrip() {
   });
   const [emailData, setEmailData] = useState(null);
 
+  // Load existing trip data if in edit mode
+  const { data: existingTrip, isLoading: loadingTrip } = useQuery({
+    queryKey: ['trip', editTripId],
+    queryFn: () => base44.entities.Trip.filter({ id: editTripId }).then(trips => trips[0]),
+    enabled: isEditMode,
+    retry: 1
+  });
+
+  React.useEffect(() => {
+    if (existingTrip) {
+      setTripData(existingTrip);
+    }
+  }, [existingTrip]);
+
   const createTripMutation = useMutation({
     mutationFn: async (data) => {
       try {
-        const trip = await base44.entities.Trip.create(data);
-        setCreatedTripId(trip.id);
+        let trip;
         
-        trackEvent('Lead', {
-          content_name: 'Trip Created',
-          content_category: 'trip',
-          value: data.trip_cost || 0,
-          currency: 'USD'
-        });
-        
-        setIsAnalyzing(true);
-        
-        try {
-          const riskAnalysis = await Promise.race([
-            analyzeRisk(trip),
-            new Promise((_, reject) => 
-              setTimeout(() => reject(new Error('Risk analysis timeout')), 60000)
-            )
-          ]);
+        if (isEditMode) {
+          // Update existing trip
+          await base44.entities.Trip.update(editTripId, data);
+          trip = { ...data, id: editTripId };
+        } else {
+          // Create new trip
+          trip = await base44.entities.Trip.create(data);
+          setCreatedTripId(trip.id);
           
-          await base44.entities.Trip.update(trip.id, {
-            risk_assessment: riskAnalysis.risk_assessment,
-            recommended_coverage: riskAnalysis.recommended_coverage,
-            risk_details: riskAnalysis.risk_details
+          trackEvent('Lead', {
+            content_name: 'Trip Created',
+            content_category: 'trip',
+            value: data.trip_cost || 0,
+            currency: 'USD'
           });
-        } catch (analysisError) {
-          console.error('Risk analysis failed:', analysisError);
-          // Trip still created, just navigate without risk data
+        }
+        
+        // Only run risk analysis for new trips
+        if (!isEditMode) {
+          setIsAnalyzing(true);
+          
+          try {
+            const riskAnalysis = await Promise.race([
+              analyzeRisk(trip),
+              new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Risk analysis timeout')), 60000)
+              )
+            ]);
+            
+            await base44.entities.Trip.update(trip.id, {
+              risk_assessment: riskAnalysis.risk_assessment,
+              recommended_coverage: riskAnalysis.recommended_coverage,
+              risk_details: riskAnalysis.risk_details
+            });
+          } catch (analysisError) {
+            console.error('Risk analysis failed:', analysisError);
+          }
         }
         
         return trip;
       } catch (error) {
-        console.error('Trip creation failed:', error);
+        console.error('Trip operation failed:', error);
         throw error;
       }
     },
     onSuccess: (trip) => {
       setIsAnalyzing(false);
       queryClient.invalidateQueries({ queryKey: ['trips'] });
+      queryClient.invalidateQueries({ queryKey: ['trip', trip.id] });
       navigate(createPageUrl(`TripDetail?id=${trip.id}`));
     },
     onError: (error) => {
       console.error('Trip mutation error:', error);
       setIsAnalyzing(false);
-      alert('Failed to create trip: ' + (error.message || 'Unknown error'));
+      alert(`Failed to ${isEditMode ? 'update' : 'create'} trip: ` + (error.message || 'Unknown error'));
     }
   });
 
@@ -314,21 +345,38 @@ export default function NewTrip() {
     setTripData(prev => ({ ...prev, [field]: value }));
   };
 
+  if (isEditMode && loadingTrip) {
+    return (
+      <div className="min-h-screen py-8">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center py-12">
+            <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading trip data...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <Button
             variant="ghost"
-            onClick={() => navigate(createPageUrl("Dashboard"))}
+            onClick={() => navigate(isEditMode ? createPageUrl(`TripDetail?id=${editTripId}`) : createPageUrl("Dashboard"))}
             className="mb-4"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Dashboard
+            {isEditMode ? 'Back to Trip' : 'Back to Dashboard'}
           </Button>
-          <h1 className="text-3xl font-bold text-gray-900">Add New Trip</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            {isEditMode ? 'Edit Trip' : 'Add New Trip'}
+          </h1>
           <p className="text-gray-600 mt-2">
-            Tell us about your travel plans and we'll assess the risks and recommend coverage
+            {isEditMode 
+              ? 'Update your trip details' 
+              : 'Tell us about your travel plans and we\'ll assess the risks and recommend coverage'}
           </p>
         </div>
 
@@ -361,7 +409,7 @@ export default function NewTrip() {
                 tripData={tripData}
                 updateTripData={updateTripData}
                 onNext={() => setStep(2)}
-                onParseEmails={handleParseEmailsOnStep1}
+                onParseEmails={isEditMode ? null : handleParseEmailsOnStep1}
                 isParsingEmails={isParsingEmails}
               />
             )}

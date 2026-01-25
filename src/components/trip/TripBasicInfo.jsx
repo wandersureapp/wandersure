@@ -7,7 +7,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { airports } from "../utils/airportData";
 
-export default function TripBasicInfo({ tripData, updateTripData, onNext, onParseEmails, isParsingEmails }) {
+export default function TripBasicInfo({ tripData, updateTripData, onNext, onParseEmails, isParsingEmails = false }) {
   const [airportSearch, setAirportSearch] = useState('');
   const [showAirportDropdown, setShowAirportDropdown] = useState(false);
   
