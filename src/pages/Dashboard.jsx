@@ -42,7 +42,7 @@ export default function Dashboard() {
     enabled: !!user?.email
   });
 
-  const userPrefs = notificationPrefs.find(p => p.user_email === user?.email);
+  const userPrefs = Array.isArray(notificationPrefs) ? notificationPrefs.find(p => p.user_email === user?.email) : null;
   const hasActiveSubscription = userPrefs && (userPrefs.subscription_tier === 'premium' || userPrefs.subscription_tier === 'elite');
   const subscriptionTier = userPrefs?.subscription_tier || 'free';
 
