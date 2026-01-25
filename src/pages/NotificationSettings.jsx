@@ -508,10 +508,10 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Departure countdowns and travel prep tips</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.trip_reminders}
+                  checked={formData.alert_types?.trip_reminders}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, trip_reminders: checked}
+                    alert_types: {...(formData.alert_types || {}), trip_reminders: checked}
                   })}
                 />
               </div>
@@ -522,10 +522,10 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Critical safety warnings and severe weather</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.major_risk_alerts}
+                  checked={formData.alert_types?.major_risk_alerts}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, major_risk_alerts: checked}
+                    alert_types: {...(formData.alert_types || {}), major_risk_alerts: checked}
                   })}
                 />
               </div>
@@ -553,11 +553,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Real-time delays, cancellations, gate changes</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.flight_updates}
+                  checked={formData.alert_types?.flight_updates}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, flight_updates: checked}
+                    alert_types: {...(formData.alert_types || {}), flight_updates: checked}
                   })}
                 />
               </div>
@@ -571,11 +571,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Live TSA wait times, traffic, parking availability</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.airport_intelligence}
+                  checked={formData.alert_types?.airport_intelligence}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, airport_intelligence: checked}
+                    alert_types: {...(formData.alert_types || {}), airport_intelligence: checked}
                   })}
                 />
               </div>
@@ -589,11 +589,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Hour-by-hour forecasts and storm tracking</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.weather_updates}
+                  checked={formData.alert_types?.weather_updates}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, weather_updates: checked}
+                    alert_types: {...(formData.alert_types || {}), weather_updates: checked}
                   })}
                 />
               </div>
@@ -607,11 +607,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Political updates, crime alerts, health advisories</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.destination_safety}
+                  checked={formData.alert_types?.destination_safety}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, destination_safety: checked}
+                    alert_types: {...(formData.alert_types || {}), destination_safety: checked}
                   })}
                 />
               </div>
@@ -625,11 +625,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Check-in status, room changes, facility alerts</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.hotel_updates}
+                  checked={formData.alert_types?.hotel_updates}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, hotel_updates: checked}
+                    alert_types: {...(formData.alert_types || {}), hotel_updates: checked}
                   })}
                 />
               </div>
@@ -643,11 +643,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Availability, pickup location changes</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.car_rental_updates}
+                  checked={formData.alert_types?.car_rental_updates}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, car_rental_updates: checked}
+                    alert_types: {...(formData.alert_types || {}), car_rental_updates: checked}
                   })}
                 />
               </div>
@@ -661,11 +661,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Departure times, port changes, excursion alerts</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.cruise_updates}
+                  checked={formData.alert_types?.cruise_updates}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, cruise_updates: checked}
+                    alert_types: {...(formData.alert_types || {}), cruise_updates: checked}
                   })}
                 />
               </div>
@@ -679,11 +679,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Delays, platform changes, service disruptions</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.rail_updates}
+                  checked={formData.alert_types?.rail_updates}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, rail_updates: checked}
+                    alert_types: {...(formData.alert_types || {}), rail_updates: checked}
                   })}
                 />
               </div>
@@ -694,11 +694,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Smart coverage suggestions when risks change</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.insurance_recommendations}
+                  checked={formData.alert_types?.insurance_recommendations}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, insurance_recommendations: checked}
+                    alert_types: {...(formData.alert_types || {}), insurance_recommendations: checked}
                   })}
                 />
               </div>
@@ -709,11 +709,11 @@ export default function NotificationSettings() {
                   <p className="text-sm text-gray-600">Insurance premium discounts for your trips</p>
                 </div>
                 <Switch
-                  checked={formData.alert_types.price_drop_alerts}
+                  checked={formData.alert_types?.price_drop_alerts}
                   disabled={formData.subscription_tier === 'free'}
                   onCheckedChange={(checked) => setFormData({
                     ...formData,
-                    alert_types: {...formData.alert_types, price_drop_alerts: checked}
+                    alert_types: {...(formData.alert_types || {}), price_drop_alerts: checked}
                   })}
                 />
               </div>
