@@ -32,8 +32,6 @@ export default function AdminDashboard() {
     retry: 1
   });
 
-  const isAdmin = !userLoading && user?.role === 'admin';
-
   const activateSubscriptionMutation = useMutation({
     mutationFn: async ({ user_email, subscription_tier }) => {
       const response = await base44.functions.invoke('manualSubscriptionActivation', {
@@ -67,37 +65,37 @@ export default function AdminDashboard() {
   const { data: users = [] } = useQuery({
     queryKey: ['admin-users'],
     queryFn: () => base44.entities.User.list('-created_date'),
-    enabled: isAdmin
+    enabled: !!user && user.role === 'admin'
   });
 
   const { data: trips = [] } = useQuery({
     queryKey: ['admin-trips'],
     queryFn: () => base44.entities.Trip.list('-created_date'),
-    enabled: isAdmin
+    enabled: !!user && user.role === 'admin'
   });
 
   const { data: purchases = [] } = useQuery({
     queryKey: ['admin-purchases'],
     queryFn: () => base44.entities.ChecklistPurchase.list('-created_date'),
-    enabled: isAdmin
+    enabled: !!user && user.role === 'admin'
   });
 
   const { data: tripAccess = [] } = useQuery({
     queryKey: ['admin-trip-access'],
     queryFn: () => base44.entities.TripAccess.list('-created_date'),
-    enabled: isAdmin
+    enabled: !!user && user.role === 'admin'
   });
 
   const { data: notificationPrefs = [] } = useQuery({
     queryKey: ['admin-notification-prefs'],
     queryFn: () => base44.entities.UserNotificationPreferences.list('-created_date'),
-    enabled: isAdmin
+    enabled: !!user && user.role === 'admin'
   });
 
   const { data: recommendations = [] } = useQuery({
     queryKey: ['admin-recommendations'],
     queryFn: () => base44.entities.Recommendation.list('-created_date'),
-    enabled: isAdmin
+    enabled: !!user && user.role === 'admin'
   });
 
   if (userLoading) {
