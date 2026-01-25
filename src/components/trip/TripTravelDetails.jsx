@@ -181,11 +181,49 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
       </div>
 
       <div className="space-y-4">
-        <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
-          <p className="text-sm text-blue-900">
-            <strong>Tip:</strong> Adding your airline, hotel, and rental car info helps us provide 
-            more accurate risk assessments and tailored insurance recommendations.
+        <div className="p-5 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl">
+          <h3 className="font-bold text-blue-900 mb-2 flex items-center gap-2">
+            <Sparkles className="w-5 h-5" />
+            Planning Your Trip?
+          </h3>
+          <p className="text-sm text-blue-800 mb-3">
+            Adding your travel details helps us provide more accurate risk assessments and personalized insurance recommendations. 
+            <strong> Haven't booked yet?</strong> Check out our trusted travel partners for great deals:
           </p>
+          <div className="flex flex-wrap gap-2">
+            <a 
+              href="https://www.anrdoezrs.net/click-101622714-17223836" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            >
+              ✈️ Flights
+            </a>
+            <a 
+              href="https://www.dpbolvw.net/click-101622714-15734399" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            >
+              🏨 Hotels
+            </a>
+            <a 
+              href="https://www.jdoqocy.com/click-101622714-17126276" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            >
+              🚗 Car Rentals
+            </a>
+            <a 
+              href="https://www.anrdoezrs.net/click-101622714-17100505" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            >
+              🛡️ Travel Insurance
+            </a>
+          </div>
         </div>
 
         {/* Flight Information */}
@@ -216,8 +254,18 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
           </div>
 
           {(!tripData.flights || tripData.flights.length === 0) && (
-            <div className="text-center py-4 text-gray-500">
-              <p className="text-sm">No flights added. Click "Add Flight" to add your flight details.</p>
+            <div className="text-center py-6 px-4">
+              <p className="text-sm text-gray-600 mb-3">No flights added yet. Need to book?</p>
+              <a 
+                href="https://www.anrdoezrs.net/click-101622714-17223836" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button type="button" variant="outline" size="sm" className="text-blue-600 border-blue-300 hover:bg-blue-50">
+                  ✈️ Find Flights on Expedia
+                </Button>
+              </a>
+              <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
             </div>
           )}
 
@@ -339,22 +387,27 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
             </div>
           ))}
 
-          <a 
-            href="https://www.kqzyfj.com/click-101622714-17112391" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
-          >
-            Search for flights
-          </a>
-          <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
+
         </div>
 
         {/* Hotel Information */}
         <div className="p-4 bg-gray-50 rounded-lg space-y-4">
-          <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-            🏨 Hotel Information
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              🏨 Hotel Information
+            </h3>
+            {!tripData.hotel_name && (
+              <a 
+                href="https://www.dpbolvw.net/click-101622714-15734399" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button type="button" variant="outline" size="sm" className="text-purple-600 border-purple-300 hover:bg-purple-50">
+                  Search Hotels
+                </Button>
+              </a>
+            )}
+          </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="hotel_name">Hotel Chain</Label>
@@ -389,9 +442,22 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
 
         {/* Car Rental Information */}
         <div className="p-4 bg-gray-50 rounded-lg space-y-4">
-          <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-            🚗 Car Rental Information
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              🚗 Car Rental Information
+            </h3>
+            {!tripData.car_rental_company && (
+              <a 
+                href="https://www.jdoqocy.com/click-101622714-17126276" 
+                target="_blank" 
+                rel="noopener noreferrer"
+              >
+                <Button type="button" variant="outline" size="sm" className="text-green-600 border-green-300 hover:bg-green-50">
+                  Find Rentals
+                </Button>
+              </a>
+            )}
+          </div>
           <div className="grid md:grid-cols-2 gap-4">
             <div>
               <Label htmlFor="car_rental_company">Car Rental Company</Label>
