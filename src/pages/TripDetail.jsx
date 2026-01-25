@@ -148,6 +148,43 @@ export default function TripDetail() {
     ? differenceInDays(safeDate(trip.start_date), new Date()) 
     : 0;
 
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
+
+  const { data: notificationPrefs = [] } = useQuery({
+    queryKey: ['notification-preferences'],
+    queryFn: () => base44.entities.UserNotificationPreferences.list(),
+    enabled: !!user?.email
+  });
+
+  const { data: tripAccess = [] } = useQuery({
+    queryKey: ['trip-access', trip?.id],
+    queryFn: () => base44.entities.TripAccess.filter({ trip_id: trip.id }),
+    enabled: !!trip?.id
+  });
+
+  const userPrefs = Array.isArray(notificationPrefs) ? notificationPrefs.find(p => p.user_email === user?.email) : null;
+  const userTripAccess = Array.isArray(tripAccess) ? tripAccess.find(ta => ta.user_email === user?.email) : null;
+  
+  const hasSubscription = userPrefs && (userPrefs.subscription_tier === 'premium' || userPrefs.subscription_tier === 'elite');
+  const hasTripAccess = userTripAccess !== undefined && userTripAccess !== null;
+  const hasActiveAccess = hasSubscription || hasTripAccess;
+  const alertsEnabled = userPrefs?.in_app_enabled || userPrefs?.email_enabled;
+  
+  const getTierName = () => {
+    if (userPrefs?.subscription_tier === 'elite') return 'Globetrotter';
+    if (userPrefs?.subscription_tier === 'premium') return 'Explorer';
+    if (hasTripAccess) {
+      return userTripAccess.access_level === 'globetrotter' ? 'Globetrotter' : 'Explorer';
+    }
+    return null;
+  };
+
+  const tierName = getTierName();
+
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -159,6 +196,30 @@ export default function TripDetail() {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Dashboard
         </Button>
+
+        {/* Active Access Banner - AT TOP */}
+        {hasActiveAccess && alertsEnabled && (
+          <Card className="border-2 border-green-300 bg-gradient-to-r from-green-50 to-emerald-50 mb-6">
+            <CardContent className="p-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                    <Bell className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="font-bold text-green-900">
+                      {tierName} Active - Smart Alerts Enabled
+                    </p>
+                    <p className="text-sm text-green-700">
+                      You're receiving real-time monitoring and updates
+                    </p>
+                  </div>
+                </div>
+                <Badge className="bg-green-600 text-white">ACTIVE</Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Hero Card */}
         <Card className="border-none shadow-2xl overflow-hidden mb-8">
@@ -184,9 +245,18 @@ export default function TripDetail() {
                   </div>
                 </div>
               </div>
-              <Badge className={`${riskLevel.bg} ${riskLevel.color} border-0 text-base px-4 py-2`}>
-                {riskLevel.label}
-              </Badge>
+              <Link to={createPageUrl("NotificationSettings")}>
+                <Badge className={`${riskLevel.bg} ${riskLevel.color} border-0 text-base px-4 py-2 cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2`}>
+                  {riskLevel.label}
+                  {!hasActiveAccess && (
+                    <>
+                      <span className="text-xs">•</span>
+                      <Bell className="w-4 h-4" />
+                      <span className="text-sm">Enable Alerts</span>
+                    </>
+                  )}
+                </Badge>
+              </Link>
             </div>
           </div>
 
@@ -258,7 +328,7 @@ export default function TripDetail() {
               </CardContent>
             </Card>
 
-            {/* Risk Summary Card - MOVED UP */}
+            {/* Risk Summary Card with Overall Score */}
             {trip.risk_assessment && (
               <Card className="border-none shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
                 <CardHeader>
@@ -295,6 +365,16 @@ export default function TripDetail() {
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
+                  {/* Overall Score */}
+                  <div className="text-center p-6 bg-white rounded-lg border-2 border-orange-200">
+                    <p className="text-sm text-gray-600 mb-2">Overall Risk Score</p>
+                    <div className={`text-5xl font-bold ${riskLevel.color} mb-3`}>
+                      {Math.round(riskScore)}
+                      <span className="text-2xl text-gray-500">/100</span>
+                    </div>
+                  </div>
+
+                  {/* Risk Scoring Tiles */}
                   <div className="grid md:grid-cols-3 gap-4">
                     {trip.risk_assessment.flight_delay_risk > 0 && (
                       <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.flight_delay_risk).bg}`}>
@@ -467,8 +547,6 @@ export default function TripDetail() {
               </Card>
             )}
 
-            <RiskGauges riskAssessment={trip.risk_assessment} />
-
             {/* Risk Details & Reasoning */}
             {trip.risk_details && (
               <Card className="border-none shadow-lg">
@@ -554,13 +632,44 @@ export default function TripDetail() {
               </Card>
             )}
 
-            {/* Enable Alerts Prompt - MOVED AFTER RISK ASSESSMENTS */}
-            <EnableAlertsPrompt trip={trip} />
-
             {/* Trip Access Manager */}
             <TripAccessManager trip={trip} />
 
-            {/* Travel Bookings */}
+            {/* Travel Bookings - MOVED TO RIGHT COLUMN */}
+          </div>
+
+          {/* Right Column - Insurance & Quick Actions */}
+          <div className="space-y-6">
+            <InsuranceRecommendations 
+              tripId={trip.id}
+              recommendedCoverage={trip.recommended_coverage}
+              tripCost={trip.trip_cost}
+            />
+
+            {/* Travel Checklist Card */}
+            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <ListChecks className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 mb-1">Travel Checklist</h3>
+                    <p className="text-xs text-gray-600 mb-3">
+                      Track your pre-departure tasks
+                    </p>
+                    <Link to={createPageUrl(`TripChecklist?id=${trip.id}`)}>
+                      <Button size="sm" className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                        <ListChecks className="w-4 h-4 mr-2" />
+                        View Checklist
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Travel Bookings - MOVED HERE */}
             <Card className="border-none shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -671,42 +780,11 @@ export default function TripDetail() {
                 )}
               </CardContent>
             </Card>
-          </div>
 
-          {/* Right Column - Insurance & Quick Actions */}
-          <div className="space-y-6">
-            <InsuranceRecommendations 
-              tripId={trip.id}
-              recommendedCoverage={trip.recommended_coverage}
-              tripCost={trip.trip_cost}
-            />
-
-            {/* Travel Checklist Card - MOVED TO RIGHT COLUMN */}
-            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <ListChecks className="w-5 h-5 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-900 mb-1">Travel Checklist</h3>
-                    <p className="text-xs text-gray-600 mb-3">
-                      Track your pre-departure tasks
-                    </p>
-                    <Link to={createPageUrl(`TripChecklist?id=${trip.id}`)}>
-                      <Button size="sm" className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
-                        <ListChecks className="w-4 h-4 mr-2" />
-                        View Checklist
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Social Share - MOVED TO RIGHT COLUMN */}
+            {/* Social Share */}
             <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-purple-50">
               <CardContent className="p-6">
+                <h3 className="font-bold text-gray-900 mb-3">Share Your Trip</h3>
                 <SocialShare trip={trip} variant="compact" />
               </CardContent>
             </Card>
