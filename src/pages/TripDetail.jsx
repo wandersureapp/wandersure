@@ -296,7 +296,20 @@ export default function TripDetail() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Risk Assessment */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Active Access Banner - MOVED ABOVE RECENT ALERTS */}
+            {/* Recent Alerts */}
+            <Card className="border-none shadow-lg">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="w-5 h-5" />
+                  Recent Alerts
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AlertList tripId={trip.id} limit={5} />
+              </CardContent>
+            </Card>
+
+            {/* Active Access Banner - MOVED UNDER RECENT ALERTS */}
             {hasActiveAccess && alertsEnabled && (
               <Card className="border-2 border-green-300 bg-gradient-to-r from-green-50 to-emerald-50">
                 <CardContent className="p-4">
@@ -319,19 +332,6 @@ export default function TripDetail() {
                 </CardContent>
               </Card>
             )}
-
-            {/* Recent Alerts */}
-            <Card className="border-none shadow-lg">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="w-5 h-5" />
-                  Recent Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <AlertList tripId={trip.id} limit={5} />
-              </CardContent>
-            </Card>
 
             {/* Risk Summary Card with Overall Score */}
             {trip.risk_assessment && (
