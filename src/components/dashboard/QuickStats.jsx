@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { PlaneTakeoff, Shield, AlertTriangle, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function QuickStats({ activeTripsCount, policiesCount, highRiskCount, upcomingCount }) {
+export default function QuickStats({ activeTripsCount, subscriptionActive, highRiskCount, upcomingCount }) {
   const stats = [
     {
       label: "Active Trips",
@@ -16,12 +16,12 @@ export default function QuickStats({ activeTripsCount, policiesCount, highRiskCo
       link: createPageUrl("MyTrips")
     },
     {
-      label: "Active Policies",
-      value: policiesCount,
+      label: "Active Subscription",
+      value: subscriptionActive ? 1 : 0,
       icon: Shield,
       gradient: "from-green-500 to-emerald-600",
       image: "https://images.unsplash.com/photo-1505142468610-359e7d316be0?w=400",
-      link: createPageUrl("MyQuotes")
+      link: createPageUrl("NotificationSettings")
     },
     {
       label: "High Risk Alerts",

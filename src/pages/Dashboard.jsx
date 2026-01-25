@@ -30,9 +30,16 @@ export default function Dashboard() {
     queryFn: () => base44.entities.Trip.list('-created_date'),
   });
 
-  const { data: recommendations = [] } = useQuery({
-    queryKey: ['recommendations'],
-    queryFn: () => base44.entities.Recommendation.list('-created_date'),
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
+
+  const { data: notificationPrefs = [] } = useQuery({
+    queryKey: ['notification-preferences'],
+    queryFn: () => base44.entities.UserNotificationPreferences.list(),
+    enabled: !!user?.email
   });
 
   const activeTrips = trips.filter(trip => 
@@ -162,7 +169,7 @@ export default function Dashboard() {
         >
           <QuickStats 
             activeTripsCount={activeTrips.length}
-            policiesCount={recommendations.length}
+            subscriptionActive={notificationPrefs.some(p => p.user_email === user?.email && (p.subscription_tier === 'premium' || p.subscription_tier === 'elite'))}
             highRiskCount={highRiskTrips.length}
             upcomingCount={upcomingTrips.length}
           />
