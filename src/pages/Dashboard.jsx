@@ -134,6 +134,12 @@ export default function Dashboard() {
                     {hasActiveSubscription ? 'Continue Planning' : 'Start Monitoring'}
                   </Button>
                 </Link>
+                <Link to={createPageUrl("CustomizeInsurance")}>
+                  <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-teal-500 text-white hover:from-emerald-600 hover:to-teal-600 shadow-2xl text-lg px-8 py-6 group">
+                    <Shield className="w-5 h-5 mr-2" />
+                    Smart Insurance Builder
+                  </Button>
+                </Link>
                 <Link to={createPageUrl("NotificationSettings")}>
                   <Button size="lg" variant="outline" className="border-2 border-white bg-transparent text-white hover:bg-white/20 hover:text-white text-lg px-8 py-6 backdrop-blur-sm">
                     {hasActiveSubscription ? (
