@@ -6,6 +6,7 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   ArrowLeft,
   MapPin,
@@ -69,6 +70,19 @@ export default function TripDetail() {
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to refresh risk data');
+    }
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async (newStatus) => {
+      await base44.entities.Trip.update(tripId, { status: newStatus });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trip', tripId] });
+      toast.success('Trip status updated');
+    },
+    onError: (error) => {
+      toast.error(error.message || 'Failed to update status');
     }
   });
 
@@ -283,9 +297,20 @@ export default function TripDetail() {
                 <div className="p-3 bg-orange-100 rounded-lg">
                   <Activity className="w-6 h-6 text-orange-600" />
                 </div>
-                <div>
-                  <p className="text-sm text-gray-600">Status</p>
-                  <p className="text-lg font-semibold capitalize">{trip.status}</p>
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600 mb-1">Status</p>
+                  <Select value={trip.status} onValueChange={(value) => updateStatusMutation.mutate(value)}>
+                    <SelectTrigger className="w-full">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="planning">Planning</SelectItem>
+                      <SelectItem value="booked">Booked</SelectItem>
+                      <SelectItem value="active">Active</SelectItem>
+                      <SelectItem value="completed">Completed</SelectItem>
+                      <SelectItem value="cancelled">Cancelled</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>
