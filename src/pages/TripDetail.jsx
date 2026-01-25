@@ -41,6 +41,12 @@ export default function TripDetail() {
   const urlParams = new URLSearchParams(window.location.search);
   const tripId = urlParams.get('id');
 
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    base44.auth.me().then(setUser).catch(() => setUser(null));
+  }, []);
+
   const { data: trip, isLoading, error } = useQuery({
     queryKey: ['trip', tripId],
     queryFn: async () => {
@@ -56,6 +62,18 @@ export default function TripDetail() {
     enabled: !!tripId,
     retry: 2,
     staleTime: 30000
+  });
+
+  const { data: notificationPrefs = [] } = useQuery({
+    queryKey: ['notification-preferences'],
+    queryFn: () => base44.entities.UserNotificationPreferences.list(),
+    enabled: !!user
+  });
+
+  const { data: tripAccess = [] } = useQuery({
+    queryKey: ['trip-access', tripId],
+    queryFn: () => base44.entities.TripAccess.filter({ trip_id: tripId }),
+    enabled: !!tripId
   });
 
   const refreshRiskMutation = useMutation({
@@ -162,24 +180,6 @@ export default function TripDetail() {
   const daysUntil = trip.start_date && safeDate(trip.start_date) 
     ? differenceInDays(safeDate(trip.start_date), new Date()) 
     : 0;
-
-  const [user, setUser] = React.useState(null);
-
-  React.useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => setUser(null));
-  }, []);
-
-  const { data: notificationPrefs = [] } = useQuery({
-    queryKey: ['notification-preferences'],
-    queryFn: () => base44.entities.UserNotificationPreferences.list(),
-    enabled: !!user
-  });
-
-  const { data: tripAccess = [] } = useQuery({
-    queryKey: ['trip-access', tripId],
-    queryFn: () => base44.entities.TripAccess.filter({ trip_id: tripId }),
-    enabled: !!tripId
-  });
 
   const userPrefs = Array.isArray(notificationPrefs) ? notificationPrefs.find(p => p.user_email === user?.email) : null;
   const userTripAccess = Array.isArray(tripAccess) ? tripAccess.find(ta => ta.user_email === user?.email) : null;
