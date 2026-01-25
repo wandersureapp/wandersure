@@ -168,71 +168,70 @@ export default function Dashboard() {
           />
         </motion.div>
 
-        {/* Main Grid */}
-        <div className="grid lg:grid-cols-3 gap-6 mt-8">
-          {/* Active Trips - Takes 2 columns */}
+        {/* Main Content */}
+        <div className="space-y-6 mt-8">
+          {/* Active Trips - Full Width */}
           <motion.div 
-            className="lg:col-span-2"
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
           >
             <ActiveTripsGrid trips={activeTrips} isLoading={tripsLoading} />
           </motion.div>
 
-          {/* Sidebar */}
-          <motion.div 
-            className="space-y-6"
-            initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
+          {/* Enhanced Travel Aides Card - Full Width */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.5 }}
           >
-
-            {/* Enhanced Travel Aides Card */}
-            <Card className="border-none shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02]">
-              <div className="relative h-64 overflow-hidden">
+            <Card className="border-none shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300">
+              <div className="relative h-80 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800"
+                  src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600"
                   alt="Travel Planning Tools"
                   className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700"
                 />
                 <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 via-blue-600/80 to-cyan-600/80"></div>
                 
                 {/* Animated elements */}
-                <div className="absolute top-4 right-4 animate-pulse">
-                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                <div className="absolute top-8 right-8 animate-pulse">
+                  <div className="w-4 h-4 bg-yellow-400 rounded-full"></div>
                 </div>
-                <div className="absolute bottom-4 left-4 animate-pulse" style={{ animationDelay: '0.5s' }}>
-                  <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                <div className="absolute bottom-8 left-8 animate-pulse" style={{ animationDelay: '0.5s' }}>
+                  <div className="w-3 h-3 bg-cyan-400 rounded-full"></div>
+                </div>
+                <div className="absolute top-20 left-20 animate-pulse" style={{ animationDelay: '1s' }}>
+                  <div className="w-2 h-2 bg-white rounded-full"></div>
                 </div>
                 
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-8">
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
                     transition={{ delay: 0.2, type: "spring" }}
-                    className="w-20 h-20 mb-4 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border-2 border-white/30 shadow-2xl"
+                    className="w-24 h-24 mb-6 bg-white/20 backdrop-blur-md rounded-3xl flex items-center justify-center border-2 border-white/30 shadow-2xl"
                   >
-                    <Sparkles className="w-10 h-10 text-white" />
+                    <Sparkles className="w-12 h-12 text-white" />
                   </motion.div>
                   
-                  <h3 className="text-3xl font-bold text-white mb-3 drop-shadow-lg">
+                  <h3 className="text-4xl font-bold text-white mb-4 drop-shadow-lg">
                     Travel Aides
                   </h3>
                   
-                  <p className="text-white/95 text-base mb-6 max-w-xs leading-relaxed drop-shadow-md">
-                    Unlock powerful checklists, destination guides, safety playbooks & more
+                  <p className="text-white/95 text-lg mb-8 max-w-2xl leading-relaxed drop-shadow-md">
+                    Unlock powerful checklists, destination guides, safety playbooks, budget planners & more to make your journey seamless
                   </p>
                   
-                  <Link to={createPageUrl("TravelAides")} className="w-full">
-                    <Button size="lg" className="w-full bg-white text-blue-600 hover:bg-blue-50 shadow-2xl font-bold text-base px-8 py-6 group">
+                  <Link to={createPageUrl("TravelAides")}>
+                    <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 shadow-2xl font-bold text-lg px-12 py-7 group">
                       Explore All Tools
-                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+                      <ArrowRight className="w-6 h-6 ml-3 group-hover:translate-x-2 transition-transform duration-300" />
                     </Button>
                   </Link>
                   
-                  <div className="mt-4 flex items-center gap-2 text-white/90 text-sm">
-                    <Shield className="w-4 h-4" />
+                  <div className="mt-6 flex items-center gap-2 text-white/90 text-base">
+                    <Shield className="w-5 h-5" />
                     <span>Premium features available</span>
                   </div>
                 </div>
