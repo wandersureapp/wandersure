@@ -6,6 +6,7 @@ import { createPageUrl } from "@/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { 
   Shield, 
   CheckCircle, 
@@ -16,21 +17,30 @@ import {
   AlertTriangle,
   Activity,
   TrendingUp,
-  Brain
+  Brain,
+  MapPin,
+  Calendar
 } from "lucide-react";
+import { format } from "date-fns";
 
 export default function CustomizeInsurance() {
   const navigate = useNavigate();
   const urlParams = new URLSearchParams(window.location.search);
-  const tripId = urlParams.get("tripId");
+  const initialTripId = urlParams.get("tripId");
+  const [selectedTripId, setSelectedTripId] = React.useState(initialTripId);
+
+  const { data: allTrips = [], isLoading: loadingTrips } = useQuery({
+    queryKey: ['trips'],
+    queryFn: () => base44.entities.Trip.list('-created_date')
+  });
 
   const { data: trip, isLoading: loadingTrip } = useQuery({
-    queryKey: ['trip', tripId],
+    queryKey: ['trip', selectedTripId],
     queryFn: async () => {
       const trips = await base44.entities.Trip.list();
-      return trips.find(t => t.id === tripId);
+      return trips.find(t => t.id === selectedTripId);
     },
-    enabled: !!tripId
+    enabled: !!selectedTripId
   });
 
   const coverageLabels = {
@@ -50,12 +60,101 @@ export default function CustomizeInsurance() {
     disruption_risk: { name: "Travel Disruption Insurance", icon: "⚠️", description: "Coverage for unexpected travel interruptions" }
   };
 
+  if (loadingTrips) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading trips...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show trip selector if no trip selected or no trips exist
+  if (!selectedTripId || allTrips.length === 0) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
+        <div className="max-w-3xl mx-auto">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(createPageUrl("Dashboard"))}
+            className="mb-6"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Dashboard
+          </Button>
+
+          <Card className="border-2 border-purple-300 bg-gradient-to-br from-white to-purple-50 shadow-xl">
+            <CardHeader className="bg-gradient-to-r from-purple-600 to-blue-600 text-white text-center">
+              <div className="flex items-center justify-center gap-3 mb-4">
+                <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center">
+                  <Brain className="w-8 h-8 text-white" />
+                </div>
+              </div>
+              <CardTitle className="text-3xl">AI Insurance Builder</CardTitle>
+              <p className="text-purple-100 text-sm mt-2">
+                Select a trip to see personalized insurance recommendations
+              </p>
+            </CardHeader>
+            <CardContent className="p-8">
+              {allTrips.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600 mb-6">You haven't created any trips yet.</p>
+                  <Button 
+                    onClick={() => navigate(createPageUrl("NewTrip"))}
+                    className="bg-blue-600 hover:bg-blue-700"
+                  >
+                    Create Your First Trip
+                  </Button>
+                </div>
+              ) : (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Choose a trip to analyze:
+                  </label>
+                  <Select value={selectedTripId || ""} onValueChange={setSelectedTripId}>
+                    <SelectTrigger className="w-full h-14 text-lg">
+                      <SelectValue placeholder="Select a trip..." />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {allTrips.map((t) => (
+                        <SelectItem key={t.id} value={t.id}>
+                          <div className="flex items-center gap-3 py-2">
+                            <MapPin className="w-4 h-4 text-blue-600" />
+                            <div>
+                              <p className="font-medium">{t.trip_name}</p>
+                              <p className="text-xs text-gray-500">
+                                {t.destination} • {format(new Date(t.start_date), 'MMM d, yyyy')}
+                              </p>
+                            </div>
+                          </div>
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+
+                  <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <p className="text-sm text-blue-900">
+                      <strong>💡 Pro tip:</strong> Our AI analyzes real-time data including flight status, weather, political climate, 
+                      and health advisories to give you personalized insurance recommendations—regardless of your trip status.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
+
   if (loadingTrip) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Loading trip details...</p>
+          <p className="text-gray-600">Loading trip analysis...</p>
         </div>
       </div>
     );
@@ -67,8 +166,8 @@ export default function CustomizeInsurance() {
         <Card className="max-w-md">
           <CardContent className="p-8 text-center">
             <p className="text-gray-600 mb-4">Trip not found</p>
-            <Button onClick={() => navigate(createPageUrl("MyTrips"))}>
-              Return to My Trips
+            <Button onClick={() => setSelectedTripId(null)}>
+              Select Another Trip
             </Button>
           </CardContent>
         </Card>
@@ -83,14 +182,32 @@ export default function CustomizeInsurance() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
       <div className="max-w-5xl mx-auto">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(createPageUrl(`TripDetail?id=${tripId}`))}
-          className="mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Trip
-        </Button>
+        <div className="flex items-center justify-between mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => setSelectedTripId(null)}
+            className="gap-2"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Choose Different Trip
+          </Button>
+          
+          <Select value={selectedTripId} onValueChange={setSelectedTripId}>
+            <SelectTrigger className="w-72">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {allTrips.map((t) => (
+                <SelectItem key={t.id} value={t.id}>
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-3 h-3 text-blue-600" />
+                    <span className="truncate">{t.trip_name}</span>
+                  </div>
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
         {/* Header */}
         <div className="mb-8 text-center">
