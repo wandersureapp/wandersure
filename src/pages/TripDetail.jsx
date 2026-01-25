@@ -614,8 +614,7 @@ export default function TripDetail() {
               </Card>
             )}
 
-            {/* Trip Access Manager */}
-            <TripAccessManager trip={trip} />
+
 
             {/* Travel Bookings - MOVED TO RIGHT COLUMN */}
           </div>
