@@ -188,34 +188,55 @@ export default function Dashboard() {
             transition={{ delay: 0.5 }}
           >
 
-            {/* Travel Aides Card */}
-            <Card className="border-none shadow-lg overflow-hidden">
-              <div className="relative h-32 overflow-hidden">
+            {/* Enhanced Travel Aides Card */}
+            <Card className="border-none shadow-2xl overflow-hidden hover:shadow-3xl transition-all duration-300 transform hover:scale-[1.02]">
+              <div className="relative h-64 overflow-hidden">
                 <img 
-                  src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=800"
-                  alt="Travel Aides"
-                  className="w-full h-full object-cover"
+                  src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=800"
+                  alt="Travel Planning Tools"
+                  className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/60 to-cyan-600/60"></div>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Sparkles className="w-12 h-12 text-white/30" />
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/80 via-blue-600/80 to-cyan-600/80"></div>
+                
+                {/* Animated elements */}
+                <div className="absolute top-4 right-4 animate-pulse">
+                  <div className="w-3 h-3 bg-yellow-400 rounded-full"></div>
+                </div>
+                <div className="absolute bottom-4 left-4 animate-pulse" style={{ animationDelay: '0.5s' }}>
+                  <div className="w-2 h-2 bg-cyan-400 rounded-full"></div>
+                </div>
+                
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-6">
+                  <motion.div
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    transition={{ delay: 0.2, type: "spring" }}
+                    className="w-20 h-20 mb-4 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center border-2 border-white/30 shadow-2xl"
+                  >
+                    <Sparkles className="w-10 h-10 text-white" />
+                  </motion.div>
+                  
+                  <h3 className="text-3xl font-bold text-white mb-3 drop-shadow-lg">
+                    Travel Aides
+                  </h3>
+                  
+                  <p className="text-white/95 text-base mb-6 max-w-xs leading-relaxed drop-shadow-md">
+                    Unlock powerful checklists, destination guides, safety playbooks & more
+                  </p>
+                  
+                  <Link to={createPageUrl("TravelAides")} className="w-full">
+                    <Button size="lg" className="w-full bg-white text-blue-600 hover:bg-blue-50 shadow-2xl font-bold text-base px-8 py-6 group">
+                      Explore All Tools
+                      <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-2 transition-transform duration-300" />
+                    </Button>
+                  </Link>
+                  
+                  <div className="mt-4 flex items-center gap-2 text-white/90 text-sm">
+                    <Shield className="w-4 h-4" />
+                    <span>Premium features available</span>
+                  </div>
                 </div>
               </div>
-              <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg -mt-14 border-4 border-white">
-                  <Sparkles className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="font-bold text-gray-900 mb-2 text-lg">Travel Aides</h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  Checklists, playbooks, and planning guides for stress-free travel
-                </p>
-                <Link to={createPageUrl("TravelAides")}>
-                  <Button className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 shadow-lg group">
-                    Explore Aides
-                    <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </CardContent>
             </Card>
           </motion.div>
         </div>
