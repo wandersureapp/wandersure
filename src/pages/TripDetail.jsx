@@ -203,14 +203,22 @@ export default function TripDetail() {
   return (
     <div className="min-h-screen py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Button
-          variant="ghost"
-          onClick={() => navigate(createPageUrl("Dashboard"))}
-          className="mb-6"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Dashboard
-        </Button>
+        <div className="flex items-center gap-3 mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => navigate(createPageUrl("Dashboard"))}
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Dashboard
+          </Button>
+          <Button
+            variant="outline"
+            onClick={() => navigate(createPageUrl(`NewTrip?edit=${tripId}`))}
+          >
+            <Pencil className="w-4 h-4 mr-2" />
+            Edit Trip
+          </Button>
+        </div>
 
         {/* Hero Card */}
         <Card className="border-none shadow-2xl overflow-hidden mb-8">
