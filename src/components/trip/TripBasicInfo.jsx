@@ -14,8 +14,9 @@ export default function TripBasicInfo({ tripData, updateTripData, onNext, onPars
   const filteredAirports = airports.filter(airport => 
     airport.code.toLowerCase().includes(airportSearch.toLowerCase()) ||
     airport.name.toLowerCase().includes(airportSearch.toLowerCase()) ||
-    airport.city.toLowerCase().includes(airportSearch.toLowerCase())
-  ).slice(0, 8);
+    airport.city.toLowerCase().includes(airportSearch.toLowerCase()) ||
+    (airport.state && airport.state.toLowerCase().includes(airportSearch.toLowerCase()))
+  ).slice(0, 10);
 
   const handleAirportSelect = (airport) => {
     updateTripData('destination', `${airport.city} (${airport.code})`);
@@ -37,28 +38,40 @@ export default function TripBasicInfo({ tripData, updateTripData, onNext, onPars
 
       {onParseEmails && (
         <Card className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-blue-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-medium text-gray-900 mb-1">Have booking confirmations in your email?</p>
-              <p className="text-sm text-gray-600">We'll automatically fill in your trip details</p>
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-medium text-gray-900 mb-1">Have booking confirmations in your email?</p>
+                <p className="text-sm text-gray-600">We'll automatically fill in your trip details</p>
+              </div>
+              <Button
+                onClick={onParseEmails}
+                disabled={isParsingEmails}
+                className="bg-blue-600 hover:bg-blue-700"
+              >
+                {isParsingEmails ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Parsing...
+                  </>
+                ) : (
+                  <>
+                    <Mail className="w-4 h-4 mr-2" />
+                    Parse Emails
+                  </>
+                )}
+              </Button>
             </div>
-            <Button
-              onClick={onParseEmails}
-              disabled={isParsingEmails}
-              className="bg-blue-600 hover:bg-blue-700"
-            >
-              {isParsingEmails ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Parsing...
-                </>
-              ) : (
-                <>
-                  <Mail className="w-4 h-4 mr-2" />
-                  Parse Emails
-                </>
-              )}
-            </Button>
+            <div className="pt-3 border-t border-blue-200">
+              <p className="text-sm text-gray-700 mb-2">Or enter your confirmation number manually:</p>
+              <Input
+                placeholder="e.g., ABC123 (we'll help extract details)"
+                value={tripData.manual_confirmation || ''}
+                onChange={(e) => updateTripData('manual_confirmation', e.target.value)}
+                className="bg-white"
+              />
+              <p className="text-xs text-gray-500 mt-1">If auto-parsing doesn't work, enter it here and fill details below</p>
+            </div>
           </div>
         </Card>
       )}
