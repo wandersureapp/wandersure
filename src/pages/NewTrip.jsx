@@ -29,8 +29,7 @@ export default function NewTrip() {
     end_date: "",
     travelers_count: 1,
     trip_cost: 0,
-    airline: "",
-    flight_number: "",
+    flights: [],
     hotel_name: "",
     hotel_booking_number: "",
     car_rental_company: "",
@@ -128,13 +127,19 @@ export default function NewTrip() {
         const bookings = response.data.bookings;
         const updates = {};
         
-        // Generate trip name from destination
+        // Generate trip name from destination and map flights
         if (bookings.flights?.length > 0) {
           const flight = bookings.flights[0];
           updates.destination = flight.arrival_airport || "";
           updates.trip_name = `Trip to ${flight.arrival_airport || 'Destination'}`;
-          updates.airline = flight.airline;
-          updates.flight_number = flight.flight_number;
+          updates.flights = bookings.flights.map(f => ({
+            airline: f.airline,
+            flight_number: f.flight_number,
+            departure_airport: f.departure_airport || '',
+            arrival_airport: f.arrival_airport || '',
+            departure_date: '',
+            departure_time: ''
+          }));
         }
         
         if (bookings.hotels?.length > 0) {
@@ -185,12 +190,16 @@ export default function NewTrip() {
   };
 
   const analyzeRisk = async (trip) => {
+      const flightDetails = trip.flights && trip.flights.length > 0 
+        ? trip.flights.map((f, i) => `Flight ${i+1}: ${f.airline} ${f.flight_number} (${f.departure_airport} → ${f.arrival_airport})`).join('\n  ')
+        : 'Not specified';
+
       const prompt = `You are a travel risk analyst with access to live data sources. Provide a COMPREHENSIVE real-time risk assessment for this trip:
 
   Destination: ${trip.destination}, ${trip.destination_country}
   Travel Dates: ${trip.start_date} to ${trip.end_date}
-  Airline: ${trip.airline || 'Not specified'}
-  Flight: ${trip.flight_number || 'Not specified'}
+  Flights:
+  ${flightDetails}
   Hotel: ${trip.hotel_name || 'Not specified'}
   Travelers: ${trip.travelers_count}
   Trip Cost: $${trip.trip_cost}
@@ -210,11 +219,11 @@ export default function NewTrip() {
   - Travel safety forums and recent traveler experiences
 
   FLIGHT & AIRPORT INTELLIGENCE:
-  - Live flight status for ${trip.airline} ${trip.flight_number || 'to this destination'}
-  - FlightAware/FlightRadar24 current delay patterns
-  - Real-time TSA wait times at departure airport
-  - Airport website for closures, construction, critical updates
-  - Current traffic conditions to airport
+  - Live flight status for all flights listed above
+  - FlightAware/FlightRadar24 current delay patterns for these routes
+  - Real-time TSA wait times at departure airports
+  - Airport websites for closures, construction, critical updates
+  - Current traffic conditions to airports
   - Parking availability and shuttle status
 
   WEATHER CONDITIONS:
@@ -231,7 +240,7 @@ export default function NewTrip() {
   - Local events causing disruptions
 
   AIRLINE SPECIFIC:
-  - ${trip.airline || 'Airline'} recent cancellations and delays
+  - Recent cancellations and delays for the airlines listed above
   - Baggage handling issues or lost luggage rates
   - Customer service problems or labor disputes
 

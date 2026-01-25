@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Sparkles, Loader2, Plus, Trash2 } from "lucide-react";
 
 export default function TripTravelDetails({ tripData, updateTripData, onBack, onSubmit, isSubmitting }) {
   const airlines = [
@@ -190,48 +190,164 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
 
         {/* Flight Information */}
         <div className="p-4 bg-gray-50 rounded-lg space-y-4">
-          <h3 className="font-semibold text-gray-900 flex items-center gap-2">
-            ✈️ Flight Information
-          </h3>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="airline">Airline</Label>
-              <Select
-                value={tripData.airline}
-                onValueChange={(value) => updateTripData('airline', value)}
-              >
-                <SelectTrigger className="mt-1.5">
-                  <SelectValue placeholder="Select airline" />
-                </SelectTrigger>
-                <SelectContent className="max-h-60">
-                  {airlines.map(airline => (
-                    <SelectItem key={airline} value={airline}>
-                      {airline}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              <a 
-                href="https://www.kqzyfj.com/click-101622714-17112391" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1 mt-2"
-              >
-                Search for flights
-              </a>
-              <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
-            </div>
-            <div>
-              <Label htmlFor="flight_number">Flight Number</Label>
-              <Input
-                id="flight_number"
-                placeholder="e.g., DL1234"
-                value={tripData.flight_number}
-                onChange={(e) => updateTripData('flight_number', e.target.value)}
-                className="mt-1.5"
-              />
-            </div>
+          <div className="flex items-center justify-between">
+            <h3 className="font-semibold text-gray-900 flex items-center gap-2">
+              ✈️ Flight Information
+            </h3>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                const flights = tripData.flights || [];
+                updateTripData('flights', [...flights, { 
+                  airline: '', 
+                  flight_number: '', 
+                  departure_airport: '', 
+                  arrival_airport: '',
+                  departure_date: '',
+                  departure_time: ''
+                }]);
+              }}
+            >
+              <Plus className="w-4 h-4 mr-1" />
+              Add Flight
+            </Button>
           </div>
+
+          {(!tripData.flights || tripData.flights.length === 0) && (
+            <div className="text-center py-4 text-gray-500">
+              <p className="text-sm">No flights added. Click "Add Flight" to add your flight details.</p>
+            </div>
+          )}
+
+          {(tripData.flights || []).map((flight, index) => (
+            <div key={index} className="p-4 bg-white rounded-lg border border-gray-200 space-y-4">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-medium text-gray-900">Flight {index + 1}</h4>
+                {(tripData.flights?.length || 0) > 1 && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      const flights = [...(tripData.flights || [])];
+                      flights.splice(index, 1);
+                      updateTripData('flights', flights);
+                    }}
+                  >
+                    <Trash2 className="w-4 h-4 text-red-600" />
+                  </Button>
+                )}
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Airline</Label>
+                  <Select
+                    value={flight.airline}
+                    onValueChange={(value) => {
+                      const flights = [...(tripData.flights || [])];
+                      flights[index].airline = value;
+                      updateTripData('flights', flights);
+                    }}
+                  >
+                    <SelectTrigger className="mt-1.5">
+                      <SelectValue placeholder="Select airline" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {airlines.map(airline => (
+                        <SelectItem key={airline} value={airline}>
+                          {airline}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div>
+                  <Label>Flight Number</Label>
+                  <Input
+                    placeholder="e.g., DL1234"
+                    value={flight.flight_number}
+                    onChange={(e) => {
+                      const flights = [...(tripData.flights || [])];
+                      flights[index].flight_number = e.target.value;
+                      updateTripData('flights', flights);
+                    }}
+                    className="mt-1.5"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Departure Airport</Label>
+                  <Input
+                    placeholder="e.g., JFK"
+                    value={flight.departure_airport}
+                    onChange={(e) => {
+                      const flights = [...(tripData.flights || [])];
+                      flights[index].departure_airport = e.target.value;
+                      updateTripData('flights', flights);
+                    }}
+                    className="mt-1.5"
+                  />
+                </div>
+                <div>
+                  <Label>Arrival Airport</Label>
+                  <Input
+                    placeholder="e.g., LAX"
+                    value={flight.arrival_airport}
+                    onChange={(e) => {
+                      const flights = [...(tripData.flights || [])];
+                      flights[index].arrival_airport = e.target.value;
+                      updateTripData('flights', flights);
+                    }}
+                    className="mt-1.5"
+                  />
+                </div>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label>Departure Date</Label>
+                  <Input
+                    type="date"
+                    value={flight.departure_date}
+                    onChange={(e) => {
+                      const flights = [...(tripData.flights || [])];
+                      flights[index].departure_date = e.target.value;
+                      updateTripData('flights', flights);
+                    }}
+                    className="mt-1.5"
+                  />
+                </div>
+                <div>
+                  <Label>Departure Time</Label>
+                  <Input
+                    type="time"
+                    value={flight.departure_time}
+                    onChange={(e) => {
+                      const flights = [...(tripData.flights || [])];
+                      flights[index].departure_time = e.target.value;
+                      updateTripData('flights', flights);
+                    }}
+                    className="mt-1.5"
+                  />
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <a 
+            href="https://www.kqzyfj.com/click-101622714-17112391" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-sm text-blue-600 hover:text-blue-700 flex items-center gap-1"
+          >
+            Search for flights
+          </a>
+          <img src="https://www.tqlkg.com/image-101622714-17112391" width="1" height="1" border="0" alt="" className="hidden" />
         </div>
 
         {/* Hotel Information */}
