@@ -245,19 +245,7 @@ export default function TripDetail() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Risk Assessment */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Trip Access Manager */}
-            <TripAccessManager trip={trip} />
-
-            <EnableAlertsPrompt trip={trip} />
-
-            {/* Social Share */}
-            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-purple-50">
-              <CardContent className="p-6">
-                <SocialShare trip={trip} />
-              </CardContent>
-            </Card>
-
-            {/* Recent Alerts */}
+            {/* Recent Alerts - MOVED TO TOP */}
             <Card className="border-none shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -270,30 +258,7 @@ export default function TripDetail() {
               </CardContent>
             </Card>
 
-            {/* Travel Checklist Card */}
-            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <ListChecks className="w-6 h-6 text-white" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-bold text-gray-900 mb-2 text-lg">Travel Checklist</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Track your pre-departure tasks with our interactive checklist
-                    </p>
-                    <Link to={createPageUrl(`TripChecklist?id=${trip.id}`)}>
-                      <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
-                        <ListChecks className="w-4 h-4 mr-2" />
-                        View Checklist
-                      </Button>
-                    </Link>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Risk Summary Card */}
+            {/* Risk Summary Card - MOVED UP */}
             {trip.risk_assessment && (
               <Card className="border-none shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
                 <CardHeader>
@@ -504,7 +469,7 @@ export default function TripDetail() {
 
             <RiskGauges riskAssessment={trip.risk_assessment} />
 
-            {/* Risk Details & Reasoning - Only show reasoning for initial assessment */}
+            {/* Risk Details & Reasoning */}
             {trip.risk_details && (
               <Card className="border-none shadow-lg">
                 <CardHeader>
@@ -588,6 +553,12 @@ export default function TripDetail() {
                 </CardContent>
               </Card>
             )}
+
+            {/* Enable Alerts Prompt - MOVED AFTER RISK ASSESSMENTS */}
+            <EnableAlertsPrompt trip={trip} />
+
+            {/* Trip Access Manager */}
+            <TripAccessManager trip={trip} />
 
             {/* Travel Bookings */}
             <Card className="border-none shadow-lg">
@@ -702,13 +673,43 @@ export default function TripDetail() {
             </Card>
           </div>
 
-          {/* Right Column - Insurance Recommendations */}
-          <div>
+          {/* Right Column - Insurance & Quick Actions */}
+          <div className="space-y-6">
             <InsuranceRecommendations 
               tripId={trip.id}
               recommendedCoverage={trip.recommended_coverage}
               tripCost={trip.trip_cost}
             />
+
+            {/* Travel Checklist Card - MOVED TO RIGHT COLUMN */}
+            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-cyan-50">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <ListChecks className="w-5 h-5 text-white" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-bold text-gray-900 mb-1">Travel Checklist</h3>
+                    <p className="text-xs text-gray-600 mb-3">
+                      Track your pre-departure tasks
+                    </p>
+                    <Link to={createPageUrl(`TripChecklist?id=${trip.id}`)}>
+                      <Button size="sm" className="w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
+                        <ListChecks className="w-4 h-4 mr-2" />
+                        View Checklist
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Social Share - MOVED TO RIGHT COLUMN */}
+            <Card className="border-none shadow-lg bg-gradient-to-br from-blue-50 to-purple-50">
+              <CardContent className="p-6">
+                <SocialShare trip={trip} variant="compact" />
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
