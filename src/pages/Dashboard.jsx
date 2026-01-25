@@ -42,6 +42,10 @@ export default function Dashboard() {
     enabled: !!user?.email
   });
 
+  const userPrefs = notificationPrefs.find(p => p.user_email === user?.email);
+  const hasActiveSubscription = userPrefs && (userPrefs.subscription_tier === 'premium' || userPrefs.subscription_tier === 'elite');
+  const subscriptionTier = userPrefs?.subscription_tier || 'free';
+
   const activeTrips = trips.filter(trip => 
     trip.status === 'active' || trip.status === 'booked'
   );
@@ -127,13 +131,22 @@ export default function Dashboard() {
                 <Link to={createPageUrl("NewTrip")}>
                   <Button size="lg" className="bg-white text-blue-600 hover:bg-blue-50 shadow-2xl text-lg px-8 py-6 group">
                     <Plus className="w-5 h-5 mr-2 group-hover:rotate-90 transition-transform duration-300" />
-                    Start Monitoring
+                    {hasActiveSubscription ? 'Continue Planning' : 'Start Monitoring'}
                   </Button>
                 </Link>
                 <Link to={createPageUrl("NotificationSettings")}>
-                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 text-lg px-8 py-6 backdrop-blur-sm">
-                    <Shield className="w-5 h-5 mr-2" />
-                    Enable Smart Alerts
+                  <Button size="lg" variant="outline" className="border-2 border-white bg-transparent text-white hover:bg-white/20 hover:text-white text-lg px-8 py-6 backdrop-blur-sm">
+                    {hasActiveSubscription ? (
+                      <>
+                        <Bell className="w-5 h-5 mr-2" />
+                        {subscriptionTier === 'elite' ? 'Globetrotter Active' : 'Explorer Active'}
+                      </>
+                    ) : (
+                      <>
+                        <Shield className="w-5 h-5 mr-2" />
+                        Enable Smart Alerts
+                      </>
+                    )}
                   </Button>
                 </Link>
               </div>
@@ -169,7 +182,7 @@ export default function Dashboard() {
         >
           <QuickStats 
             activeTripsCount={activeTrips.length}
-            subscriptionActive={notificationPrefs.some(p => p.user_email === user?.email && (p.subscription_tier === 'premium' || p.subscription_tier === 'elite'))}
+            subscriptionActive={hasActiveSubscription}
             highRiskCount={highRiskTrips.length}
             upcomingCount={upcomingTrips.length}
           />
