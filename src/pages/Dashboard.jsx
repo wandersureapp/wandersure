@@ -131,36 +131,7 @@ export default function Dashboard() {
                 </Link>
               </div>
 
-              {/* Real-time stats */}
-              <div className="mt-12 grid grid-cols-3 gap-6">
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-center"
-                >
-                  <p className="text-4xl font-bold text-gray-900 mb-1">{activeTrips.length}</p>
-                  <p className="text-gray-700 text-sm font-medium">Live Monitoring</p>
-                </motion.div>
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.5 }}
-                  className="text-center"
-                >
-                  <p className="text-4xl font-bold text-gray-900 mb-1">{highRiskTrips.length}</p>
-                  <p className="text-gray-700 text-sm font-medium">Active Alerts</p>
-                </motion.div>
-                <motion.div 
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6 }}
-                  className="text-center"
-                >
-                  <p className="text-4xl font-bold text-gray-900 mb-1">{upcomingTrips.length}</p>
-                  <p className="text-gray-700 text-sm font-medium">Upcoming</p>
-                </motion.div>
-              </div>
+
             </motion.div>
           </div>
         </div>
