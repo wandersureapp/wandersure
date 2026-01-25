@@ -180,77 +180,13 @@ export default function Dashboard() {
             <ActiveTripsGrid trips={activeTrips} isLoading={tripsLoading} />
           </motion.div>
 
-          {/* Sidebar - Risk Alerts */}
+          {/* Sidebar */}
           <motion.div 
             className="space-y-6"
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
           >
-            <RiskAlerts trips={highRiskTrips} />
-
-            {/* Recent Alerts */}
-            <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
-              <CardHeader className="bg-gradient-to-r from-orange-600 to-red-600 text-white">
-                <CardTitle className="flex items-center gap-2">
-                  <Bell className="w-5 h-5" />
-                  Recent Alerts
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="p-4">
-                <AlertList limit={3} />
-              </CardContent>
-            </Card>
-
-            {/* Upcoming Trips */}
-            <Card className="overflow-hidden border-none shadow-lg hover:shadow-xl transition-shadow">
-              <div className="relative h-24 overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=800"
-                  alt="Upcoming Trips"
-                  className="w-full h-full object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-600/70 to-cyan-600/70"></div>
-                <div className="absolute inset-0 flex items-center px-6">
-                  <Calendar className="w-6 h-6 text-white mr-3" />
-                  <h3 className="text-xl font-bold text-white">Upcoming Trips</h3>
-                </div>
-              </div>
-              <CardContent className="p-4">
-                {upcomingTrips.length > 0 ? (
-                  <div className="space-y-3">
-                    {upcomingTrips.map(trip => (
-                      <Link
-                        key={trip.id}
-                        to={createPageUrl(`TripDetail?id=${trip.id}`)}
-                        className="block p-3 rounded-lg border hover:border-blue-300 hover:bg-blue-50 transition-all group"
-                      >
-                        <div className="flex items-start justify-between">
-                          <div>
-                            <p className="font-medium text-gray-900 group-hover:text-blue-600 transition-colors">{trip.trip_name}</p>
-                            <p className="text-sm text-gray-500 flex items-center gap-1 mt-1">
-                              <MapPin className="w-3 h-3" />
-                              {trip.destination}
-                            </p>
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            {differenceInDays(new Date(trip.start_date), new Date())} days
-                          </Badge>
-                        </div>
-                        <p className="text-xs text-gray-500 mt-2">
-                          {format(new Date(trip.start_date), "MMM d")} - {format(new Date(trip.end_date), "MMM d, yyyy")}
-                        </p>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    <Calendar className="w-12 h-12 mx-auto mb-3 opacity-30" />
-                    <p className="text-sm">No upcoming trips</p>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
 
             {/* Travel Aides Card */}
             <Card className="border-none shadow-lg overflow-hidden">
