@@ -197,30 +197,6 @@ export default function TripDetail() {
           Back to Dashboard
         </Button>
 
-        {/* Active Access Banner - AT TOP */}
-        {hasActiveAccess && alertsEnabled && (
-          <Card className="border-2 border-green-300 bg-gradient-to-r from-green-50 to-emerald-50 mb-6">
-            <CardContent className="p-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
-                    <Bell className="w-5 h-5 text-white" />
-                  </div>
-                  <div>
-                    <p className="font-bold text-green-900">
-                      {tierName} Active - Smart Alerts Enabled
-                    </p>
-                    <p className="text-sm text-green-700">
-                      You're receiving real-time monitoring and updates
-                    </p>
-                  </div>
-                </div>
-                <Badge className="bg-green-600 text-white">ACTIVE</Badge>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
         {/* Hero Card */}
         <Card className="border-none shadow-2xl overflow-hidden mb-8">
           <div className="relative h-48 bg-gradient-to-br from-blue-600 via-blue-500 to-teal-500">
@@ -246,16 +222,21 @@ export default function TripDetail() {
                 </div>
               </div>
               <Link to={createPageUrl("NotificationSettings")}>
-                <Badge className={`${riskLevel.bg} ${riskLevel.color} border-0 text-base px-4 py-2 cursor-pointer hover:opacity-80 transition-opacity flex items-center gap-2`}>
-                  {riskLevel.label}
-                  {!hasActiveAccess && (
-                    <>
-                      <span className="text-xs">•</span>
-                      <Bell className="w-4 h-4" />
-                      <span className="text-sm">Enable Alerts</span>
-                    </>
-                  )}
-                </Badge>
+                <div className={`${riskLevel.bg} ${riskLevel.color} border-2 ${riskLevel.color.replace('text-', 'border-')} rounded-lg px-5 py-3 cursor-pointer hover:scale-105 transition-all shadow-lg hover:shadow-xl`}>
+                  <div className="flex items-center gap-3">
+                    <div className="flex flex-col">
+                      <span className="text-sm font-medium opacity-90">Trip Risk Level</span>
+                      <span className="text-2xl font-bold">{riskLevel.label.replace(' Risk', '')}</span>
+                    </div>
+                    <div className="h-10 w-px bg-current opacity-30"></div>
+                    <div className="flex flex-col items-center bg-white/20 px-3 py-1 rounded-lg">
+                      <Bell className="w-5 h-5 mb-1" />
+                      <span className="text-xs font-bold whitespace-nowrap">
+                        {hasActiveAccess && alertsEnabled ? 'Active' : 'Enable Alerts'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
               </Link>
             </div>
           </div>
@@ -315,7 +296,31 @@ export default function TripDetail() {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column - Risk Assessment */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Recent Alerts - MOVED TO TOP */}
+            {/* Active Access Banner - MOVED ABOVE RECENT ALERTS */}
+            {hasActiveAccess && alertsEnabled && (
+              <Card className="border-2 border-green-300 bg-gradient-to-r from-green-50 to-emerald-50">
+                <CardContent className="p-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center">
+                        <Bell className="w-5 h-5 text-white" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-green-900">
+                          {tierName} Active - Smart Alerts Enabled
+                        </p>
+                        <p className="text-sm text-green-700">
+                          You're receiving real-time monitoring and updates
+                        </p>
+                      </div>
+                    </div>
+                    <Badge className="bg-green-600 text-white">ACTIVE</Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Recent Alerts */}
             <Card className="border-none shadow-lg">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -441,29 +446,6 @@ export default function TripDetail() {
                         <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.disruption_risk).label} Risk</p>
                       </div>
                     )}
-                  </div>
-
-                  {/* Upgrade to Live Monitoring CTA */}
-                  <div className="mt-6 p-5 bg-gradient-to-r from-blue-100 to-cyan-100 border-2 border-blue-300 rounded-lg">
-                    <div className="flex items-start gap-3">
-                      <Bell className="w-6 h-6 text-blue-600 mt-1 flex-shrink-0" />
-                      <div className="flex-1">
-                        <h4 className="font-bold text-gray-900 mb-2">Want More Detailed Travel Intelligence?</h4>
-                        <p className="text-sm text-gray-700 mb-3">
-                          You already get <strong>critical alerts for free</strong> (severe weather, major safety, trip reminders). 
-                          Upgrade for <strong>hourly updates</strong> on flights, airport conditions, hotel changes, and more.
-                        </p>
-                        <Link to={createPageUrl("NotificationSettings")}>
-                          <Button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700">
-                            <Bell className="w-4 h-4 mr-2" />
-                            View Alert Plans
-                          </Button>
-                        </Link>
-                        <p className="text-xs text-gray-600 mt-2">
-                          ✓ Critical alerts free forever • Explorer from $9.99/mo for comprehensive monitoring
-                        </p>
-                      </div>
-                    </div>
                   </div>
 
                   {/* Airline Risk - Flight Affiliate Opportunity */}
