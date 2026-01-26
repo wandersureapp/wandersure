@@ -122,8 +122,8 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
                     }
                 });
 
-                // Send alert for ANY risk change if user has premium alerts enabled
-                if (Math.abs(scoreDifference) > 5) {
+                // ALWAYS update and send alert for premium users on ANY risk change
+                if (Math.abs(scoreDifference) >= 1) {
                     const preferences = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
                         user_email: trip.created_by
                     });
@@ -179,8 +179,8 @@ ${riskAnalysis.critical_alerts.map(alert => `<li>${alert}</li>`).join('\n')}
                     }
                 }
 
-                // Also send in-app notification for free users on significant increases
-                if (scoreDifference > 15) {
+                // Also send in-app notification for free users on major increases
+                if (scoreDifference > 10) {
                     const preferences = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
                         user_email: trip.created_by
                     });

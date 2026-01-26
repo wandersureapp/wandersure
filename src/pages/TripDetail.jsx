@@ -61,7 +61,8 @@ export default function TripDetail() {
     },
     enabled: !!tripId,
     retry: 2,
-    staleTime: 30000
+    staleTime: 30000,
+    refetchInterval: 60000
   });
 
   const { data: notificationPrefs = [] } = useQuery({
