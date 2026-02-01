@@ -62,6 +62,17 @@ export default function NewTrip() {
   const createTripMutation = useMutation({
     mutationFn: async (data) => {
       try {
+        // Auto-set status to "booked" if confirmation number or bookings exist
+        const hasConfirmation = data.manual_confirmation || 
+                               data.hotel_booking_number || 
+                               data.car_rental_booking_number || 
+                               data.cruise_booking_number ||
+                               (data.flights && data.flights.length > 0 && data.flights.some(f => f.flight_number));
+        
+        if (hasConfirmation && data.status === 'planning') {
+          data.status = 'booked';
+        }
+
         let trip;
         
         if (isEditMode) {
@@ -171,6 +182,7 @@ export default function NewTrip() {
             departure_date: '',
             departure_time: ''
           }));
+          updates.status = 'booked'; // Auto-set to booked when flight confirmation found
         }
         
         if (bookings.hotels?.length > 0) {
@@ -179,6 +191,7 @@ export default function NewTrip() {
           updates.hotel_booking_number = hotel.booking_number;
           updates.start_date = hotel.check_in;
           updates.end_date = hotel.check_out;
+          updates.status = 'booked'; // Auto-set to booked when hotel confirmation found
           if (!updates.destination && hotel.address) {
             updates.destination = hotel.address.split(',')[0];
             updates.trip_name = `Trip to ${hotel.address.split(',')[0]}`;
