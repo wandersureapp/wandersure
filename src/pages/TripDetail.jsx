@@ -689,7 +689,39 @@ export default function TripDetail() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {trip.airline && (
+                {trip.flights && trip.flights.length > 0 ? (
+                  trip.flights.map((flight, idx) => (
+                    <div key={idx} className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
+                      <Plane className="w-5 h-5 text-blue-600 mt-1" />
+                      <div className="flex-1">
+                        <p className="font-medium text-gray-900">Flight {idx + 1}</p>
+                        {flight.airline && <p className="text-sm text-gray-600">{flight.airline}</p>}
+                        {flight.flight_number && (
+                          <p className="text-sm text-gray-500">Flight #{flight.flight_number}</p>
+                        )}
+                        {flight.departure_airport && flight.arrival_airport && (
+                          <p className="text-sm text-gray-500">{flight.departure_airport} → {flight.arrival_airport}</p>
+                        )}
+                        {flight.departure_date && (
+                          <p className="text-sm text-gray-500">Departure: {flight.departure_date}</p>
+                        )}
+                        {idx === 0 && (
+                          <>
+                            <a 
+                              href="https://www.anrdoezrs.net/click-101622714-17223836" 
+                              target="_top"
+                              rel="noopener noreferrer"
+                              className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
+                            >
+                              Compare flight options on Expedia →
+                            </a>
+                            <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  ))
+                ) : trip.airline ? (
                   <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
                     <Plane className="w-5 h-5 text-blue-600 mt-1" />
                     <div className="flex-1">
@@ -709,7 +741,7 @@ export default function TripDetail() {
                       <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
                     </div>
                   </div>
-                )}
+                ) : null}
 
                 {trip.hotel_name && (
                   <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg">
@@ -773,7 +805,7 @@ export default function TripDetail() {
                   </div>
                 )}
 
-                {!trip.airline && !trip.hotel_name && !trip.car_rental_company && (
+                {(!trip.flights || trip.flights.length === 0) && !trip.airline && !trip.hotel_name && !trip.car_rental_company && (
                   <div className="text-center py-8">
                     <Plane className="w-12 h-12 mx-auto mb-3 opacity-30 text-gray-400" />
                     <p className="text-sm text-gray-600 mb-4">No travel bookings added yet</p>

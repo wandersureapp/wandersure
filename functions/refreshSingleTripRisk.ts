@@ -44,7 +44,10 @@ Deno.serve(async (req) => {
             }).join('\n  ')
             : 'No specific flight information provided';
 
+        console.log('=== TRIP DATA DEBUG ===');
+        console.log('Trip flights array:', JSON.stringify(trip.flights, null, 2));
         console.log('Flight information being sent to AI:', flightsInfo);
+        console.log('=======================');
 
         const prompt = `You are a travel risk intelligence analyst. Analyze the following trip and provide REAL-TIME risk assessments.
 
@@ -108,7 +111,15 @@ CRITICAL REQUIREMENTS:
             }
         });
 
-        console.log('Received risk data:', JSON.stringify(riskData, null, 2));
+        console.log('=== RISK DATA RECEIVED ===');
+        console.log('Flight risk:', riskData.flight_delay_risk);
+        console.log('Weather risk:', riskData.weather_risk);
+        console.log('Crime risk:', riskData.crime_risk);
+        console.log('Political risk:', riskData.political_risk);
+        console.log('Health risk:', riskData.health_risk);
+        console.log('Disruption risk:', riskData.disruption_risk);
+        console.log('Flight reasoning:', riskData.flight_delay_reasoning);
+        console.log('=======================');
 
         // Calculate overall score as weighted average
         // Safety (crime/political) and health are more critical, so weighted higher
