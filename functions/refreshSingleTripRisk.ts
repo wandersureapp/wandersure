@@ -70,36 +70,73 @@ Deno.serve(async (req) => {
         console.log('Flight information being sent to AI:', flightsInfo);
         console.log('=======================');
 
-        const prompt = `You are a travel risk intelligence analyst. Analyze the following trip and provide REAL-TIME risk assessments.
+        const prompt = `You are a travel risk analyst with access to live data sources. Provide a COMPREHENSIVE real-time risk assessment for this trip:
 
-Trip Details:
-- Trip Name: ${trip.trip_name}
-- Travel Dates: ${trip.start_date} to ${trip.end_date}
+Trip Name: ${trip.trip_name}
+Overall Travel Dates: ${trip.start_date} to ${trip.end_date}
 
-DESTINATIONS:
-  ${destinationsInfo}
+DESTINATIONS (analyze risk for EACH location):
+${destinationsInfo}
 
 FLIGHTS:
-  ${flightsInfo}
+${flightsInfo}
 
 Hotel: ${trip.hotel_name || 'Not specified'}
 Travelers: ${trip.travelers_count || 1}
+Trip Cost: $${trip.trip_cost || 0}
 
-IMPORTANT - REAL-TIME DATA SOURCES TO CHECK:
-1. FLIGHTS: ${flightsInfo !== 'No specific flight information provided' && flightsInfo !== 'Flight details added but incomplete' ? 'CHECK REAL-TIME STATUS for the SPECIFIC FLIGHT NUMBERS listed above. Use FlightAware, FlightRadar24, or airline websites. MENTION THE ACTUAL FLIGHT NUMBERS in your reasoning.' : 'No flight details available - provide general airport/route risk assessment and STATE this clearly in your flight_delay_reasoning.'}
-2. WEATHER: Get CURRENT forecasts from weather.gov, weather.com for exact travel dates and ALL destinations
-3. SAFETY/CRIME: Check US State Department travel advisories, CDC warnings, recent news for EACH destination
-4. POLITICAL: Check current events, protests, government warnings for ALL locations
-5. HEALTH: Check CDC travel health notices, vaccination requirements for ALL destinations
-6. AIRPORT: Get CURRENT TSA wait times, airport status, traffic conditions
+CRITICAL: Check these OFFICIAL real-time sources:
 
-CRITICAL REQUIREMENTS FOR YOUR RESPONSE:
-✓ ALL 6 risk scores are REQUIRED (flight_delay_risk, weather_risk, crime_risk, political_risk, health_risk, disruption_risk)
-✓ Each score MUST be 0-100 (never null/undefined)
-✓ ALL 6 reasoning fields are REQUIRED and must be detailed (minimum 2-3 sentences each)
-✓ For flights: If specific flights provided, MENTION THE FLIGHT NUMBERS in your flight_delay_reasoning
-✓ For flights: If NO flight info, clearly state "No specific flight information available" in reasoning
-✓ Provide SPECIFIC, DETAILED analysis based on REAL current data you find`;
+GOVERNMENT & TRAVEL ADVISORIES (check for ALL destinations):
+- US State Department travel advisories for each country visited
+- CDC health notices and vaccination requirements for each destination
+- TSA updates and security alerts
+- Local government official websites for each city
+
+CRIME & SAFETY (check for ALL destinations):
+- Current crime statistics for each city
+- Recent incidents affecting tourists in each location
+- Police reports and safety databases for all destinations
+- Travel safety forums and recent traveler experiences
+
+FLIGHT & AIRPORT INTELLIGENCE:
+${flightsInfo !== 'No specific flight information provided' && flightsInfo !== 'Flight details added but incomplete' ? 
+`- Live flight status for the SPECIFIC FLIGHTS listed above
+- FlightAware/FlightRadar24 current delay patterns for these EXACT flight numbers
+- Check each airline's on-time performance
+- MENTION THE ACTUAL FLIGHT NUMBERS in your flight_delay_reasoning` :
+`- General airport conditions and delay patterns
+- CLEARLY STATE "No specific flight information available" in your flight_delay_reasoning`}
+- Real-time TSA wait times at departure airports
+- Airport websites for closures, construction, critical updates
+- Current traffic conditions to airports
+- Parking availability and shuttle status
+
+WEATHER CONDITIONS:
+- Current weather at departure and arrival airports
+- Hour-by-hour forecast for travel dates
+- Severe weather alerts or warnings
+- Historical weather patterns for these dates
+- Storm tracking and precipitation forecasts
+
+NEWS & CURRENT EVENTS (check for ALL destinations):
+- Breaking news in each destination city
+- Political protests or civil unrest in any location
+- Natural disasters or emergencies at any stop
+- Local events causing disruptions in any destination
+
+AIRLINE SPECIFIC:
+- Recent cancellations and delays for the airlines listed above
+- Baggage handling issues or lost luggage rates
+- Customer service problems or labor disputes
+
+DESTINATION SPECIFIC (for ALL destinations):
+- Local laws travelers should know in each location
+- Scams targeting tourists in each city
+- Healthcare quality and hospital access for all destinations
+- Communication (wifi/phone service) in each location
+
+Score each risk 0-100 (0=no risk, 100=extreme risk). Be detailed and specific with reasoning based on ACTUAL current data for EACH location. Each reasoning field must be at least 2-3 detailed sentences.`;
 
         const riskData = await base44.integrations.Core.InvokeLLM({
             prompt: prompt,
