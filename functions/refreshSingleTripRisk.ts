@@ -34,8 +34,17 @@ Deno.serve(async (req) => {
             : `${trip.destination}, ${trip.destination_country || ''}`;
 
         const flightsInfo = trip.flights && trip.flights.length > 0
-            ? trip.flights.map((f, i) => `Flight ${i+1}: ${f.airline} ${f.flight_number} (${f.departure_airport} → ${f.arrival_airport})`).join('\n  ')
-            : 'Not specified';
+            ? trip.flights.map((f, i) => {
+                const parts = [];
+                if (f.airline) parts.push(f.airline);
+                if (f.flight_number) parts.push(`Flight #${f.flight_number}`);
+                if (f.departure_airport && f.arrival_airport) parts.push(`(${f.departure_airport} → ${f.arrival_airport})`);
+                if (f.departure_date) parts.push(`on ${f.departure_date}`);
+                return `Flight ${i+1}: ${parts.join(' ')}`;
+            }).join('\n  ')
+            : 'No specific flight information provided';
+
+        console.log('Flight information being sent to AI:', flightsInfo);
 
         const prompt = `You are a travel risk intelligence analyst. Analyze the following trip and provide REAL-TIME risk assessments.
 
@@ -54,15 +63,19 @@ Travelers: ${trip.travelers_count || 1}
 
 IMPORTANT INSTRUCTIONS:
 1. Use CURRENT, REAL-TIME data from the internet (government advisories, news, weather forecasts, flight data)
-2. For flight risks, use the SPECIFIC flight information provided above (airlines, flight numbers, routes)
+2. FLIGHTS: ${flightsInfo !== 'No specific flight information provided' ? 'USE THE SPECIFIC FLIGHT NUMBERS AND AIRLINES PROVIDED ABOVE. Check real-time status for these exact flights.' : 'No flight details provided, assess general airline/route risk.'}
 3. For weather, get CURRENT forecasts for the exact travel dates and ALL destinations
 4. For safety/crime, check CURRENT government travel advisories and recent news for EACH destination
 5. For political stability, check CURRENT events and State Department warnings for ALL locations
 6. For health risks, check CDC travel health notices and current outbreaks for ALL destinations
 7. For airport intelligence, provide CURRENT TSA wait times and airport conditions if available
 
-CRITICAL: You MUST score ALL categories 0-100. Never return 0 or null unless there is genuinely NO risk.
-Provide detailed reasoning for each risk category based on REAL data you find.`;
+CRITICAL REQUIREMENTS:
+- You MUST return ALL 6 risk scores (flight_delay_risk, weather_risk, crime_risk, political_risk, health_risk, disruption_risk)
+- Each score must be 0-100, NEVER null or undefined
+- You MUST provide reasoning for ALL categories, even if the risk is low
+- For flights, specifically mention the flight numbers in your reasoning if provided
+- If no flight info is provided, state that in your flight_delay_reasoning`;
 
         const riskData = await base44.integrations.Core.InvokeLLM({
             prompt: prompt,
@@ -70,29 +83,32 @@ Provide detailed reasoning for each risk category based on REAL data you find.`;
             response_json_schema: {
                 type: "object",
                 properties: {
-                    flight_delay_risk: { type: "number", description: "0-100" },
-                    weather_risk: { type: "number", description: "0-100" },
-                    crime_risk: { type: "number", description: "0-100" },
-                    political_risk: { type: "number", description: "0-100" },
-                    health_risk: { type: "number", description: "0-100" },
-                    disruption_risk: { type: "number", description: "0-100" },
+                    flight_delay_risk: { type: "number", description: "0-100, REQUIRED" },
+                    weather_risk: { type: "number", description: "0-100, REQUIRED" },
+                    crime_risk: { type: "number", description: "0-100, REQUIRED" },
+                    political_risk: { type: "number", description: "0-100, REQUIRED" },
+                    health_risk: { type: "number", description: "0-100, REQUIRED" },
+                    disruption_risk: { type: "number", description: "0-100, REQUIRED" },
                     airport_conditions: { type: "string", description: "Current airport status" },
                     tsa_wait_times: { type: "string", description: "Current TSA wait estimates" },
-                    flight_delay_reasoning: { type: "string" },
-                    weather_reasoning: { type: "string" },
-                    crime_reasoning: { type: "string" },
-                    political_reasoning: { type: "string" },
-                    health_reasoning: { type: "string" },
-                    disruption_reasoning: { type: "string" },
-                    airport_intel: { type: "string" },
+                    flight_delay_reasoning: { type: "string", description: "REQUIRED - mention specific flights if provided" },
+                    weather_reasoning: { type: "string", description: "REQUIRED" },
+                    crime_reasoning: { type: "string", description: "REQUIRED" },
+                    political_reasoning: { type: "string", description: "REQUIRED" },
+                    health_reasoning: { type: "string", description: "REQUIRED" },
+                    disruption_reasoning: { type: "string", description: "REQUIRED" },
+                    airport_intel: { type: "string", description: "Current airport intelligence" },
                     critical_alerts: {
                         type: "array",
                         items: { type: "string" },
                         description: "List of critical alerts requiring immediate attention"
                     }
-                }
+                },
+                required: ["flight_delay_risk", "weather_risk", "crime_risk", "political_risk", "health_risk", "disruption_risk", "flight_delay_reasoning", "weather_reasoning", "crime_reasoning", "political_reasoning", "health_reasoning", "disruption_reasoning"]
             }
         });
+
+        console.log('Received risk data:', JSON.stringify(riskData, null, 2));
 
         // Calculate overall score as weighted average
         // Safety (crime/political) and health are more critical, so weighted higher

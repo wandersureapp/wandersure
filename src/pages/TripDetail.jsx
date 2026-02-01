@@ -423,71 +423,59 @@ export default function TripDetail() {
 
                   {/* Risk Scoring Tiles */}
                   <div className="grid md:grid-cols-3 gap-4">
-                    {trip.risk_assessment.flight_delay_risk > 0 && (
-                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.flight_delay_risk).bg}`}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Plane className={`w-5 h-5 ${getRiskColorClasses(trip.risk_assessment.flight_delay_risk).text}`} />
-                          <span className="font-semibold text-gray-900">Flight Risk</span>
-                        </div>
-                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.flight_delay_risk)}/100</div>
-                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.flight_delay_risk).label} Risk</p>
+                    <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.flight_delay_risk || 0).bg}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Plane className={`w-5 h-5 ${getRiskColorClasses(trip.risk_assessment.flight_delay_risk || 0).text}`} />
+                        <span className="font-semibold text-gray-900">Flight Risk</span>
                       </div>
-                    )}
+                      <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.flight_delay_risk || 0)}/100</div>
+                      <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.flight_delay_risk || 0).label} Risk</p>
+                    </div>
 
-                    {trip.risk_assessment.weather_risk > 0 && (
-                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.weather_risk).bg}`}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xl">🌤️</span>
-                          <span className="font-semibold text-gray-900">Weather</span>
-                        </div>
-                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.weather_risk)}/100</div>
-                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.weather_risk).label} Risk</p>
+                    <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.weather_risk || 0).bg}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xl">🌤️</span>
+                        <span className="font-semibold text-gray-900">Weather</span>
                       </div>
-                    )}
+                      <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.weather_risk || 0)}/100</div>
+                      <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.weather_risk || 0).label} Risk</p>
+                    </div>
 
-                    {trip.risk_assessment.crime_risk > 0 && (
-                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.crime_risk).bg}`}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xl">🛡️</span>
-                          <span className="font-semibold text-gray-900">Safety</span>
-                        </div>
-                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.crime_risk)}/100</div>
-                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.crime_risk).label} Risk</p>
+                    <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.crime_risk || 0).bg}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xl">🛡️</span>
+                        <span className="font-semibold text-gray-900">Safety</span>
                       </div>
-                    )}
+                      <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.crime_risk || 0)}/100</div>
+                      <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.crime_risk || 0).label} Risk</p>
+                    </div>
 
-                    {trip.risk_assessment.political_risk > 0 && (
-                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.political_risk).bg}`}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xl">🏛️</span>
-                          <span className="font-semibold text-gray-900">Political</span>
-                        </div>
-                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.political_risk)}/100</div>
-                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.political_risk).label} Risk</p>
+                    <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.political_risk || 0).bg}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xl">🏛️</span>
+                        <span className="font-semibold text-gray-900">Political</span>
                       </div>
-                    )}
+                      <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.political_risk || 0)}/100</div>
+                      <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.political_risk || 0).label} Risk</p>
+                    </div>
 
-                    {trip.risk_assessment.health_risk > 0 && (
-                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.health_risk).bg}`}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xl">🏥</span>
-                          <span className="font-semibold text-gray-900">Health</span>
-                        </div>
-                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.health_risk)}/100</div>
-                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.health_risk).label} Risk</p>
+                    <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.health_risk || 0).bg}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xl">🏥</span>
+                        <span className="font-semibold text-gray-900">Health</span>
                       </div>
-                    )}
+                      <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.health_risk || 0)}/100</div>
+                      <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.health_risk || 0).label} Risk</p>
+                    </div>
 
-                    {trip.risk_assessment.disruption_risk > 0 && (
-                      <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.disruption_risk).bg}`}>
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="text-xl">⚠️</span>
-                          <span className="font-semibold text-gray-900">Disruptions</span>
-                        </div>
-                        <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.disruption_risk)}/100</div>
-                        <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.disruption_risk).label} Risk</p>
+                    <div className={`p-4 rounded-lg border-2 ${getRiskColorClasses(trip.risk_assessment.disruption_risk || 0).bg}`}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-xl">⚠️</span>
+                        <span className="font-semibold text-gray-900">Disruptions</span>
                       </div>
-                    )}
+                      <div className="text-2xl font-bold mb-1">{Math.round(trip.risk_assessment.disruption_risk || 0)}/100</div>
+                      <p className="text-xs text-gray-600">{getRiskColorClasses(trip.risk_assessment.disruption_risk || 0).label} Risk</p>
+                    </div>
                   </div>
 
                   {/* Airline Risk - Flight Affiliate Opportunity */}
