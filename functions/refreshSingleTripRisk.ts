@@ -144,12 +144,12 @@ Score each risk 0-100 (0=no risk, 100=extreme risk). Be detailed and specific wi
             response_json_schema: {
                 type: "object",
                 properties: {
-                    flight_delay_risk: { type: "number", description: "0-100, REQUIRED" },
-                    weather_risk: { type: "number", description: "0-100, REQUIRED" },
-                    crime_risk: { type: "number", description: "0-100, REQUIRED" },
-                    political_risk: { type: "number", description: "0-100, REQUIRED" },
-                    health_risk: { type: "number", description: "0-100, REQUIRED" },
-                    disruption_risk: { type: "number", description: "0-100, REQUIRED" },
+                    flight_delay_risk: { type: "number", description: "0-100, overall flight risk" },
+                    weather_risk: { type: "number", description: "0-100, overall weather risk" },
+                    crime_risk: { type: "number", description: "0-100, overall crime risk" },
+                    political_risk: { type: "number", description: "0-100, overall political risk" },
+                    health_risk: { type: "number", description: "0-100, overall health risk" },
+                    disruption_risk: { type: "number", description: "0-100, overall disruption risk" },
                     airport_conditions: { type: "string", description: "Current airport status" },
                     tsa_wait_times: { type: "string", description: "Current TSA wait estimates" },
                     flight_delay_reasoning: { type: "string", description: "REQUIRED - mention specific flights if provided" },
@@ -163,9 +163,27 @@ Score each risk 0-100 (0=no risk, 100=extreme risk). Be detailed and specific wi
                         type: "array",
                         items: { type: "string" },
                         description: "List of critical alerts requiring immediate attention"
+                    },
+                    destination_risks: {
+                        type: "array",
+                        description: "REQUIRED - Individual risk scores for EACH destination",
+                        items: {
+                            type: "object",
+                            properties: {
+                                city: { type: "string" },
+                                country: { type: "string" },
+                                crime_risk: { type: "number" },
+                                political_risk: { type: "number" },
+                                health_risk: { type: "number" },
+                                weather_risk: { type: "number" },
+                                disruption_risk: { type: "number" },
+                                overall_score: { type: "number" },
+                                summary: { type: "string" }
+                            }
+                        }
                     }
                 },
-                required: ["flight_delay_risk", "weather_risk", "crime_risk", "political_risk", "health_risk", "disruption_risk", "flight_delay_reasoning", "weather_reasoning", "crime_reasoning", "political_reasoning", "health_reasoning", "disruption_reasoning"]
+                required: ["flight_delay_risk", "weather_risk", "crime_risk", "political_risk", "health_risk", "disruption_risk", "flight_delay_reasoning", "weather_reasoning", "crime_reasoning", "political_reasoning", "health_reasoning", "disruption_reasoning", "destination_risks"]
             }
         });
 
@@ -200,7 +218,30 @@ Score each risk 0-100 (0=no risk, 100=extreme risk). Be detailed and specific wi
 
         const previousScore = trip.risk_assessment?.overall_score || 0;
 
+        // Update destinations with per-location risk scores
+        const updatedDestinations = trip.destinations?.map(dest => {
+            const destRisk = riskData.destination_risks?.find(
+                dr => dr.city === dest.city && dr.country === dest.country
+            );
+            
+            if (destRisk) {
+                return {
+                    ...dest,
+                    risk_assessment: {
+                        overall_score: destRisk.overall_score,
+                        crime_risk: destRisk.crime_risk,
+                        political_risk: destRisk.political_risk,
+                        health_risk: destRisk.health_risk,
+                        weather_risk: destRisk.weather_risk,
+                        disruption_risk: destRisk.disruption_risk
+                    }
+                };
+            }
+            return dest;
+        }) || trip.destinations;
+
         await base44.entities.Trip.update(trip.id, {
+            destinations: updatedDestinations,
             risk_assessment: {
                 overall_score: overallScore,
                 flight_delay_risk: flightRisk,
