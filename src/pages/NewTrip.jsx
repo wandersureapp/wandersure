@@ -202,10 +202,22 @@ export default function NewTrip() {
         
         setTripData(prev => ({ ...prev, ...updates }));
         
+        // Show success message
+        const totalBookings = (bookings.flights?.length || 0) + (bookings.hotels?.length || 0) + 
+                             (bookings.car_rentals?.length || 0) + (bookings.cruises?.length || 0);
+        
+        if (totalBookings > 0) {
+          alert(`Found ${totalBookings} booking(s)! Your trip details have been populated.`);
+        } else {
+          alert('No booking confirmations found in your recent emails. Please enter details manually.');
+        }
+        
         // Auto-advance to step 2 if we have required fields
         if (updates.destination && updates.start_date && updates.end_date) {
           setTimeout(() => setStep(2), 500);
         }
+      } else {
+        alert('No booking emails found. Please enter details manually.');
       }
     } catch (error) {
       if (error.response?.data?.needsAuth) {
