@@ -23,6 +23,27 @@ Deno.serve(async (req) => {
                     ? trip.destinations.map(d => `${d.city}, ${d.country} (${d.arrival_date} to ${d.departure_date}) - ${d.purpose}`).join('\n')
                     : `${trip.destination}, ${trip.destination_country || ''}`;
 
+                // Build comprehensive flight details
+                let flightsInfo = 'No specific flight information provided';
+                
+                if (trip.flights && trip.flights.length > 0) {
+                    flightsInfo = trip.flights.map((f, i) => {
+                        const parts = [];
+                        if (f.airline) parts.push(f.airline);
+                        if (f.flight_number) parts.push(`Flight #${f.flight_number}`);
+                        if (f.departure_airport && f.arrival_airport) {
+                            parts.push(`Route: ${f.departure_airport} → ${f.arrival_airport}`);
+                        }
+                        if (f.departure_date) parts.push(`Date: ${f.departure_date}`);
+                        return parts.length > 0 ? `Flight ${i+1}: ${parts.join(', ')}` : null;
+                    }).filter(Boolean).join('\n');
+                } else if (trip.airline || trip.flight_number) {
+                    const parts = [];
+                    if (trip.airline) parts.push(trip.airline);
+                    if (trip.flight_number) parts.push(`Flight #${trip.flight_number}`);
+                    flightsInfo = parts.join(', ');
+                }
+
                 // Get real-time data from the web
                 const riskAnalysis = await base44.asServiceRole.integrations.Core.InvokeLLM({
                     prompt: `You are a travel risk analyst with access to live data sources. Analyze current conditions for this MULTI-DESTINATION trip:
@@ -33,8 +54,8 @@ Overall Travel Dates: ${trip.start_date} to ${trip.end_date}
 DESTINATIONS (assess risk for EACH location):
 ${destinationsInfo}
 
-Airline: ${trip.airline || 'Not specified'}
-Flight: ${trip.flight_number || 'Not specified'}
+FLIGHTS:
+${flightsInfo}
 
 CRITICAL: Check these OFFICIAL sources for real-time data:
 

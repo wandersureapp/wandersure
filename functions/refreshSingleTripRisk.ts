@@ -33,19 +33,40 @@ Deno.serve(async (req) => {
             ? trip.destinations.map(d => `${d.city}, ${d.country} (${d.arrival_date} to ${d.departure_date}) - ${d.purpose}`).join('\n  ')
             : `${trip.destination}, ${trip.destination_country || ''}`;
 
-        const flightsInfo = trip.flights && trip.flights.length > 0
-            ? trip.flights.map((f, i) => {
+        // Build comprehensive flight details - support both new array format and legacy format
+        let flightsInfo = 'No specific flight information provided';
+        
+        if (trip.flights && trip.flights.length > 0) {
+            flightsInfo = trip.flights.map((f, i) => {
                 const parts = [];
                 if (f.airline) parts.push(f.airline);
                 if (f.flight_number) parts.push(`Flight #${f.flight_number}`);
-                if (f.departure_airport && f.arrival_airport) parts.push(`(${f.departure_airport} → ${f.arrival_airport})`);
-                if (f.departure_date) parts.push(`on ${f.departure_date}`);
-                return `Flight ${i+1}: ${parts.join(' ')}`;
-            }).join('\n  ')
-            : 'No specific flight information provided';
+                if (f.departure_airport && f.arrival_airport) {
+                    parts.push(`Route: ${f.departure_airport} → ${f.arrival_airport}`);
+                }
+                if (f.departure_date) parts.push(`Date: ${f.departure_date}`);
+                if (f.departure_time) parts.push(`Time: ${f.departure_time}`);
+                return parts.length > 0 ? `Flight ${i+1}: ${parts.join(', ')}` : null;
+            }).filter(Boolean).join('\n  ');
+            
+            if (!flightsInfo || flightsInfo.trim() === '') {
+                flightsInfo = 'Flight details added but incomplete';
+            }
+        } else if (trip.airline || trip.flight_number) {
+            // Legacy format fallback
+            const parts = [];
+            if (trip.airline) parts.push(trip.airline);
+            if (trip.flight_number) parts.push(`Flight #${trip.flight_number}`);
+            if (trip.departure_airport && trip.arrival_airport) {
+                parts.push(`Route: ${trip.departure_airport} → ${trip.arrival_airport}`);
+            }
+            flightsInfo = parts.join(', ');
+        }
 
         console.log('=== TRIP DATA DEBUG ===');
         console.log('Trip flights array:', JSON.stringify(trip.flights, null, 2));
+        console.log('Legacy airline:', trip.airline);
+        console.log('Legacy flight_number:', trip.flight_number);
         console.log('Flight information being sent to AI:', flightsInfo);
         console.log('=======================');
 
@@ -64,21 +85,21 @@ FLIGHTS:
 Hotel: ${trip.hotel_name || 'Not specified'}
 Travelers: ${trip.travelers_count || 1}
 
-IMPORTANT INSTRUCTIONS:
-1. Use CURRENT, REAL-TIME data from the internet (government advisories, news, weather forecasts, flight data)
-2. FLIGHTS: ${flightsInfo !== 'No specific flight information provided' ? 'USE THE SPECIFIC FLIGHT NUMBERS AND AIRLINES PROVIDED ABOVE. Check real-time status for these exact flights.' : 'No flight details provided, assess general airline/route risk.'}
-3. For weather, get CURRENT forecasts for the exact travel dates and ALL destinations
-4. For safety/crime, check CURRENT government travel advisories and recent news for EACH destination
-5. For political stability, check CURRENT events and State Department warnings for ALL locations
-6. For health risks, check CDC travel health notices and current outbreaks for ALL destinations
-7. For airport intelligence, provide CURRENT TSA wait times and airport conditions if available
+IMPORTANT - REAL-TIME DATA SOURCES TO CHECK:
+1. FLIGHTS: ${flightsInfo !== 'No specific flight information provided' && flightsInfo !== 'Flight details added but incomplete' ? 'CHECK REAL-TIME STATUS for the SPECIFIC FLIGHT NUMBERS listed above. Use FlightAware, FlightRadar24, or airline websites. MENTION THE ACTUAL FLIGHT NUMBERS in your reasoning.' : 'No flight details available - provide general airport/route risk assessment and STATE this clearly in your flight_delay_reasoning.'}
+2. WEATHER: Get CURRENT forecasts from weather.gov, weather.com for exact travel dates and ALL destinations
+3. SAFETY/CRIME: Check US State Department travel advisories, CDC warnings, recent news for EACH destination
+4. POLITICAL: Check current events, protests, government warnings for ALL locations
+5. HEALTH: Check CDC travel health notices, vaccination requirements for ALL destinations
+6. AIRPORT: Get CURRENT TSA wait times, airport status, traffic conditions
 
-CRITICAL REQUIREMENTS:
-- You MUST return ALL 6 risk scores (flight_delay_risk, weather_risk, crime_risk, political_risk, health_risk, disruption_risk)
-- Each score must be 0-100, NEVER null or undefined
-- You MUST provide reasoning for ALL categories, even if the risk is low
-- For flights, specifically mention the flight numbers in your reasoning if provided
-- If no flight info is provided, state that in your flight_delay_reasoning`;
+CRITICAL REQUIREMENTS FOR YOUR RESPONSE:
+✓ ALL 6 risk scores are REQUIRED (flight_delay_risk, weather_risk, crime_risk, political_risk, health_risk, disruption_risk)
+✓ Each score MUST be 0-100 (never null/undefined)
+✓ ALL 6 reasoning fields are REQUIRED and must be detailed (minimum 2-3 sentences each)
+✓ For flights: If specific flights provided, MENTION THE FLIGHT NUMBERS in your flight_delay_reasoning
+✓ For flights: If NO flight info, clearly state "No specific flight information available" in reasoning
+✓ Provide SPECIFIC, DETAILED analysis based on REAL current data you find`;
 
         const riskData = await base44.integrations.Core.InvokeLLM({
             prompt: prompt,
