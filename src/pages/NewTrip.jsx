@@ -29,6 +29,7 @@ export default function NewTrip() {
     trip_name: "",
     destination: "",
     destination_country: "",
+    destinations: [],
     start_date: "",
     end_date: "",
     travelers_count: 1,
@@ -236,28 +237,38 @@ export default function NewTrip() {
         ? trip.flights.map((f, i) => `Flight ${i+1}: ${f.airline} ${f.flight_number} (${f.departure_airport} → ${f.arrival_airport})`).join('\n  ')
         : 'Not specified';
 
-      const prompt = `You are a travel risk analyst with access to live data sources. Provide a COMPREHENSIVE real-time risk assessment for this trip:
+      const destinationsDetails = trip.destinations && trip.destinations.length > 0
+        ? trip.destinations.map((d, i) => `Stop ${i+1}: ${d.city}, ${d.country} (${d.arrival_date} to ${d.departure_date}) - Purpose: ${d.purpose}`).join('\n  ')
+        : 'Not specified';
 
-  Destination: ${trip.destination}, ${trip.destination_country}
-  Travel Dates: ${trip.start_date} to ${trip.end_date}
+      const prompt = `You are a travel risk analyst with access to live data sources. Provide a COMPREHENSIVE real-time risk assessment for this MULTI-DESTINATION trip:
+
+  Trip Name: ${trip.trip_name}
+  Overall Travel Dates: ${trip.start_date} to ${trip.end_date}
+  
+  DESTINATIONS (analyze risk for EACH location):
+  ${destinationsDetails}
+  
   Flights:
   ${flightDetails}
   Hotel: ${trip.hotel_name || 'Not specified'}
   Travelers: ${trip.travelers_count}
   Trip Cost: $${trip.trip_cost}
 
+  CRITICAL: Assess risk for EACH destination separately, then provide an overall score that reflects the HIGHEST risk across all locations.
+
   CRITICAL: Check these OFFICIAL real-time sources:
 
-  GOVERNMENT & TRAVEL ADVISORIES:
-  - US State Department travel advisories for ${trip.destination_country}
-  - CDC health notices and vaccination requirements
+  GOVERNMENT & TRAVEL ADVISORIES (check for ALL destinations):
+  - US State Department travel advisories for each country visited
+  - CDC health notices and vaccination requirements for each destination
   - TSA updates and security alerts
-  - Local government official websites
+  - Local government official websites for each city
 
-  CRIME & SAFETY:
-  - Current crime statistics for ${trip.destination}
-  - Recent incidents affecting tourists
-  - Police reports and safety databases
+  CRIME & SAFETY (check for ALL destinations):
+  - Current crime statistics for each city
+  - Recent incidents affecting tourists in each location
+  - Police reports and safety databases for all destinations
   - Travel safety forums and recent traveler experiences
 
   FLIGHT & AIRPORT INTELLIGENCE:
@@ -275,24 +286,24 @@ export default function NewTrip() {
   - Historical weather patterns for these dates
   - Storm tracking and precipitation forecasts
 
-  NEWS & CURRENT EVENTS:
-  - Breaking news in ${trip.destination}
-  - Political protests or civil unrest
-  - Natural disasters or emergencies
-  - Local events causing disruptions
+  NEWS & CURRENT EVENTS (check for ALL destinations):
+  - Breaking news in each destination city
+  - Political protests or civil unrest in any location
+  - Natural disasters or emergencies at any stop
+  - Local events causing disruptions in any destination
 
   AIRLINE SPECIFIC:
   - Recent cancellations and delays for the airlines listed above
   - Baggage handling issues or lost luggage rates
   - Customer service problems or labor disputes
 
-  DESTINATION SPECIFIC:
-  - Local laws travelers should know
-  - Scams targeting tourists
-  - Healthcare quality and hospital access
-  - Communication (wifi/phone service)
+  DESTINATION SPECIFIC (for ALL destinations):
+  - Local laws travelers should know in each location
+  - Scams targeting tourists in each city
+  - Healthcare quality and hospital access for all destinations
+  - Communication (wifi/phone service) in each location
 
-  Score each risk 0-100 (0=no risk, 100=extreme risk). Be detailed and specific with reasoning based on ACTUAL current data.`;
+  Score each risk 0-100 (0=no risk, 100=extreme risk). The overall_score should be the MAXIMUM risk across all destinations. Be detailed and specific with reasoning based on ACTUAL current data for EACH location.`;
 
       const result = await base44.integrations.Core.InvokeLLM({
         prompt,
