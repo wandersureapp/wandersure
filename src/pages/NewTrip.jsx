@@ -105,6 +105,7 @@ export default function NewTrip() {
             ]);
             
             await base44.entities.Trip.update(trip.id, {
+              destinations: updatedDestinations,
               risk_assessment: riskAnalysis.risk_assessment,
               recommended_coverage: riskAnalysis.recommended_coverage,
               risk_details: riskAnalysis.risk_details
@@ -358,10 +359,49 @@ export default function NewTrip() {
                   items: { type: "string" }
                 }
               }
+            },
+            destination_risks: {
+              type: "array",
+              items: {
+                type: "object",
+                properties: {
+                  city: { type: "string" },
+                  country: { type: "string" },
+                  crime_risk: { type: "number" },
+                  political_risk: { type: "number" },
+                  health_risk: { type: "number" },
+                  weather_risk: { type: "number" },
+                  disruption_risk: { type: "number" },
+                  overall_score: { type: "number" },
+                  summary: { type: "string" }
+                }
+              }
             }
           }
         }
       });
+
+      // Update destinations with per-location risk scores
+      const updatedDestinations = trip.destinations?.map(dest => {
+        const destRisk = result.destination_risks?.find(
+          dr => dr.city === dest.city && dr.country === dest.country
+        );
+        
+        if (destRisk) {
+          return {
+            ...dest,
+            risk_assessment: {
+              overall_score: destRisk.overall_score,
+              crime_risk: destRisk.crime_risk,
+              political_risk: destRisk.political_risk,
+              health_risk: destRisk.health_risk,
+              weather_risk: destRisk.weather_risk,
+              disruption_risk: destRisk.disruption_risk
+            }
+          };
+        }
+        return dest;
+      }) || trip.destinations;
 
       return {
         ...result,

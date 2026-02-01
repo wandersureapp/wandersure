@@ -375,6 +375,54 @@ export default function TripDetail() {
               </Card>
             )}
 
+            {/* Per-Destination Risk Cards */}
+            {trip.destinations && trip.destinations.length > 0 && trip.destinations.some(d => d.risk_assessment) && (
+              <Card className="border-none shadow-lg">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    📍 Risk by Location
+                  </CardTitle>
+                  <p className="text-sm text-gray-600">Risk assessment for each stop on your trip</p>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {trip.destinations.filter(d => d.risk_assessment).map((dest, idx) => {
+                    const destRisk = getRiskColorClasses(dest.risk_assessment.overall_score || 0);
+                    return (
+                      <div key={idx} className={`p-4 rounded-lg border-2 ${destRisk.bg}`}>
+                        <div className="flex items-start justify-between mb-3">
+                          <div>
+                            <h4 className="font-bold text-gray-900">{dest.city}, {dest.country}</h4>
+                            <p className="text-sm text-gray-600">{dest.arrival_date} to {dest.departure_date}</p>
+                            <Badge variant="outline" className="mt-1 text-xs">{dest.purpose}</Badge>
+                          </div>
+                          <div className="text-center">
+                            <div className={`text-3xl font-bold ${destRisk.text}`}>
+                              {Math.round(dest.risk_assessment.overall_score || 0)}
+                            </div>
+                            <p className="text-xs text-gray-600">{destRisk.label} Risk</p>
+                          </div>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 mt-3">
+                          <div className="text-center p-2 bg-white/50 rounded">
+                            <div className="text-lg font-bold">{Math.round(dest.risk_assessment.crime_risk || 0)}</div>
+                            <div className="text-xs text-gray-600">Safety</div>
+                          </div>
+                          <div className="text-center p-2 bg-white/50 rounded">
+                            <div className="text-lg font-bold">{Math.round(dest.risk_assessment.weather_risk || 0)}</div>
+                            <div className="text-xs text-gray-600">Weather</div>
+                          </div>
+                          <div className="text-center p-2 bg-white/50 rounded">
+                            <div className="text-lg font-bold">{Math.round(dest.risk_assessment.health_risk || 0)}</div>
+                            <div className="text-xs text-gray-600">Health</div>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </CardContent>
+              </Card>
+            )}
+
             {/* Risk Summary Card with Overall Score */}
             {trip.risk_assessment && (
               <Card className="border-none shadow-lg bg-gradient-to-br from-orange-50 to-red-50">
