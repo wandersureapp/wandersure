@@ -123,7 +123,7 @@ Deno.serve(async (req) => {
                         </div>
 
                         <div style="text-align: center; margin: 30px 0;">
-                            <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: linear-gradient(135deg, #2563eb 0%, #0d9488 100%); color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">📱 View Full Details</a>
+                            <a href="${Deno.env.get('APP_URL')}#/TripDetail?id=${trip.id}" style="background: linear-gradient(135deg, #2563eb 0%, #0d9488 100%); color: white; padding: 14px 32px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold; font-size: 16px;">📱 View Full Details</a>
                         </div>
 
                         <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;">
@@ -157,7 +157,7 @@ Deno.serve(async (req) => {
                             </div>
 
                             <div style="text-align: center; margin-top: 20px;">
-                                <a href="${Deno.env.get('APP_URL')}/NotificationSettings" style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">🔔 View Alert Plans</a>
+                                <a href="${Deno.env.get('APP_URL')}#/NotificationSettings" style="background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; display: inline-block; font-weight: bold;">🔔 View Alert Plans</a>
                             </div>
                         </div>
 
@@ -170,7 +170,7 @@ Deno.serve(async (req) => {
 
                         <div style="text-align: center; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
                             <p style="color: #6b7280; font-size: 14px; margin: 5px 0;">
-                                Questions? Reply to this email or visit our <a href="${Deno.env.get('APP_URL')}/Dashboard" style="color: #2563eb;">dashboard</a>
+                                Questions? Reply to this email or visit our <a href="${Deno.env.get('APP_URL')}#/Dashboard" style="color: #2563eb;">dashboard</a>
                             </p>
                             <p style="color: #9ca3af; font-size: 12px; margin: 15px 0 0 0;">
                                 WanderSure - Your Journey, Protected 🌍

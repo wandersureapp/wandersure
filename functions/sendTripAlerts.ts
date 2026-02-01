@@ -170,8 +170,8 @@ Deno.serve(async (req) => {
                 </ul>
                 
                 <div style="margin: 20px 0;">
-                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin-right: 10px;">View Full Details</a>
-                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">✓ I've Seen This</a>
+                  <a href="${Deno.env.get('APP_URL')}#/TripDetail?id=${trip.id}" style="background: #dc2626; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; margin-right: 10px;">View Full Details</a>
+                  <a href="${Deno.env.get('APP_URL')}#/TripDetail?id=${trip.id}" style="background: #16a34a; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block;">✓ I've Seen This</a>
                 </div>
                 
                 <p style="color: #666; font-size: 12px; margin-top: 20px;">
@@ -297,8 +297,8 @@ Deno.serve(async (req) => {
                 </ul>
                 
                 <div style="margin: 20px 0;">
-                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block; margin-right: 10px;">View Details</a>
-                  <a href="${Deno.env.get('APP_URL')}/TripDetail?id=${trip.id}" style="background: #16a34a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block;">✓ Got it</a>
+                  <a href="${Deno.env.get('APP_URL')}#/TripDetail?id=${trip.id}" style="background: #2563eb; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block; margin-right: 10px;">View Details</a>
+                  <a href="${Deno.env.get('APP_URL')}#/TripDetail?id=${trip.id}" style="background: #16a34a; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; display: inline-block;">✓ Got it</a>
                 </div>
               `
             });
