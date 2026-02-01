@@ -17,30 +17,38 @@ Deno.serve(async (req) => {
         
         for (const trip of activeTrips) {
             try {
-                console.log(`Analyzing trip: ${trip.trip_name} to ${trip.destination}`);
+                console.log(`Analyzing trip: ${trip.trip_name}`);
+
+                const destinationsInfo = trip.destinations && trip.destinations.length > 0
+                    ? trip.destinations.map(d => `${d.city}, ${d.country} (${d.arrival_date} to ${d.departure_date}) - ${d.purpose}`).join('\n')
+                    : `${trip.destination}, ${trip.destination_country || ''}`;
 
                 // Get real-time data from the web
                 const riskAnalysis = await base44.asServiceRole.integrations.Core.InvokeLLM({
-                    prompt: `You are a travel risk analyst with access to live data sources. Analyze current conditions for this trip:
+                    prompt: `You are a travel risk analyst with access to live data sources. Analyze current conditions for this MULTI-DESTINATION trip:
                     
-Destination: ${trip.destination}, ${trip.destination_country || ''}
-Travel Dates: ${trip.start_date} to ${trip.end_date}
+Trip: ${trip.trip_name}
+Overall Travel Dates: ${trip.start_date} to ${trip.end_date}
+
+DESTINATIONS (assess risk for EACH location):
+${destinationsInfo}
+
 Airline: ${trip.airline || 'Not specified'}
 Flight: ${trip.flight_number || 'Not specified'}
 
 CRITICAL: Check these OFFICIAL sources for real-time data:
 
-GOVERNMENT & TRAVEL ADVISORIES:
-- US State Department travel advisories (travel.state.gov)
-- CDC health notices (wwwnc.cdc.gov/travel)
+GOVERNMENT & TRAVEL ADVISORIES (check for ALL destinations):
+- US State Department travel advisories (travel.state.gov) for each country
+- CDC health notices (wwwnc.cdc.gov/travel) for each destination
 - TSA updates (tsa.gov)
-- Local government websites for destination
+- Local government websites for each destination
 
-CRIME & SAFETY DATABASES:
-- Recent crime reports and statistics for ${trip.destination}
-- Historical crime data trends
-- Local police reports and incident databases
-- Travel safety forums and recent traveler reports
+CRIME & SAFETY DATABASES (check for ALL destinations):
+- Recent crime reports and statistics for each city
+- Historical crime data trends for all locations
+- Local police reports and incident databases for each destination
+- Travel safety forums and recent traveler reports for all stops
 
 FLIGHT & AIRPORT INTELLIGENCE:
 - Live flight status for ${trip.flight_number || 'this route'}
@@ -49,20 +57,20 @@ FLIGHT & AIRPORT INTELLIGENCE:
 - Airport website critical updates and closures
 - Traffic conditions and parking availability
 
-NEWS & CURRENT EVENTS:
-- Breaking news for ${trip.destination}
-- Recent incidents affecting travelers
-- Political protests or civil unrest
-- Natural disasters or weather emergencies
+NEWS & CURRENT EVENTS (check for ALL destinations):
+- Breaking news for each destination
+- Recent incidents affecting travelers in any location
+- Political protests or civil unrest in any destination
+- Natural disasters or weather emergencies at any stop
 
 WEATHER DATA:
 - Current conditions and hour-by-hour forecasts
 - Severe weather alerts
 - Historical weather patterns for travel dates
 
-Analyze ALL available data points including historical trends and real-time conditions.
+Analyze ALL available data points including historical trends and real-time conditions for EACH destination.
 
-Score each risk category 0-100 (0=no risk, 100=extreme risk).`,
+Score each risk category 0-100 (0=no risk, 100=extreme risk). The overall_score should reflect the MAXIMUM risk across ALL destinations.`,
                     add_context_from_internet: true,
                     response_json_schema: {
                         type: "object",
