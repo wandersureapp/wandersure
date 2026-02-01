@@ -85,8 +85,12 @@ export default function TripDetail() {
       return response.data;
     },
     onSuccess: (data) => {
-      queryClient.refetchQueries({ queryKey: ['trip', tripId] });
-      toast.success(`Risk data refreshed! Score: ${Math.round(data.new_score)}`);
+      queryClient.invalidateQueries({ queryKey: ['trip', tripId] });
+      if (data.new_score !== undefined) {
+        toast.success(`Risk data refreshed! Score: ${Math.round(data.new_score)}`);
+      } else {
+        toast.success('Risk data refreshed successfully!');
+      }
     },
     onError: (error) => {
       toast.error(error.message || 'Failed to refresh risk data');
