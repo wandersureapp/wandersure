@@ -130,8 +130,8 @@ Score each risk category 0-100 (0=no risk, 100=extreme risk). The overall_score 
                     }
                 });
 
-                // ALWAYS update and send alert for premium users on ANY risk change
-                if (Math.abs(scoreDifference) >= 1) {
+                // Send alert only for SIGNIFICANT risk changes (10+ points)
+                if (Math.abs(scoreDifference) >= 10) {
                     const preferences = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
                         user_email: trip.created_by
                     });
@@ -188,7 +188,7 @@ ${riskAnalysis.critical_alerts.map(alert => `<li>${alert}</li>`).join('\n')}
                 }
 
                 // Also send in-app notification for free users on major increases
-                if (scoreDifference > 10) {
+                if (scoreDifference > 20) {
                     const preferences = await base44.asServiceRole.entities.UserNotificationPreferences.filter({
                         user_email: trip.created_by
                     });
