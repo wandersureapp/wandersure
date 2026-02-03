@@ -34,6 +34,7 @@ import AlertList from "../components/alerts/AlertList";
 import SocialShare from "../components/social/SocialShare";
 import TripAccessManager from "../components/trip/TripAccessManager";
 import { trackEvent } from "../components/analytics/MetaPixel";
+import { openExternalLink } from "../components/utils/openExternalLink";
 
 export default function TripDetail() {
   const navigate = useNavigate();
@@ -541,7 +542,7 @@ export default function TripDetail() {
                           <div className="flex flex-wrap gap-2 mb-3">
                             <Button 
                               className="bg-blue-600 hover:bg-blue-700"
-                              onClick={() => window.open('https://www.anrdoezrs.net/click-101622714-17223836', '_blank', 'noopener,noreferrer')}
+                              onClick={() => openExternalLink('https://www.anrdoezrs.net/click-101622714-17223836')}
                             >
                               ✈️ Find Better Flights on Expedia
                             </Button>
@@ -552,7 +553,7 @@ export default function TripDetail() {
                               rel="noopener noreferrer"
                               onClick={(e) => {
                                 e.preventDefault();
-                                window.open('https://www.anrdoezrs.net/click-101622714-17100505', '_blank', 'noopener,noreferrer');
+                                openExternalLink('https://www.anrdoezrs.net/click-101622714-17100505');
                               }}
                             >
                               <img src="https://www.lduhtrp.net/image-101622714-17100505" width={320} height={50} alt="Travel Insurance" border={0} />
@@ -598,7 +599,7 @@ export default function TripDetail() {
                               rel="noopener noreferrer"
                               onClick={(e) => {
                                 e.preventDefault();
-                                window.open('https://www.anrdoezrs.net/click-101622714-17100505', '_blank', 'noopener,noreferrer');
+                                openExternalLink('https://www.anrdoezrs.net/click-101622714-17100505');
                               }}
                             >
                               <img src="https://www.lduhtrp.net/image-101622714-17100505" width={320} height={50} alt="Travel Insurance from World Nomads" border={0} />
@@ -784,7 +785,7 @@ export default function TripDetail() {
                         <p className="text-sm text-gray-500">Flight {trip.flight_number}</p>
                       )}
                       <button
-                        onClick={() => window.open('https://www.anrdoezrs.net/click-101622714-17223836', '_blank', 'noopener,noreferrer')}
+                        onClick={() => openExternalLink('https://www.anrdoezrs.net/click-101622714-17223836')}
                         className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block cursor-pointer"
                       >
                         Compare flight options on Expedia →
@@ -801,7 +802,7 @@ export default function TripDetail() {
                       <p className="font-medium text-gray-900">Hotel</p>
                       <p className="text-sm text-gray-600">{trip.hotel_name}</p>
                       <button
-                        onClick={() => window.open('https://www.dpbolvw.net/click-101622714-15734399', '_blank', 'noopener,noreferrer')}
+                        onClick={() => openExternalLink('https://www.dpbolvw.net/click-101622714-15734399')}
                         className="text-sm text-purple-600 hover:text-purple-700 font-medium mt-2 inline-block cursor-pointer"
                       >
                         Find better hotel deals on HOTELS.COM® →
@@ -819,7 +820,7 @@ export default function TripDetail() {
                         <p className="text-sm font-medium text-gray-900 mb-2">Need a place to stay in {trip.destination}?</p>
                         <Button 
                           className="bg-purple-600 hover:bg-purple-700"
-                          onClick={() => window.open('https://www.dpbolvw.net/click-101622714-15734399', '_blank', 'noopener,noreferrer')}
+                          onClick={() => openExternalLink('https://www.dpbolvw.net/click-101622714-15734399')}
                         >
                           <Hotel className="w-4 h-4 mr-2" />
                           Search Hotels on HOTELS.COM®
@@ -845,7 +846,7 @@ export default function TripDetail() {
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
                     <p className="text-sm font-medium text-gray-900 mb-3">Need a rental car for your trip?</p>
                     <button 
-                      onClick={() => window.open('https://www.jdoqocy.com/click-101622714-17126276', '_blank', 'noopener,noreferrer')}
+                      onClick={() => openExternalLink('https://www.jdoqocy.com/click-101622714-17126276')}
                       className="block w-full cursor-pointer"
                     >
                       <img src="https://www.ftjcfx.com/image-101622714-17126276" width={728} height={90} alt="Car Rentals with Full Coverage Insurance" border={0} className="mx-auto" />
@@ -861,7 +862,7 @@ export default function TripDetail() {
                       <Button 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => window.open('https://www.anrdoezrs.net/click-101622714-17223836', '_blank', 'noopener,noreferrer')}
+                        onClick={() => openExternalLink('https://www.anrdoezrs.net/click-101622714-17223836')}
                       >
                         Book on Expedia
                       </Button>
@@ -869,7 +870,7 @@ export default function TripDetail() {
                       <Button 
                         variant="outline" 
                         className="w-full"
-                        onClick={() => window.open('https://www.dpbolvw.net/click-101622714-15734399', '_blank', 'noopener,noreferrer')}
+                        onClick={() => openExternalLink('https://www.dpbolvw.net/click-101622714-15734399')}
                       >
                         Book Hotels on HOTELS.COM®
                       </Button>

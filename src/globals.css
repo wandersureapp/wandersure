@@ -73,6 +73,7 @@ body {
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  overscroll-behavior-y: none;
 }
 
 /* Allow text selection in input elements and content areas */
@@ -110,6 +111,6 @@ button, a, [role="button"] {
 
 @media (max-width: 768px) {
   .main-content {
-    padding-bottom: 4rem;
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
   }
 }
