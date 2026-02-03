@@ -362,7 +362,10 @@ export default function Layout({ children, currentPageName }) {
               <AnimatePresence mode="wait">
                 <motion.main 
                   key={location.pathname}
-                  className="pt-16 main-content"
+                  className="main-content"
+                  style={{
+                    paddingTop: 'calc(4rem + env(safe-area-inset-top))'
+                  }}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}

@@ -4,10 +4,22 @@ import { createPageUrl } from "@/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { MapPin, Calendar, ArrowRight, Trash2 } from "lucide-react";
 import { format, differenceInDays, isFuture } from "date-fns";
 
 export default function TripCard({ trip, onDelete }) {
+  const [showDeleteDialog, setShowDeleteDialog] = React.useState(false);
+
   const getRiskColor = (score) => {
     if (!score) return { bg: "bg-gray-100", text: "text-gray-800" };
     if (score <= 25) return { bg: "bg-green-100", text: "text-green-800" };
@@ -34,21 +46,20 @@ export default function TripCard({ trip, onDelete }) {
   const isTripUpcoming = startDate && !isNaN(startDate) ? isFuture(startDate) : false;
 
   return (
-    <Card className="h-full border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden relative">
-      <Button
-        variant="ghost"
-        size="icon"
-        className="absolute top-3 right-3 z-10 bg-white hover:bg-red-50 hover:text-red-600 rounded-full shadow-md opacity-80 hover:opacity-100 transition-all"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          if (confirm(`Delete "${trip.trip_name}"?`)) {
-            onDelete(trip.id);
-          }
-        }}
-      >
-        <Trash2 className="w-4 h-4" />
-      </Button>
+    <>
+      <Card className="h-full border-none shadow-lg hover:shadow-2xl transition-all duration-300 group overflow-hidden relative">
+        <Button
+          variant="ghost"
+          size="icon"
+          className="absolute top-3 right-3 z-10 bg-white hover:bg-red-50 hover:text-red-600 rounded-full shadow-md opacity-80 hover:opacity-100 transition-all"
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowDeleteDialog(true);
+          }}
+        >
+          <Trash2 className="w-4 h-4" />
+        </Button>
 
       <Link to={createPageUrl(`TripDetail?id=${trip.id}`)}>
         <div className="h-48 bg-gradient-to-br from-blue-500 via-teal-500 to-cyan-500 relative overflow-hidden">
@@ -107,5 +118,29 @@ export default function TripCard({ trip, onDelete }) {
         </CardContent>
       </Link>
     </Card>
+
+    <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Delete Trip</AlertDialogTitle>
+          <AlertDialogDescription>
+            Are you sure you want to delete "{trip.trip_name}"? This action cannot be undone.
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction
+            onClick={() => {
+              onDelete(trip.id);
+              setShowDeleteDialog(false);
+            }}
+            className="bg-red-600 hover:bg-red-700"
+          >
+            Delete
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+    </>
   );
 }

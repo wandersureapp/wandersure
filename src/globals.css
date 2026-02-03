@@ -81,6 +81,25 @@ input, textarea, [contenteditable="true"], .selectable {
   -webkit-user-select: text;
 }
 
+/* Allow text selection in main content paragraphs, spans, and headers */
+.main-content p,
+.main-content span,
+.main-content h1,
+.main-content h2,
+.main-content h3,
+.main-content h4,
+.main-content h5,
+.main-content h6 {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+/* Disable selection for interactive elements */
+button, a, [role="button"] {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 /* Overscroll behavior for scrollable containers */
 .overflow-auto,
 .overflow-y-scroll,
