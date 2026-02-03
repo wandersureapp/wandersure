@@ -2,10 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { PlaneTakeoff, Shield, AlertTriangle, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
-export default function QuickStats({ activeTripsCount, subscriptionActive, highRiskCount, upcomingCount }) {
+export default function QuickStats({ activeTripsCount, subscriptionActive, highRiskCount, upcomingCount, isLoading }) {
   const stats = [
     {
       label: "Active Trips",
@@ -40,6 +41,22 @@ export default function QuickStats({ activeTripsCount, subscriptionActive, highR
       link: createPageUrl("MyTrips")
     }
   ];
+
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {[...Array(4)].map((_, index) => (
+          <Card key={index} className="border-none shadow-lg overflow-hidden">
+            <Skeleton className="h-28 w-full" />
+            <CardContent className="p-6 text-center space-y-2">
+              <Skeleton className="h-4 w-24 mx-auto" />
+              <Skeleton className="h-10 w-16 mx-auto" />
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">

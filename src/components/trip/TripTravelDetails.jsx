@@ -294,7 +294,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                     }}
                   >
                     <SelectTrigger className="mt-1.5">
-                      <SelectValue placeholder="Select airline" />
+                      <SelectValue placeholder="Choose your airline" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
                       {airlines.map(airline => (
@@ -409,7 +409,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                 onValueChange={(value) => updateTripData('hotel_name', value)}
               >
                 <SelectTrigger className="mt-1.5">
-                  <SelectValue placeholder="Select hotel chain" />
+                  <SelectValue placeholder="Choose your hotel chain" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
                   {hotelChains.map(hotel => (
@@ -459,7 +459,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                 onValueChange={(value) => updateTripData('car_rental_company', value)}
               >
                 <SelectTrigger className="mt-1.5">
-                  <SelectValue placeholder="Select car rental company" />
+                  <SelectValue placeholder="Choose rental company" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
                   {carRentalCompanies.map(company => (
@@ -496,7 +496,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                 onValueChange={(value) => updateTripData('cruise_line', value)}
               >
                 <SelectTrigger className="mt-1.5">
-                  <SelectValue placeholder="Select cruise line" />
+                  <SelectValue placeholder="Choose your cruise line" />
                 </SelectTrigger>
                 <SelectContent className="max-h-60">
                   {cruiseLines.map(cruise => (

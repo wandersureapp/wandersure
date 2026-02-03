@@ -77,6 +77,8 @@ export default function Dashboard() {
             src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&q=80"
             alt="Travel Dashboard"
             className="w-full h-full object-cover opacity-20"
+            loading="eager"
+            fetchpriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-br from-blue-900/80 via-cyan-900/80 to-teal-900/80"></div>
         </div>
@@ -106,6 +108,8 @@ export default function Dashboard() {
                     src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/1c7001d0e_Untitleddesign.png" 
                     alt="WanderSure"
                     className="w-[350px] h-[350px] md:w-[450px] md:h-[450px] lg:w-[500px] lg:h-[500px] object-cover rounded-full shadow-2xl"
+                    loading="eager"
+                    fetchpriority="high"
                   />
                 </div>
               </div>
@@ -197,6 +201,7 @@ export default function Dashboard() {
             subscriptionActive={hasActiveSubscription}
             highRiskCount={highRiskTrips.length}
             upcomingCount={upcomingTrips.length}
+            isLoading={tripsLoading}
           />
         </motion.div>
 

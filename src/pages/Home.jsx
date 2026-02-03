@@ -50,6 +50,8 @@ export default function Home() {
           src="https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1600&q=80"
           alt="Travel Adventure"
           className="absolute inset-0 w-full h-full object-cover"
+          loading="eager"
+          fetchpriority="high"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/90 via-cyan-900/80 to-transparent"></div>
         
