@@ -1,7 +1,7 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, PlaneTakeoff, Shield, Bell, Menu, X, LogOut, User } from "lucide-react";
+import { Home, PlaneTakeoff, Shield, Bell, Menu, X, LogOut, User, ArrowLeft, Briefcase } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { base44 } from "@/api/base44Client";
 import {
@@ -17,6 +17,7 @@ export default function Layout({ children, currentPageName }) {
   const [scrolled, setScrolled] = React.useState(false);
   const [user, setUser] = React.useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
 
   // Public pages that don't need the layout
   const publicPages = ['Home', 'PrivacyPolicy', 'TermsOfService', 'Legal'];
@@ -56,11 +57,11 @@ export default function Layout({ children, currentPageName }) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navItems = [
+  const mainNavItems = [
     { name: "Dashboard", path: createPageUrl("Dashboard"), icon: Home },
     { name: "My Trips", path: createPageUrl("MyTrips"), icon: PlaneTakeoff },
-    { name: "Smart Alerts", path: createPageUrl("NotificationSettings"), icon: Bell },
-    { name: "Travel Aides", path: createPageUrl("TravelAides"), icon: Shield },
+    { name: "Alerts", path: createPageUrl("Alerts"), icon: Bell },
+    { name: "Travel Aides", path: createPageUrl("TravelAides"), icon: Briefcase },
   ];
 
   const adminNavItems = user?.role === 'admin' ? [
@@ -69,10 +70,13 @@ export default function Layout({ children, currentPageName }) {
 
   const isActive = (path) => location.pathname === path;
 
+  const isMainPage = mainNavItems.some(item => item.path === location.pathname);
+  const shouldShowBackButton = !isMainPage && !publicPages.includes(currentPageName);
+
   return (
     <>
       <MetaPixel />
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
         <style>{`
         :root {
           --primary-50: #eff6ff;
@@ -89,11 +93,24 @@ export default function Layout({ children, currentPageName }) {
       {/* Navigation */}
       <nav 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          scrolled ? 'bg-white/80 backdrop-blur-lg shadow-lg' : 'bg-transparent'
+          scrolled ? 'bg-white/80 dark:bg-gray-900/80 backdrop-blur-lg shadow-lg' : 'bg-transparent'
         }`}
+        style={{
+          paddingTop: 'env(safe-area-inset-top)'
+        }}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
+            {/* Back Button for sub-pages on mobile */}
+            {shouldShowBackButton && (
+              <button
+                onClick={() => navigate(-1)}
+                className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
+              >
+                <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              </button>
+            )}
+
             {/* Logo */}
             <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group">
               <div className="w-10 h-10 flex items-center justify-center transform group-hover:scale-105 transition-transform">
@@ -110,14 +127,14 @@ export default function Layout({ children, currentPageName }) {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-2">
-              {navItems.map((item) => (
+              {mainNavItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                     isActive(item.path)
-                      ? 'bg-blue-100 text-blue-700 font-medium'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -130,8 +147,8 @@ export default function Layout({ children, currentPageName }) {
                   to={item.path}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-all ${
                     isActive(item.path)
-                      ? 'bg-purple-100 text-purple-700 font-medium'
-                      : 'text-purple-600 hover:bg-purple-50'
+                      ? 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-medium'
+                      : 'text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/50'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -230,17 +247,17 @@ export default function Layout({ children, currentPageName }) {
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden bg-white border-t">
+          <div className="md:hidden bg-white dark:bg-gray-900 border-t dark:border-gray-800">
             <div className="px-4 py-3 space-y-1">
-              {navItems.map((item) => (
+              {mainNavItems.map((item) => (
                 <Link
                   key={item.name}
                   to={item.path}
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                     isActive(item.path)
-                      ? 'bg-blue-100 text-blue-700 font-medium'
-                      : 'text-gray-600 hover:bg-gray-100'
+                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 font-medium'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800'
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
@@ -254,26 +271,52 @@ export default function Layout({ children, currentPageName }) {
                   onClick={() => setMobileMenuOpen(false)}
                   className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                     isActive(item.path)
-                      ? 'bg-purple-100 text-purple-700 font-medium'
-                      : 'text-purple-600 hover:bg-purple-50'
+                      ? 'bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-300 font-medium'
+                      : 'text-purple-600 dark:text-purple-400 hover:bg-purple-50 dark:hover:bg-purple-900/50'
                   }`}
                 >
                   <item.icon className="w-5 h-5" />
                   {item.name}
                 </Link>
               ))}
-            </div>
-          </div>
-        )}
-      </nav>
+              </div>
+              </div>
+              )}
+              </nav>
 
-      {/* Main Content */}
-      <main className="pt-16">
-        {children}
-      </main>
+              {/* Bottom Tab Bar - Mobile Only */}
+              <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t dark:border-gray-800 z-40"
+              style={{
+              paddingBottom: 'env(safe-area-inset-bottom)'
+              }}>
+              <div className="flex justify-around items-center h-16">
+              {mainNavItems.map((item) => (
+              <Link
+              key={item.name}
+              to={item.path}
+              className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+                isActive(item.path)
+                  ? 'text-blue-600 dark:text-blue-400'
+                  : 'text-gray-500 dark:text-gray-400'
+              }`}
+              >
+              <item.icon className="w-6 h-6" />
+              <span className="text-xs mt-1">{item.name}</span>
+              </Link>
+              ))}
+              </div>
+              </div>
+
+              {/* Main Content */}
+              <main className="pt-16 main-content">
+              {children}
+              </main>
 
       {/* Footer */}
-      <footer className="bg-white/50 backdrop-blur-sm border-t border-gray-200 mt-20">
+      <footer className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 mt-20"
+              style={{
+                paddingBottom: 'env(safe-area-inset-bottom)'
+              }}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <div className="flex items-center gap-2">
@@ -282,12 +325,12 @@ export default function Layout({ children, currentPageName }) {
                 alt="WanderSure"
                 className="w-5 h-5 object-contain"
               />
-              <span className="text-gray-600">© 2024 WanderSure. Your journey, protected.</span>
+              <span className="text-gray-600 dark:text-gray-400">© 2024 WanderSure. Your journey, protected.</span>
             </div>
             <div className="flex items-center gap-4">
-              <div className="flex gap-6 text-sm text-gray-500">
-                <Link to={createPageUrl("Legal")} className="hover:text-blue-600 transition-colors">Privacy & Terms</Link>
-                <a href="mailto:support@wandersure.com" className="hover:text-blue-600 transition-colors">Support</a>
+              <div className="flex gap-6 text-sm text-gray-500 dark:text-gray-400">
+                <Link to={createPageUrl("Legal")} className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy & Terms</Link>
+                <a href="mailto:support@wandersure.com" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Support</a>
               </div>
               <div className="flex gap-2 ml-4 border-l pl-4 border-gray-300">
                     <a 

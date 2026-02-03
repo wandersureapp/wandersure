@@ -6,7 +6,7 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { PlaneTakeoff, Plus, Search } from "lucide-react";
+import { PlaneTakeoff, Plus, Search, RefreshCw } from "lucide-react";
 
 import TripCard from "../components/trips/TripCard";
 import AuthGuard from "../components/AuthGuard";
@@ -14,13 +14,57 @@ import AuthGuard from "../components/AuthGuard";
 export default function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
+  const [isRefreshing, setIsRefreshing] = useState(false);
   const queryClient = useQueryClient();
 
-  const { data: trips = [], isLoading, error } = useQuery({
+  const { data: trips = [], isLoading, error, refetch: refetchTrips } = useQuery({
     queryKey: ['trips'],
     queryFn: () => base44.entities.Trip.list('-created_date'),
     retry: 1
   });
+
+  const handlePullToRefresh = React.useCallback(async () => {
+    setIsRefreshing(true);
+    await refetchTrips();
+    setTimeout(() => setIsRefreshing(false), 500);
+  }, [refetchTrips]);
+
+  React.useEffect(() => {
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        isDragging = true;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      const diff = currentY - startY;
+      if (diff > 80 && window.scrollY === 0) {
+        handlePullToRefresh();
+        isDragging = false;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDragging = false;
+    };
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [handlePullToRefresh]);
 
   if (error) {
     return (
@@ -51,7 +95,13 @@ export default function MyTrips() {
 
   return (
     <AuthGuard>
-    <div className="min-h-screen py-8">
+    <div className="min-h-screen py-8 relative">
+      {isRefreshing && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          <span className="text-sm">Refreshing...</span>
+        </div>
+      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">

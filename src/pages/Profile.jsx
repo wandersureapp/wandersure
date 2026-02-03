@@ -6,8 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { User, Mail, MapPin, Phone, Calendar, Save, Crown, Sparkles, Plus, Trash2 } from "lucide-react";
+import { User, Mail, MapPin, Phone, Calendar, Save, Crown, Sparkles, Plus, Trash2, AlertTriangle } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import AuthGuard from "../components/AuthGuard";
 import { airports } from "../components/utils/airportData";
 
@@ -101,6 +112,17 @@ export default function Profile() {
 
   const handleSave = () => {
     updateMutation.mutate(formData);
+  };
+
+  const handleDeleteAccount = async () => {
+    try {
+      // This would call a backend function to handle account deletion
+      // For now, just logout and redirect
+      await base44.auth.logout();
+      window.location.href = '/';
+    } catch (error) {
+      console.error('Failed to delete account:', error);
+    }
   };
 
   if (userLoading) {
@@ -451,6 +473,53 @@ export default function Profile() {
                 <p className="text-green-800">Profile updated successfully!</p>
               </div>
             )}
+
+            {/* Account Deletion */}
+            <Card className="border-red-200 bg-red-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-red-900">
+                  <AlertTriangle className="w-5 h-5" />
+                  Danger Zone
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-red-800 mb-4">
+                  Deleting your account is permanent and cannot be undone. All your trips, data, and preferences will be permanently deleted.
+                </p>
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="bg-red-600 hover:bg-red-700">
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Delete My Account
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your account
+                        and remove all your data from our servers, including:
+                        <ul className="list-disc ml-6 mt-2 space-y-1">
+                          <li>All your trips and travel plans</li>
+                          <li>Risk assessments and recommendations</li>
+                          <li>Notification preferences</li>
+                          <li>Profile information</li>
+                        </ul>
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleDeleteAccount}
+                        className="bg-red-600 hover:bg-red-700"
+                      >
+                        Yes, Delete My Account
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </div>
