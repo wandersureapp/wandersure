@@ -86,7 +86,7 @@ input, textarea, [contenteditable="true"], .selectable {
 .overflow-y-scroll,
 [class*="overflow-auto"],
 [class*="overflow-y-scroll"] {
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
 }
 
 @media (max-width: 768px) {
