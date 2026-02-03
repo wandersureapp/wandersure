@@ -31,21 +31,33 @@ export default function MyTrips() {
 
   React.useEffect(() => {
     let startY = 0;
+    let startX = 0;
     let currentY = 0;
+    let currentX = 0;
     let isDragging = false;
 
     const handleTouchStart = (e) => {
       if (window.scrollY === 0) {
         startY = e.touches[0].clientY;
+        startX = e.touches[0].clientX;
         isDragging = true;
       }
     };
 
     const handleTouchMove = (e) => {
-      if (!isDragging) return;
+      if (!isDragging || window.scrollY !== 0) {
+        isDragging = false;
+        return;
+      }
+      
       currentY = e.touches[0].clientY;
-      const diff = currentY - startY;
-      if (diff > 80 && window.scrollY === 0) {
+      currentX = e.touches[0].clientX;
+      
+      const diffY = currentY - startY;
+      const diffX = Math.abs(currentX - startX);
+      
+      // Only trigger if predominantly vertical movement
+      if (diffY > 80 && diffX < 30 && window.scrollY === 0) {
         handlePullToRefresh();
         isDragging = false;
       }
@@ -55,9 +67,9 @@ export default function MyTrips() {
       isDragging = false;
     };
 
-    window.addEventListener('touchstart', handleTouchStart);
-    window.addEventListener('touchmove', handleTouchMove);
-    window.addEventListener('touchend', handleTouchEnd);
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
 
     return () => {
       window.removeEventListener('touchstart', handleTouchStart);

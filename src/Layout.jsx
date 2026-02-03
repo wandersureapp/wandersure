@@ -18,6 +18,15 @@ export default function Layout({ children, currentPageName }) {
   const [user, setUser] = React.useState(null);
   const location = useLocation();
   const navigate = useNavigate();
+  
+  // Tab navigation history management
+  const [tabHistory, setTabHistory] = React.useState({
+    '/dashboard': ['/dashboard'],
+    '/mytrips': ['/mytrips'],
+    '/alerts': ['/alerts'],
+    '/travelaides': ['/travelaides']
+  });
+  const [currentTab, setCurrentTab] = React.useState(location.pathname.toLowerCase());
 
   // Public pages that don't need the layout
   const publicPages = ['Home', 'PrivacyPolicy', 'TermsOfService', 'Legal'];
@@ -58,10 +67,10 @@ export default function Layout({ children, currentPageName }) {
   }, []);
 
   const mainNavItems = [
-    { name: "Dashboard", path: createPageUrl("Dashboard"), icon: Home },
-    { name: "My Trips", path: createPageUrl("MyTrips"), icon: PlaneTakeoff },
-    { name: "Alerts", path: createPageUrl("Alerts"), icon: Bell },
-    { name: "Travel Aides", path: createPageUrl("TravelAides"), icon: Briefcase },
+    { name: "Dashboard", path: createPageUrl("Dashboard"), icon: Home, key: '/dashboard' },
+    { name: "My Trips", path: createPageUrl("MyTrips"), icon: PlaneTakeoff, key: '/mytrips' },
+    { name: "Alerts", path: createPageUrl("Alerts"), icon: Bell, key: '/alerts' },
+    { name: "Travel Aides", path: createPageUrl("TravelAides"), icon: Briefcase, key: '/travelaides' },
   ];
 
   const adminNavItems = user?.role === 'admin' ? [
@@ -72,6 +81,40 @@ export default function Layout({ children, currentPageName }) {
 
   const isMainPage = mainNavItems.some(item => item.path === location.pathname);
   const shouldShowBackButton = !isMainPage && !publicPages.includes(currentPageName);
+
+  // Track navigation for tab history
+  React.useEffect(() => {
+    const currentPath = location.pathname.toLowerCase();
+    const activeTab = mainNavItems.find(item => item.key === currentPath);
+    
+    if (activeTab) {
+      setCurrentTab(activeTab.key);
+      // Update history for this tab
+      setTabHistory(prev => ({
+        ...prev,
+        [activeTab.key]: [activeTab.key]
+      }));
+    } else if (currentTab) {
+      // Sub-page navigation - add to current tab's history
+      setTabHistory(prev => ({
+        ...prev,
+        [currentTab]: [...(prev[currentTab] || []), currentPath]
+      }));
+    }
+  }, [location.pathname]);
+
+  const handleTabNavigation = (tabKey, tabPath) => {
+    if (isActive(tabPath)) {
+      // Already on this tab - scroll to top
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      // Switching tabs - restore last page in that tab's history
+      const history = tabHistory[tabKey] || [tabKey];
+      const lastPage = history[history.length - 1];
+      navigate(lastPage === tabKey ? tabPath : lastPage);
+      setCurrentTab(tabKey);
+    }
+  };
 
   return (
     <>
@@ -293,14 +336,8 @@ export default function Layout({ children, currentPageName }) {
                   {mainNavItems.map((item) => (
                     <button
                       key={item.name}
-                      onClick={() => {
-                        if (isActive(item.path)) {
-                          window.scrollTo({ top: 0, behavior: 'smooth' });
-                        } else {
-                          navigate(item.path);
-                        }
-                      }}
-                      className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+                      onClick={() => handleTabNavigation(item.key, item.path)}
+                      className={`flex flex-col items-center justify-center flex-1 h-full transition-colors min-h-[44px] ${
                         isActive(item.path)
                           ? 'text-blue-600 dark:text-blue-400'
                           : 'text-gray-500 dark:text-gray-400'
