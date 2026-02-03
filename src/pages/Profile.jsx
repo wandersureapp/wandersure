@@ -114,16 +114,28 @@ export default function Profile() {
     updateMutation.mutate(formData);
   };
 
-  const handleDeleteAccount = async () => {
-    try {
-      // This would call a backend function to handle account deletion
-      // For now, just logout and redirect
+  const deleteAccountMutation = useMutation({
+    mutationFn: async () => {
+      // Delete all user data
+      const trips = await base44.entities.Trip.list();
+      const checklists = await base44.entities.TravelChecklist.list();
+      const prefs = await base44.entities.UserNotificationPreferences.filter({ user_email: user.email });
+      
+      await Promise.all([
+        ...trips.map(t => base44.entities.Trip.delete(t.id)),
+        ...checklists.map(c => base44.entities.TravelChecklist.delete(c.id)),
+        ...prefs.map(p => base44.entities.UserNotificationPreferences.delete(p.id))
+      ]);
+      
+      // Logout and redirect
       await base44.auth.logout();
       window.location.href = '/';
-    } catch (error) {
+    },
+    onError: (error) => {
       console.error('Failed to delete account:', error);
+      alert('Failed to delete account. Please contact support.');
     }
-  };
+  });
 
   if (userLoading) {
     return (
@@ -510,10 +522,11 @@ export default function Profile() {
                     <AlertDialogFooter>
                       <AlertDialogCancel>Cancel</AlertDialogCancel>
                       <AlertDialogAction
-                        onClick={handleDeleteAccount}
-                        className="bg-red-600 hover:bg-red-700"
+                        onClick={() => deleteAccountMutation.mutate()}
+                        disabled={deleteAccountMutation.isPending}
+                        className="bg-red-600 hover:bg-red-700 min-h-[44px]"
                       >
-                        Yes, Delete My Account
+                        {deleteAccountMutation.isPending ? 'Deleting...' : 'Yes, Delete My Account'}
                       </AlertDialogAction>
                     </AlertDialogFooter>
                   </AlertDialogContent>
