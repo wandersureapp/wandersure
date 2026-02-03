@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { ArrowLeft, Sparkles, Loader2, Plus, Trash2 } from "lucide-react";
+import { openExternalLink } from "../utils/openExternalLink";
 
 export default function TripTravelDetails({ tripData, updateTripData, onBack, onSubmit, isSubmitting }) {
   const airlines = [
@@ -191,38 +192,30 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
             <strong> Haven't booked yet?</strong> Check out our trusted travel partners for great deals:
           </p>
           <div className="flex flex-wrap gap-2">
-            <a 
-              href="https://www.anrdoezrs.net/click-101622714-17223836" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            <button 
+              onClick={() => openExternalLink('https://www.anrdoezrs.net/click-101622714-17223836')}
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200 cursor-pointer"
             >
               ✈️ Flights
-            </a>
-            <a 
-              href="https://www.dpbolvw.net/click-101622714-15734399" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            </button>
+            <button 
+              onClick={() => openExternalLink('https://www.dpbolvw.net/click-101622714-15734399')}
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200 cursor-pointer"
             >
               🏨 Hotels
-            </a>
-            <a 
-              href="https://www.jdoqocy.com/click-101622714-17126276" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            </button>
+            <button 
+              onClick={() => openExternalLink('https://www.jdoqocy.com/click-101622714-17126276')}
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200 cursor-pointer"
             >
               🚗 Car Rentals
-            </a>
-            <a 
-              href="https://www.anrdoezrs.net/click-101622714-17100505" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200"
+            </button>
+            <button 
+              onClick={() => openExternalLink('https://www.anrdoezrs.net/click-101622714-17100505')}
+              className="inline-flex items-center gap-1 px-3 py-1.5 bg-white rounded-lg text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors border border-blue-200 cursor-pointer"
             >
               🛡️ Travel Insurance
-            </a>
+            </button>
           </div>
         </div>
 
@@ -256,15 +249,15 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
           {(!tripData.flights || tripData.flights.length === 0) && (
             <div className="text-center py-6 px-4">
               <p className="text-sm text-gray-600 mb-3">No flights added yet. Need to book?</p>
-              <a 
-                href="https://www.anrdoezrs.net/click-101622714-17223836" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                onClick={() => openExternalLink('https://www.anrdoezrs.net/click-101622714-17223836')}
               >
-                <Button type="button" variant="outline" size="sm" className="text-blue-600 border-blue-300 hover:bg-blue-50">
-                  ✈️ Find Flights on Expedia
-                </Button>
-              </a>
+                ✈️ Find Flights on Expedia
+              </Button>
               <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
             </div>
           )}
@@ -397,15 +390,15 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
               🏨 Hotel Information
             </h3>
             {!tripData.hotel_name && (
-              <a 
-                href="https://www.dpbolvw.net/click-101622714-15734399" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                className="text-purple-600 border-purple-300 hover:bg-purple-50"
+                onClick={() => openExternalLink('https://www.dpbolvw.net/click-101622714-15734399')}
               >
-                <Button type="button" variant="outline" size="sm" className="text-purple-600 border-purple-300 hover:bg-purple-50">
-                  Search Hotels
-                </Button>
-              </a>
+                Search Hotels
+              </Button>
             )}
           </div>
           <div className="grid md:grid-cols-2 gap-4">
@@ -447,15 +440,15 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
               🚗 Car Rental Information
             </h3>
             {!tripData.car_rental_company && (
-              <a 
-                href="https://www.jdoqocy.com/click-101622714-17126276" 
-                target="_blank" 
-                rel="noopener noreferrer"
+              <Button 
+                type="button" 
+                variant="outline" 
+                size="sm" 
+                className="text-green-600 border-green-300 hover:bg-green-50"
+                onClick={() => openExternalLink('https://www.jdoqocy.com/click-101622714-17126276')}
               >
-                <Button type="button" variant="outline" size="sm" className="text-green-600 border-green-300 hover:bg-green-50">
-                  Find Rentals
-                </Button>
-              </a>
+                Find Rentals
+              </Button>
             )}
           </div>
           <div className="grid md:grid-cols-2 gap-4">
@@ -541,7 +534,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
           onClick={onSubmit}
           disabled={isSubmitting}
           size="lg"
-          className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700"
+          className="bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 min-h-[44px]"
         >
           {isSubmitting ? (
             <>
