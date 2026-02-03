@@ -4,9 +4,11 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { FileText, ArrowLeft } from "lucide-react";
+import SafePageWrapper from "../components/utils/SafePageWrapper";
 
 export default function TermsOfService() {
   return (
+    <SafePageWrapper>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Link to={createPageUrl("Home")}>
@@ -201,5 +203,6 @@ export default function TermsOfService() {
         </div>
       </div>
     </div>
+    </SafePageWrapper>
   );
 }
