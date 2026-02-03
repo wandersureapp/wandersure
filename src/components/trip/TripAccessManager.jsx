@@ -66,29 +66,7 @@ export default function TripAccessManager({ trip }) {
   const hasAnyAccess = hasSubscription || hasOneTimeAccess;
 
   const handlePurchase = async (plan, priceId) => {
-    setLoading(true);
-    try {
-      console.log('Creating checkout session for trip:', { plan, priceId, tripId: trip.id, userEmail: user?.email });
-      const response = await createCheckoutSession({
-        priceId: priceId,
-        plan: plan,
-        tripId: trip.id
-      });
-      console.log('Checkout session response:', response);
-      
-      if (response.data?.url) {
-        console.log('Redirecting to Stripe checkout:', response.data.url);
-        window.location.href = response.data.url;
-      } else {
-        console.error('No checkout URL in response:', response);
-        alert('Error: Could not create checkout session');
-        setLoading(false);
-      }
-    } catch (error) {
-      console.error('Checkout session error:', error);
-      alert('Failed to create checkout: ' + error.message);
-      setLoading(false);
-    }
+    alert('Trip monitoring purchases coming soon! In-app purchases will be available in the next update.');
   };
 
   if (hasSubscription) {

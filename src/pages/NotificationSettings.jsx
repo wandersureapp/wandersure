@@ -119,19 +119,7 @@ export default function NotificationSettings() {
   };
 
   const handleUpgrade = (tier) => {
-    const checkoutUrls = {
-      'explorer_monthly': 'https://buy.stripe.com/4gM8wP7y180G9rnbsL9ws04',
-      'explorer_yearly': 'https://buy.stripe.com/00weVd2dHep47jf7cv9ws03',
-      'globetrotter_monthly': 'https://buy.stripe.com/28E6oH9G9ft8bzvbsL9ws02',
-      'globetrotter_yearly': 'https://buy.stripe.com/8x2eVd05z1CieLH2Wf9ws01'
-    };
-
-    const url = checkoutUrls[tier];
-    if (url) {
-      window.location.href = url;
-    } else {
-      alert('Invalid plan selected');
-    }
+    alert('Subscriptions coming soon! In-app purchases will be available in the next update.');
   };
 
   const freeFeatures = [
@@ -210,10 +198,10 @@ export default function NotificationSettings() {
                   ✓ Flight, weather, hotel tracking
                 </p>
                 <Button 
-                  onClick={() => window.location.href = 'https://buy.stripe.com/fZu28r19D5Sy1YVeEX9ws05'}
-                  className="w-full bg-blue-600 hover:bg-blue-700"
+                  disabled
+                  className="w-full bg-gray-400 cursor-not-allowed"
                 >
-                  Purchase Explorer - $19.99
+                  Coming Soon
                 </Button>
               </div>
 
@@ -228,10 +216,10 @@ export default function NotificationSettings() {
                   ✓ Priority support & escalation
                 </p>
                 <Button 
-                  onClick={() => window.location.href = 'https://buy.stripe.com/dRm5kDdWpa8O6fb2Wf9ws06'}
-                  className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                  disabled
+                  className="w-full bg-gray-400 cursor-not-allowed"
                 >
-                  Purchase Globetrotter - $29.99
+                  Coming Soon
                 </Button>
               </div>
             </div>

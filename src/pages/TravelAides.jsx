@@ -65,17 +65,7 @@ export default function TravelAides() {
   };
 
   const proceedToCheckout = async (items) => {
-    try {
-      // For now, checkout with first item only - future: support multi-item checkout
-      const response = await createCheckoutSession({ 
-        priceId: items[0].stripePriceId,
-        productId: items[0].id
-      });
-      window.location.href = response.data.url;
-    } catch (error) {
-      console.error('Checkout error:', error);
-      alert('Failed to start checkout. Please try again.');
-    }
+    alert('Purchases coming soon! In-app purchases will be available in the next update.');
   };
 
   const aides = [

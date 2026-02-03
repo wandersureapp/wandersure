@@ -1,7 +1,7 @@
-import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
-import Stripe from 'npm:stripe@17.5.0';
+// Stripe checkout disabled for app store compliance
+// This function will be replaced with Apple In-App Purchases / Google Play Billing
 
-const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
+import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
     try {
@@ -12,65 +12,14 @@ Deno.serve(async (req) => {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { priceId, plan, productId, tripId } = await req.json();
-
-        if (!priceId) {
-            return Response.json({ error: 'Price ID required' }, { status: 400 });
-        }
-
-        console.log('Creating checkout session with:', { priceId, plan, tripId, user_email: user.email });
-
-        const isOneTimeTrip = tripId && !productId;
-
-        const appUrl = Deno.env.get('APP_URL') || 'https://wandersure.app';
-        
-        const session = await stripe.checkout.sessions.create({
-            customer_email: user.email,
-            line_items: [
-                {
-                    price: priceId,
-                    quantity: 1,
-                },
-            ],
-            mode: (productId || isOneTimeTrip) ? 'payment' : 'subscription',
-            success_url: isOneTimeTrip
-                ? `${appUrl}/TripDetail?id=${tripId}&access=success`
-                : productId 
-                    ? `${appUrl}/TravelAides?success=true`
-                    : `${appUrl}/NotificationSettings?success=true`,
-            cancel_url: isOneTimeTrip
-                ? `${appUrl}/TripDetail?id=${tripId}&access=canceled`
-                : productId
-                    ? `${appUrl}/TravelAides?canceled=true`
-                    : `${appUrl}/NotificationSettings?canceled=true`,
-            metadata: {
-                user_email: user.email,
-                plan: plan || 'explorer',
-                product_id: productId || '',
-                trip_id: tripId || '',
-                payment_type: isOneTimeTrip ? 'one_time_trip' : (productId ? 'one_time_product' : 'subscription')
-            }
-        });
-        
-        console.log('Checkout session URLs:', {
-            success_url: session.success_url,
-            cancel_url: session.cancel_url
-        });
-
-        console.log('Checkout session created successfully:', session.id);
-
-        return Response.json({ url: session.url });
-    } catch (error) {
-        console.error('Stripe checkout error:', error);
-        console.error('Error details:', {
-            message: error.message,
-            type: error.type,
-            code: error.code,
-            param: error.param
-        });
+        // Stripe functionality temporarily disabled for app store submission
         return Response.json({ 
-            error: error.message,
-            details: error.type || 'Unknown error'
-        }, { status: 500 });
+            error: 'Purchases temporarily unavailable. In-app purchases coming soon!' 
+        }, { status: 503 });
+    } catch (error) {
+        console.error('Checkout error:', error);
+        return Response.json({ 
+            error: 'Service unavailable'
+        }, { status: 503 });
     }
 });
