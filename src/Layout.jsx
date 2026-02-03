@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { motion, AnimatePresence } from "framer-motion";
 import MetaPixel from "./components/analytics/MetaPixel";
 
 export default function Layout({ children, currentPageName }) {
@@ -59,10 +60,16 @@ export default function Layout({ children, currentPageName }) {
     }, [user]);
 
   React.useEffect(() => {
+    let lastScrollY = 0;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      const currentScrollY = window.scrollY;
+      // Only update if scroll position changed significantly (> 20px difference)
+      if (Math.abs(currentScrollY - lastScrollY) > 20) {
+        setScrolled(currentScrollY > 20);
+        lastScrollY = currentScrollY;
+      }
     };
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -352,15 +359,18 @@ export default function Layout({ children, currentPageName }) {
               </div>
 
               {/* Main Content */}
-              <motion.main 
-                className="pt-16 main-content"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.2 }}
-              >
-                {children}
-              </motion.main>
+              <AnimatePresence mode="wait">
+                <motion.main 
+                  key={location.pathname}
+                  className="pt-16 main-content"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {children}
+                </motion.main>
+              </AnimatePresence>
 
       {/* Footer */}
       <footer className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 mt-20"

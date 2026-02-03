@@ -127,8 +127,10 @@ export default function Profile() {
         ...prefs.map(p => base44.entities.UserNotificationPreferences.delete(p.id))
       ]);
       
-      // Logout and redirect
-      await base44.auth.logout();
+      // Delete user authentication identity
+      await base44.auth.deleteMe();
+      
+      // Redirect to home
       window.location.href = '/';
     },
     onError: (error) => {
