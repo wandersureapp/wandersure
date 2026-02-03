@@ -53,11 +53,25 @@ SelectScrollDownButton.displayName =
 
 const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => {
   const isMobile = useIsMobile();
+  const [isOpen, setIsOpen] = React.useState(false);
+
+  React.useEffect(() => {
+    const handleOpenChange = () => {
+      const selectElement = document.querySelector('[data-radix-select-content]');
+      setIsOpen(!!selectElement);
+    };
+
+    const observer = new MutationObserver(handleOpenChange);
+    observer.observe(document.body, { childList: true, subtree: true });
+    handleOpenChange();
+
+    return () => observer.disconnect();
+  }, []);
 
   if (isMobile) {
     return (
       <SelectPrimitive.Portal>
-        <Drawer open={props.open}>
+        <Drawer open={isOpen}>
           <DrawerContent 
             className="pb-safe"
             style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
