@@ -10,11 +10,13 @@ import { PlaneTakeoff, Plus, Search, RefreshCw } from "lucide-react";
 
 import TripCard from "../components/trips/TripCard";
 import AuthGuard from "../components/AuthGuard";
+import PullToRefreshIndicator from "../components/ui/PullToRefreshIndicator";
 
 export default function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
   const queryClient = useQueryClient();
 
   const { data: trips = [], isLoading, error, refetch: refetchTrips } = useQuery({
@@ -114,13 +116,8 @@ export default function MyTrips() {
 
   return (
     <AuthGuard>
+      <PullToRefreshIndicator pullDistance={pullDistance} isRefreshing={isRefreshing} />
     <div className="min-h-screen py-8 relative">
-      {isRefreshing && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
-          <RefreshCw className="w-4 h-4 animate-spin" />
-          <span className="text-sm">Refreshing...</span>
-        </div>
-      )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">

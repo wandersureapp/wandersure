@@ -2,7 +2,7 @@ import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
-import { useIsMobile } from "@/hooks/useIsMobile"
+import { useIsMobile } from "@/components/utils/useIsMobile"
 
 import { cn } from "@/lib/utils"
 

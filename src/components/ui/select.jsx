@@ -4,7 +4,7 @@ import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
-import { useIsMobile } from "@/hooks/useIsMobile"
+import { useIsMobile } from "@/components/utils/useIsMobile"
 
 import { cn } from "@/lib/utils"
 

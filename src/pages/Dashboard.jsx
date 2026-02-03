@@ -24,9 +24,11 @@ import RiskAlerts from "../components/dashboard/RiskAlerts";
 import QuickStats from "../components/dashboard/QuickStats";
 import AuthGuard from "../components/AuthGuard";
 import AlertList from "../components/alerts/AlertList";
+import PullToRefreshIndicator from "../components/ui/PullToRefreshIndicator";
 
 export default function Dashboard() {
   const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const [pullDistance, setPullDistance] = React.useState(0);
   const { data: trips = [], isLoading: tripsLoading, refetch: refetchTrips } = useQuery({
     queryKey: ['trips'],
     queryFn: () => base44.entities.Trip.list('-created_date'),
@@ -126,13 +128,8 @@ export default function Dashboard() {
 
   return (
     <AuthGuard>
+      <PullToRefreshIndicator pullDistance={pullDistance} isRefreshing={isRefreshing} />
     <div className="min-h-screen relative">
-      {isRefreshing && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
-          <RefreshCw className="w-4 h-4 animate-spin" />
-          <span className="text-sm">Refreshing...</span>
-        </div>
-      )}
       {/* AI Intelligence Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-600">
         {/* Background Image */}
