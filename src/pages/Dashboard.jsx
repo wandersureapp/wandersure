@@ -25,10 +25,9 @@ import QuickStats from "../components/dashboard/QuickStats";
 import AuthGuard from "../components/AuthGuard";
 import AlertList from "../components/alerts/AlertList";
 import PullToRefreshIndicator from "../components/ui/PullToRefreshIndicator";
+import { usePullToRefresh } from "../components/hooks/usePullToRefresh";
 
 export default function Dashboard() {
-  const [isRefreshing, setIsRefreshing] = React.useState(false);
-  const [pullDistance, setPullDistance] = React.useState(0);
   const { data: trips = [], isLoading: tripsLoading, refetch: refetchTrips } = useQuery({
     queryKey: ['trips'],
     queryFn: () => base44.entities.Trip.list('-created_date'),
@@ -36,67 +35,7 @@ export default function Dashboard() {
 
   const [user, setUser] = React.useState(null);
 
-  const handlePullToRefresh = React.useCallback(async () => {
-    setIsRefreshing(true);
-    await refetchTrips();
-    setTimeout(() => setIsRefreshing(false), 500);
-  }, [refetchTrips]);
-
-  React.useEffect(() => {
-    let startY = 0;
-    let startX = 0;
-    let currentY = 0;
-    let currentX = 0;
-    let isDragging = false;
-
-    const handleTouchStart = (e) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-        startX = e.touches[0].clientX;
-        isDragging = true;
-      }
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isDragging || window.scrollY !== 0) {
-        isDragging = false;
-        setPullDistance(0);
-        return;
-      }
-      
-      currentY = e.touches[0].clientY;
-      currentX = e.touches[0].clientX;
-      
-      const diffY = currentY - startY;
-      const diffX = Math.abs(currentX - startX);
-      
-      // Update pull distance for visual feedback
-      if (diffY > 0 && diffX < 30) {
-        setPullDistance(diffY);
-      }
-      
-      // Only trigger if predominantly vertical movement
-      if (diffY > 80 && diffX < 30 && window.scrollY === 0) {
-        handlePullToRefresh();
-        isDragging = false;
-      }
-    };
-
-    const handleTouchEnd = () => {
-      isDragging = false;
-      setPullDistance(0);
-    };
-
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [handlePullToRefresh]);
+  const { isRefreshing, pullDistance } = usePullToRefresh(refetchTrips);
 
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));

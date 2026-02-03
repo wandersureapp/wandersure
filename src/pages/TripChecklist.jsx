@@ -49,8 +49,6 @@ export default function TripChecklist() {
   const queryClient = useQueryClient();
   const [newItemTitle, setNewItemTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("packing");
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
   const isMobile = useIsMobile();
 
   const { data: trip, refetch: refetchTrip } = useQuery({
@@ -93,65 +91,11 @@ export default function TripChecklist() {
     p.product_type === 'interactive_checklist' || p.product_type === 'travel_aide_bundle'
   );
 
-  const handlePullToRefresh = React.useCallback(async () => {
-    setIsRefreshing(true);
+  const handleRefresh = React.useCallback(async () => {
     await Promise.all([refetchTrip(), refetchChecklist()]);
-    setTimeout(() => setIsRefreshing(false), 500);
   }, [refetchTrip, refetchChecklist]);
 
-  React.useEffect(() => {
-    let startY = 0;
-    let startX = 0;
-    let currentY = 0;
-    let currentX = 0;
-    let isDragging = false;
-
-    const handleTouchStart = (e) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-        startX = e.touches[0].clientX;
-        isDragging = true;
-      }
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isDragging || window.scrollY !== 0) {
-        isDragging = false;
-        setPullDistance(0);
-        return;
-      }
-      
-      currentY = e.touches[0].clientY;
-      currentX = e.touches[0].clientX;
-      
-      const diffY = currentY - startY;
-      const diffX = Math.abs(currentX - startX);
-      
-      if (diffY > 0 && diffX < 30) {
-        setPullDistance(diffY);
-      }
-      
-      if (diffY > 80 && diffX < 30 && window.scrollY === 0) {
-        handlePullToRefresh();
-        isDragging = false;
-      }
-    };
-
-    const handleTouchEnd = () => {
-      isDragging = false;
-      setPullDistance(0);
-    };
-
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [handlePullToRefresh]);
+  const { isRefreshing, pullDistance } = usePullToRefresh(handleRefresh);
 
   const updateMutation = useMutation({
     mutationFn: ({ checklistId, data }) => base44.entities.TravelChecklist.update(checklistId, data),
