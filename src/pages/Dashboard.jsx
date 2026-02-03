@@ -13,7 +13,8 @@ import {
   Calendar,
   Sparkles,
   ArrowRight,
-  Bell
+  Bell,
+  RefreshCw
 } from "lucide-react";
 import { format, differenceInDays, isFuture } from "date-fns";
 import { motion } from "framer-motion";
@@ -25,12 +26,56 @@ import AuthGuard from "../components/AuthGuard";
 import AlertList from "../components/alerts/AlertList";
 
 export default function Dashboard() {
-  const { data: trips = [], isLoading: tripsLoading } = useQuery({
+  const [isRefreshing, setIsRefreshing] = React.useState(false);
+  const { data: trips = [], isLoading: tripsLoading, refetch: refetchTrips } = useQuery({
     queryKey: ['trips'],
     queryFn: () => base44.entities.Trip.list('-created_date'),
   });
 
   const [user, setUser] = React.useState(null);
+
+  const handlePullToRefresh = React.useCallback(async () => {
+    setIsRefreshing(true);
+    await refetchTrips();
+    setTimeout(() => setIsRefreshing(false), 500);
+  }, [refetchTrips]);
+
+  React.useEffect(() => {
+    let startY = 0;
+    let currentY = 0;
+    let isDragging = false;
+
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        isDragging = true;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging) return;
+      currentY = e.touches[0].clientY;
+      const diff = currentY - startY;
+      if (diff > 80 && window.scrollY === 0) {
+        handlePullToRefresh();
+        isDragging = false;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDragging = false;
+    };
+
+    window.addEventListener('touchstart', handleTouchStart);
+    window.addEventListener('touchmove', handleTouchMove);
+    window.addEventListener('touchend', handleTouchEnd);
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [handlePullToRefresh]);
 
   React.useEffect(() => {
     base44.auth.me().then(setUser).catch(() => setUser(null));
@@ -62,7 +107,13 @@ export default function Dashboard() {
 
   return (
     <AuthGuard>
-    <div className="min-h-screen">
+    <div className="min-h-screen relative">
+      {isRefreshing && (
+        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-50 bg-blue-600 text-white px-4 py-2 rounded-full shadow-lg flex items-center gap-2">
+          <RefreshCw className="w-4 h-4 animate-spin" />
+          <span className="text-sm">Refreshing...</span>
+        </div>
+      )}
       {/* AI Intelligence Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-cyan-600 to-teal-600">
         {/* Background Image */}
