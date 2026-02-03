@@ -49,7 +49,7 @@ export default function TripBasicInfo({ tripData, updateTripData, onNext, onPars
               <Button
                 onClick={onParseEmails}
                 disabled={isParsingEmails}
-                className="bg-blue-600 hover:bg-blue-700"
+                className="bg-blue-600 hover:bg-blue-700 min-h-[44px]"
               >
                 {isParsingEmails ? (
                   <>
@@ -150,7 +150,7 @@ export default function TripBasicInfo({ tripData, updateTripData, onNext, onPars
           onClick={onNext}
           disabled={!isValid}
           size="lg"
-          className="bg-blue-600 hover:bg-blue-700"
+          className="bg-blue-600 hover:bg-blue-700 min-h-[44px]"
         >
           Continue to Travel Details
           <ArrowRight className="w-4 h-4 ml-2" />
