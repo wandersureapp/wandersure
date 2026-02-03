@@ -1,6 +1,7 @@
 import * as React from "react"
 import * as DropdownMenuPrimitive from "@radix-ui/react-dropdown-menu"
 import { Check, ChevronRight, Circle } from "lucide-react"
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
 
 import { cn } from "@/lib/utils"
 
@@ -44,19 +45,59 @@ const DropdownMenuSubContent = React.forwardRef(({ className, ...props }, ref) =
 DropdownMenuSubContent.displayName =
   DropdownMenuPrimitive.SubContent.displayName
 
-const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, ...props }, ref) => (
-  <DropdownMenuPrimitive.Portal>
-    <DropdownMenuPrimitive.Content
-      ref={ref}
-      sideOffset={sideOffset}
-      className={cn(
-        "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
-        "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
-        className
-      )}
-      {...props} />
-  </DropdownMenuPrimitive.Portal>
-))
+const DropdownMenuContent = React.forwardRef(({ className, sideOffset = 4, children, ...props }, ref) => {
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  if (isMobile) {
+    return (
+      <DropdownMenuPrimitive.Portal>
+        <Drawer open={props.open}>
+          <DrawerContent 
+            className="pb-safe"
+            style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
+          >
+            <DrawerHeader>
+              <DrawerTitle>Options</DrawerTitle>
+            </DrawerHeader>
+            <div className="px-4 pb-4">
+              {React.Children.map(children, child => {
+                if (React.isValidElement(child)) {
+                  return React.cloneElement(child, {
+                    className: cn(child.props.className, "py-3 text-base")
+                  });
+                }
+                return child;
+              })}
+            </div>
+          </DrawerContent>
+        </Drawer>
+      </DropdownMenuPrimitive.Portal>
+    );
+  }
+
+  return (
+    <DropdownMenuPrimitive.Portal>
+      <DropdownMenuPrimitive.Content
+        ref={ref}
+        sideOffset={sideOffset}
+        className={cn(
+          "z-50 min-w-[8rem] overflow-hidden rounded-md border bg-popover p-1 text-popover-foreground shadow-md",
+          "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+          className
+        )}
+        {...props}>
+        {children}
+      </DropdownMenuPrimitive.Content>
+    </DropdownMenuPrimitive.Portal>
+  );
+})
 DropdownMenuContent.displayName = DropdownMenuPrimitive.Content.displayName
 
 const DropdownMenuItem = React.forwardRef(({ className, inset, ...props }, ref) => (

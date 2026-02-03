@@ -286,31 +286,43 @@ export default function Layout({ children, currentPageName }) {
 
               {/* Bottom Tab Bar - Mobile Only */}
               <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t dark:border-gray-800 z-40"
-              style={{
-              paddingBottom: 'env(safe-area-inset-bottom)'
-              }}>
-              <div className="flex justify-around items-center h-16">
-              {mainNavItems.map((item) => (
-              <Link
-              key={item.name}
-              to={item.path}
-              className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
-                isActive(item.path)
-                  ? 'text-blue-600 dark:text-blue-400'
-                  : 'text-gray-500 dark:text-gray-400'
-              }`}
-              >
-              <item.icon className="w-6 h-6" />
-              <span className="text-xs mt-1">{item.name}</span>
-              </Link>
-              ))}
-              </div>
+                   style={{
+                     paddingBottom: 'env(safe-area-inset-bottom)'
+                   }}>
+                <div className="flex justify-around items-center h-16">
+                  {mainNavItems.map((item) => (
+                    <button
+                      key={item.name}
+                      onClick={() => {
+                        if (isActive(item.path)) {
+                          window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                          navigate(item.path);
+                        }
+                      }}
+                      className={`flex flex-col items-center justify-center flex-1 h-full transition-colors ${
+                        isActive(item.path)
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-gray-500 dark:text-gray-400'
+                      }`}
+                    >
+                      <item.icon className="w-6 h-6" />
+                      <span className="text-xs mt-1">{item.name}</span>
+                    </button>
+                  ))}
+                </div>
               </div>
 
               {/* Main Content */}
-              <main className="pt-16 main-content">
-              {children}
-              </main>
+              <motion.main 
+                className="pt-16 main-content"
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+              >
+                {children}
+              </motion.main>
 
       {/* Footer */}
       <footer className="bg-white/50 dark:bg-gray-900/50 backdrop-blur-sm border-t border-gray-200 dark:border-gray-800 mt-20"

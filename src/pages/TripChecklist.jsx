@@ -83,7 +83,26 @@ export default function TripChecklist() {
 
   const updateMutation = useMutation({
     mutationFn: ({ checklistId, data }) => base44.entities.TravelChecklist.update(checklistId, data),
-    onSuccess: () => {
+    onMutate: async ({ checklistId, data }) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['checklist', tripId] });
+      
+      // Snapshot previous value
+      const previousChecklist = queryClient.getQueryData(['checklist', tripId]);
+      
+      // Optimistically update
+      queryClient.setQueryData(['checklist', tripId], (old) => ({
+        ...old,
+        ...data
+      }));
+      
+      return { previousChecklist };
+    },
+    onError: (err, variables, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['checklist', tripId], context.previousChecklist);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['checklist', tripId] });
     }
   });

@@ -29,9 +29,34 @@ export default function AlertList({ tripId, limit = 10 }) {
 
   const acknowledgeMutation = useMutation({
     mutationFn: (alertId) => acknowledgeAlert({ alertId }),
+    onMutate: async (alertId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['alerts', tripId] });
+      
+      // Snapshot previous value
+      const previousAlerts = queryClient.getQueryData(['alerts', tripId]);
+      
+      // Optimistically update
+      queryClient.setQueryData(['alerts', tripId], (old) => 
+        old.map(alert => 
+          alert.id === alertId 
+            ? { ...alert, acknowledged: true, acknowledged_at: new Date().toISOString() }
+            : alert
+        )
+      );
+      
+      return { previousAlerts };
+    },
+    onError: (err, alertId, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['alerts', tripId], context.previousAlerts);
+      toast.error('Failed to acknowledge alert');
+    },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['alerts'] });
       toast.success('Alert acknowledged');
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['alerts', tripId] });
     }
   });
 
