@@ -271,7 +271,7 @@ export default function Profile() {
                     onValueChange={(value) => setFormData({...formData, home_airport: value})}
                   >
                     <SelectTrigger id="home_airport">
-                      <SelectValue placeholder="Select your home airport" />
+                      <SelectValue placeholder="Choose your home airport" />
                     </SelectTrigger>
                     <SelectContent className="max-h-60">
                       {airports.map((airport) => (
@@ -406,7 +406,7 @@ export default function Profile() {
                             onValueChange={(value) => updateTravelPreference(index, 'type', value)}
                           >
                             <SelectTrigger>
-                              <SelectValue />
+                              <SelectValue placeholder="Choose preference type" />
                             </SelectTrigger>
                             <SelectContent>
                               <SelectItem value="airline">Airline</SelectItem>

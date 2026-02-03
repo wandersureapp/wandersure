@@ -132,7 +132,7 @@ export default function MultiDestinationManager({ destinations = [], onChange })
                 onValueChange={(value) => updateDestination(index, 'purpose', value)}
               >
                 <SelectTrigger className="mt-1.5">
-                  <SelectValue />
+                  <SelectValue placeholder="Choose stop purpose" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="lodging">Lodging/Accommodation</SelectItem>
