@@ -155,7 +155,13 @@ export default function Layout({ children, currentPageName }) {
             {/* Back Button for sub-pages on mobile */}
             {shouldShowBackButton && (
               <button
-                onClick={() => navigate(-1)}
+                onClick={() => {
+                  if (window.history.length > 1) {
+                    navigate(-1);
+                  } else {
+                    navigate(createPageUrl("Dashboard"));
+                  }
+                }}
                 className="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800"
               >
                 <ArrowLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />

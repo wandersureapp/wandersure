@@ -539,20 +539,21 @@ export default function TripDetail() {
                             {trip.airline} has elevated delay risk. Consider alternative flights or travel insurance.
                           </p>
                           <div className="flex flex-wrap gap-2 mb-3">
-                            <a 
-                              href="https://www.anrdoezrs.net/click-101622714-17223836" 
-                              target="_top" 
-                              rel="noopener noreferrer"
+                            <Button 
+                              className="bg-blue-600 hover:bg-blue-700"
+                              onClick={() => window.open('https://www.anrdoezrs.net/click-101622714-17223836', '_blank', 'noopener,noreferrer')}
                             >
-                              <Button className="bg-blue-600 hover:bg-blue-700">
-                                ✈️ Find Better Flights on Expedia
-                              </Button>
-                            </a>
+                              ✈️ Find Better Flights on Expedia
+                            </Button>
                             <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
                             <a 
                               href="https://www.anrdoezrs.net/click-101622714-17100505" 
                               target="_blank" 
                               rel="noopener noreferrer"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                window.open('https://www.anrdoezrs.net/click-101622714-17100505', '_blank', 'noopener,noreferrer');
+                              }}
                             >
                               <img src="https://www.lduhtrp.net/image-101622714-17100505" width={320} height={50} alt="Travel Insurance" border={0} />
                             </a>
@@ -595,6 +596,10 @@ export default function TripDetail() {
                               href="https://www.anrdoezrs.net/click-101622714-17100505" 
                               target="_blank" 
                               rel="noopener noreferrer"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                window.open('https://www.anrdoezrs.net/click-101622714-17100505', '_blank', 'noopener,noreferrer');
+                              }}
                             >
                               <img src="https://www.lduhtrp.net/image-101622714-17100505" width={320} height={50} alt="Travel Insurance from World Nomads" border={0} />
                             </a>
@@ -757,7 +762,7 @@ export default function TripDetail() {
                           <>
                             <a 
                               href="https://www.anrdoezrs.net/click-101622714-17223836" 
-                              target="_top"
+                              target="_blank"
                               rel="noopener noreferrer"
                               className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
                             >
@@ -778,14 +783,12 @@ export default function TripDetail() {
                       {trip.flight_number && (
                         <p className="text-sm text-gray-500">Flight {trip.flight_number}</p>
                       )}
-                      <a 
-                        href="https://www.anrdoezrs.net/click-101622714-17223836" 
-                        target="_top"
-                        rel="noopener noreferrer"
-                        className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
+                      <button
+                        onClick={() => window.open('https://www.anrdoezrs.net/click-101622714-17223836', '_blank', 'noopener,noreferrer')}
+                        className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block cursor-pointer"
                       >
                         Compare flight options on Expedia →
-                      </a>
+                      </button>
                       <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
                     </div>
                   </div>
@@ -797,14 +800,12 @@ export default function TripDetail() {
                     <div className="flex-1">
                       <p className="font-medium text-gray-900">Hotel</p>
                       <p className="text-sm text-gray-600">{trip.hotel_name}</p>
-                      <a 
-                        href="https://www.dpbolvw.net/click-101622714-15734399" 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="text-sm text-purple-600 hover:text-purple-700 font-medium mt-2 inline-block"
+                      <button
+                        onClick={() => window.open('https://www.dpbolvw.net/click-101622714-15734399', '_blank', 'noopener,noreferrer')}
+                        className="text-sm text-purple-600 hover:text-purple-700 font-medium mt-2 inline-block cursor-pointer"
                       >
                         Find better hotel deals on HOTELS.COM® →
-                      </a>
+                      </button>
                       <img src="https://www.ftjcfx.com/image-101622714-15734399" width={1} height={1} border={0} alt="" className="hidden" />
                     </div>
                   </div>
@@ -816,17 +817,13 @@ export default function TripDetail() {
                       <Hotel className="w-5 h-5 text-purple-600 mt-1" />
                       <div className="flex-1">
                         <p className="text-sm font-medium text-gray-900 mb-2">Need a place to stay in {trip.destination}?</p>
-                        <a 
-                          href="https://www.dpbolvw.net/click-101622714-15734399" 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="inline-block"
+                        <Button 
+                          className="bg-purple-600 hover:bg-purple-700"
+                          onClick={() => window.open('https://www.dpbolvw.net/click-101622714-15734399', '_blank', 'noopener,noreferrer')}
                         >
-                          <Button className="bg-purple-600 hover:bg-purple-700">
-                            <Hotel className="w-4 h-4 mr-2" />
-                            Search Hotels on HOTELS.COM®
-                          </Button>
-                        </a>
+                          <Hotel className="w-4 h-4 mr-2" />
+                          Search Hotels on HOTELS.COM®
+                        </Button>
                         <img src="https://www.ftjcfx.com/image-101622714-15734399" width={1} height={1} border={0} alt="" className="hidden" />
                         <p className="text-xs text-gray-500 mt-2">HOTELS.COM is a trademark or registered trademark of Expedia, Inc.</p>
                       </div>
@@ -847,9 +844,12 @@ export default function TripDetail() {
                 {!trip.car_rental_company && (
                   <div className="p-4 bg-gradient-to-r from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-lg">
                     <p className="text-sm font-medium text-gray-900 mb-3">Need a rental car for your trip?</p>
-                    <a href="https://www.jdoqocy.com/click-101622714-17126276" target="_blank" rel="noopener noreferrer" className="block">
+                    <button 
+                      onClick={() => window.open('https://www.jdoqocy.com/click-101622714-17126276', '_blank', 'noopener,noreferrer')}
+                      className="block w-full cursor-pointer"
+                    >
                       <img src="https://www.ftjcfx.com/image-101622714-17126276" width={728} height={90} alt="Car Rentals with Full Coverage Insurance" border={0} className="mx-auto" />
-                    </a>
+                    </button>
                   </div>
                 )}
 
@@ -858,13 +858,21 @@ export default function TripDetail() {
                     <Plane className="w-12 h-12 mx-auto mb-3 opacity-30 text-gray-400" />
                     <p className="text-sm text-gray-600 mb-4">No travel bookings added yet</p>
                     <div className="flex flex-col gap-2 max-w-xs mx-auto">
-                      <a href="https://www.anrdoezrs.net/click-101622714-17223836" target="_top" rel="noopener noreferrer">
-                        <Button variant="outline" className="w-full">Book on Expedia</Button>
-                      </a>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open('https://www.anrdoezrs.net/click-101622714-17223836', '_blank', 'noopener,noreferrer')}
+                      >
+                        Book on Expedia
+                      </Button>
                       <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
-                      <a href="https://www.dpbolvw.net/click-101622714-15734399" target="_blank" rel="noopener noreferrer">
-                        <Button variant="outline" className="w-full">Book Hotels on HOTELS.COM®</Button>
-                      </a>
+                      <Button 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => window.open('https://www.dpbolvw.net/click-101622714-15734399', '_blank', 'noopener,noreferrer')}
+                      >
+                        Book Hotels on HOTELS.COM®
+                      </Button>
                       <img src="https://www.ftjcfx.com/image-101622714-15734399" width={1} height={1} border={0} alt="" className="hidden" />
                     </div>
                   </div>
