@@ -58,6 +58,7 @@ export default function Dashboard() {
     const handleTouchMove = (e) => {
       if (!isDragging || window.scrollY !== 0) {
         isDragging = false;
+        setPullDistance(0);
         return;
       }
       
@@ -66,6 +67,11 @@ export default function Dashboard() {
       
       const diffY = currentY - startY;
       const diffX = Math.abs(currentX - startX);
+      
+      // Update pull distance for visual feedback
+      if (diffY > 0 && diffX < 30) {
+        setPullDistance(diffY);
+      }
       
       // Only trigger if predominantly vertical movement
       if (diffY > 80 && diffX < 30 && window.scrollY === 0) {
@@ -76,6 +82,7 @@ export default function Dashboard() {
 
     const handleTouchEnd = () => {
       isDragging = false;
+      setPullDistance(0);
     };
 
     window.addEventListener('touchstart', handleTouchStart, { passive: true });

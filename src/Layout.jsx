@@ -104,8 +104,9 @@ export default function Layout({ children, currentPageName }) {
   }, [location.pathname]);
 
   const handleTabNavigation = (tabKey, tabPath) => {
-    if (isActive(tabPath)) {
-      // Already on this tab - scroll to top
+    if (tabKey === currentTab) {
+      // Clicking the current tab - always go to root of that tab
+      navigate(tabPath);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } else {
       // Switching tabs - restore last page in that tab's history
