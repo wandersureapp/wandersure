@@ -11,12 +11,11 @@ import { PlaneTakeoff, Plus, Search, RefreshCw } from "lucide-react";
 import TripCard from "../components/trips/TripCard";
 import AuthGuard from "../components/AuthGuard";
 import PullToRefreshIndicator from "../components/ui/PullToRefreshIndicator";
+import { usePullToRefresh } from "../components/hooks/usePullToRefresh";
 
 export default function MyTrips() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [pullDistance, setPullDistance] = useState(0);
   const queryClient = useQueryClient();
 
   const { data: trips = [], isLoading, error, refetch: refetchTrips } = useQuery({
@@ -25,67 +24,7 @@ export default function MyTrips() {
     retry: 1
   });
 
-  const handlePullToRefresh = React.useCallback(async () => {
-    setIsRefreshing(true);
-    await refetchTrips();
-    setTimeout(() => setIsRefreshing(false), 500);
-  }, [refetchTrips]);
-
-  React.useEffect(() => {
-    let startY = 0;
-    let startX = 0;
-    let currentY = 0;
-    let currentX = 0;
-    let isDragging = false;
-
-    const handleTouchStart = (e) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-        startX = e.touches[0].clientX;
-        isDragging = true;
-      }
-    };
-
-    const handleTouchMove = (e) => {
-      if (!isDragging || window.scrollY !== 0) {
-        isDragging = false;
-        setPullDistance(0);
-        return;
-      }
-      
-      currentY = e.touches[0].clientY;
-      currentX = e.touches[0].clientX;
-      
-      const diffY = currentY - startY;
-      const diffX = Math.abs(currentX - startX);
-      
-      // Update pull distance for visual feedback
-      if (diffY > 0 && diffX < 30) {
-        setPullDistance(diffY);
-      }
-      
-      // Only trigger if predominantly vertical movement
-      if (diffY > 80 && diffX < 30 && window.scrollY === 0) {
-        handlePullToRefresh();
-        isDragging = false;
-      }
-    };
-
-    const handleTouchEnd = () => {
-      isDragging = false;
-      setPullDistance(0);
-    };
-
-    window.addEventListener('touchstart', handleTouchStart, { passive: true });
-    window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    window.addEventListener('touchend', handleTouchEnd, { passive: true });
-
-    return () => {
-      window.removeEventListener('touchstart', handleTouchStart);
-      window.removeEventListener('touchmove', handleTouchMove);
-      window.removeEventListener('touchend', handleTouchEnd);
-    };
-  }, [handlePullToRefresh]);
+  const { isRefreshing, pullDistance } = usePullToRefresh(refetchTrips);
 
   if (error) {
     return (
