@@ -2,9 +2,11 @@ import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, FileText } from "lucide-react";
+import SafePageWrapper from "../components/utils/SafePageWrapper";
 
 export default function Legal() {
   return (
+    <SafePageWrapper>
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-8">
@@ -228,5 +230,6 @@ export default function Legal() {
         </Tabs>
       </div>
     </div>
+    </SafePageWrapper>
   );
 }
