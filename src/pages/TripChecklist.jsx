@@ -9,6 +9,15 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import PullToRefreshIndicator from "../components/ui/PullToRefreshIndicator";
+import { useIsMobile } from "../components/utils/useIsMobile";
 import { 
   CheckCircle, 
   Circle,
@@ -40,14 +49,17 @@ export default function TripChecklist() {
   const queryClient = useQueryClient();
   const [newItemTitle, setNewItemTitle] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("packing");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pullDistance, setPullDistance] = useState(0);
+  const isMobile = useIsMobile();
 
-  const { data: trip } = useQuery({
+  const { data: trip, refetch: refetchTrip } = useQuery({
     queryKey: ['trip', tripId],
     queryFn: () => base44.entities.Trip.list().then(trips => trips.find(t => t.id === tripId)),
     enabled: !!tripId
   });
 
-  const { data: checklist, isLoading } = useQuery({
+  const { data: checklist, isLoading, refetch: refetchChecklist } = useQuery({
     queryKey: ['checklist', tripId],
     queryFn: async () => {
       const lists = await base44.entities.TravelChecklist.filter({ trip_id: tripId });
@@ -80,6 +92,66 @@ export default function TripChecklist() {
   const hasPremium = purchases.some(p => 
     p.product_type === 'interactive_checklist' || p.product_type === 'travel_aide_bundle'
   );
+
+  const handlePullToRefresh = React.useCallback(async () => {
+    setIsRefreshing(true);
+    await Promise.all([refetchTrip(), refetchChecklist()]);
+    setTimeout(() => setIsRefreshing(false), 500);
+  }, [refetchTrip, refetchChecklist]);
+
+  React.useEffect(() => {
+    let startY = 0;
+    let startX = 0;
+    let currentY = 0;
+    let currentX = 0;
+    let isDragging = false;
+
+    const handleTouchStart = (e) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        startX = e.touches[0].clientX;
+        isDragging = true;
+      }
+    };
+
+    const handleTouchMove = (e) => {
+      if (!isDragging || window.scrollY !== 0) {
+        isDragging = false;
+        setPullDistance(0);
+        return;
+      }
+      
+      currentY = e.touches[0].clientY;
+      currentX = e.touches[0].clientX;
+      
+      const diffY = currentY - startY;
+      const diffX = Math.abs(currentX - startX);
+      
+      if (diffY > 0 && diffX < 30) {
+        setPullDistance(diffY);
+      }
+      
+      if (diffY > 80 && diffX < 30 && window.scrollY === 0) {
+        handlePullToRefresh();
+        isDragging = false;
+      }
+    };
+
+    const handleTouchEnd = () => {
+      isDragging = false;
+      setPullDistance(0);
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [handlePullToRefresh]);
 
   const updateMutation = useMutation({
     mutationFn: ({ checklistId, data }) => base44.entities.TravelChecklist.update(checklistId, data),
@@ -183,8 +255,10 @@ export default function TripChecklist() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
-      <div className="max-w-5xl mx-auto">
+    <>
+      <PullToRefreshIndicator pullDistance={pullDistance} isRefreshing={isRefreshing} />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-cyan-50 to-teal-50 p-6">
+        <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <Link to={createPageUrl(`TripDetail?id=${tripId}`)} className="text-blue-600 hover:underline text-sm mb-2 inline-block">
@@ -218,10 +292,12 @@ export default function TripChecklist() {
                     </Button>
                   </Link>
                 )}
-                <Button variant="outline" onClick={() => window.print()}>
-                  <Printer className="w-4 h-4 mr-2" />
-                  Print
-                </Button>
+                {!isMobile && (
+                  <Button variant="outline" onClick={() => window.print()}>
+                    <Printer className="w-4 h-4 mr-2" />
+                    Print
+                  </Button>
+                )}
               </div>
             </div>
             <Progress value={checklist.completion_percentage} className="h-3" />
@@ -370,17 +446,18 @@ export default function TripChecklist() {
           </CardHeader>
           <CardContent>
             <div className="flex gap-3">
-              <select 
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-                className="px-3 py-2 border rounded-lg"
-              >
-                {categories.map(cat => (
-                  <option key={cat.id} value={cat.id}>
-                    {cat.icon} {cat.label}
-                  </option>
-                ))}
-              </select>
+              <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <SelectTrigger className="w-[200px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map(cat => (
+                    <SelectItem key={cat.id} value={cat.id}>
+                      {cat.icon} {cat.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <Input
                 placeholder="Item title..."
                 value={newItemTitle}
@@ -397,5 +474,6 @@ export default function TripChecklist() {
         </Card>
       </div>
     </div>
+    </>
   );
 }
