@@ -109,6 +109,16 @@ button, a, [role="button"] {
   overscroll-behavior: none;
 }
 
+/* Hide scrollbars globally for cleaner mobile experience */
+*::-webkit-scrollbar {
+  display: none;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
 @media (max-width: 768px) {
   .main-content {
     padding-bottom: calc(4rem + env(safe-area-inset-bottom));
