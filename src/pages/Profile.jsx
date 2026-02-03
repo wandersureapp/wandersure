@@ -120,11 +120,15 @@ export default function Profile() {
       const trips = await base44.entities.Trip.list();
       const checklists = await base44.entities.TravelChecklist.list();
       const prefs = await base44.entities.UserNotificationPreferences.filter({ user_email: user.email });
+      const pushSubscriptions = await base44.entities.PushSubscription.filter({ user_email: user.email });
+      const groupMembers = await base44.entities.GroupTravelMember.filter({ email: user.email });
       
       await Promise.all([
         ...trips.map(t => base44.entities.Trip.delete(t.id)),
         ...checklists.map(c => base44.entities.TravelChecklist.delete(c.id)),
-        ...prefs.map(p => base44.entities.UserNotificationPreferences.delete(p.id))
+        ...prefs.map(p => base44.entities.UserNotificationPreferences.delete(p.id)),
+        ...pushSubscriptions.map(ps => base44.entities.PushSubscription.delete(ps.id)),
+        ...groupMembers.map(gm => base44.entities.GroupTravelMember.delete(gm.id))
       ]);
       
       // Delete user authentication identity
@@ -273,7 +277,7 @@ export default function Profile() {
                     <SelectTrigger id="home_airport">
                       <SelectValue placeholder="Choose your home airport" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-60">
+                    <SelectContent className="max-h-60" searchPlaceholder="Search airports...">
                       {airports.map((airport) => (
                         <SelectItem key={airport.code} value={airport.code}>
                           {airport.code} - {airport.name} ({airport.city})

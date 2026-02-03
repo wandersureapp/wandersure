@@ -318,10 +318,10 @@ export default function TripDetail() {
                 <div className="flex-1">
                   <p className="text-sm text-gray-600 mb-1">Status</p>
                   <Select value={trip.status} onValueChange={(value) => updateStatusMutation.mutate(value)}>
-                    <SelectTrigger className="w-full">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent searchPlaceholder="Select trip status">
                       <SelectItem value="planning">Planning</SelectItem>
                       <SelectItem value="booked">Booked</SelectItem>
                       <SelectItem value="active">Active</SelectItem>
@@ -761,14 +761,12 @@ export default function TripDetail() {
                         )}
                         {idx === 0 && (
                           <>
-                            <a 
-                              href="https://www.anrdoezrs.net/click-101622714-17223836" 
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block"
+                            <button
+                              onClick={() => openExternalLink('https://www.anrdoezrs.net/click-101622714-17223836')}
+                              className="text-sm text-blue-600 hover:text-blue-700 font-medium mt-2 inline-block cursor-pointer"
                             >
                               Compare flight options on Expedia →
-                            </a>
+                            </button>
                             <img src="https://www.lduhtrp.net/image-101622714-17223836" width={1} height={1} border={0} alt="" className="hidden" />
                           </>
                         )}

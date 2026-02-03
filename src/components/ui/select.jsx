@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import * as SelectPrimitive from "@radix-ui/react-select"
-import { Check, ChevronDown, ChevronUp } from "lucide-react"
+import { Check, ChevronDown, ChevronUp, Search } from "lucide-react"
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle } from "@/components/ui/drawer"
+import { Input } from "@/components/ui/input"
 
 import { cn } from "@/lib/utils"
 import { useIsMobile } from "@/components/utils/useIsMobile"
@@ -51,14 +52,18 @@ const SelectScrollDownButton = React.forwardRef(({ className, ...props }, ref) =
 SelectScrollDownButton.displayName =
   SelectPrimitive.ScrollDownButton.displayName
 
-const SelectContent = React.forwardRef(({ className, children, position = "popper", ...props }, ref) => {
+const SelectContent = React.forwardRef(({ className, children, position = "popper", searchPlaceholder, ...props }, ref) => {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = React.useState(false);
+  const [searchQuery, setSearchQuery] = React.useState('');
 
   React.useEffect(() => {
     const handleOpenChange = () => {
       const selectElement = document.querySelector('[data-radix-select-content]');
       setIsOpen(!!selectElement);
+      if (!selectElement) {
+        setSearchQuery('');
+      }
     };
 
     const observer = new MutationObserver(handleOpenChange);
@@ -68,7 +73,22 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
     return () => observer.disconnect();
   }, []);
 
+  const filterChildren = (children, query) => {
+    if (!query) return children;
+    
+    return React.Children.toArray(children).filter(child => {
+      if (!React.isValidElement(child)) return true;
+      
+      const childText = child.props.children?.toString().toLowerCase() || '';
+      const value = child.props.value?.toString().toLowerCase() || '';
+      return childText.includes(query.toLowerCase()) || value.includes(query.toLowerCase());
+    });
+  };
+
   if (isMobile) {
+    const filteredChildren = searchPlaceholder ? filterChildren(children, searchQuery) : children;
+    const hasResults = React.Children.count(filteredChildren) > 0;
+    
     return (
       <SelectPrimitive.Portal>
         <Drawer open={isOpen}>
@@ -77,17 +97,36 @@ const SelectContent = React.forwardRef(({ className, children, position = "poppe
             style={{ paddingBottom: 'max(1.5rem, env(safe-area-inset-bottom))' }}
           >
             <DrawerHeader>
-              <DrawerTitle>Select an option</DrawerTitle>
+              <DrawerTitle>{searchPlaceholder || 'Select an option'}</DrawerTitle>
             </DrawerHeader>
+            {searchPlaceholder && (
+              <div className="px-4 pb-2">
+                <div className="relative">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+                  <Input
+                    placeholder={searchPlaceholder}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="pl-9"
+                  />
+                </div>
+              </div>
+            )}
             <div className="max-h-[60vh] overflow-auto px-4 pb-4">
-              {React.Children.map(children, child => {
-                if (React.isValidElement(child)) {
-                  return React.cloneElement(child, {
-                    className: cn(child.props.className, "py-4 text-base")
-                  });
-                }
-                return child;
-              })}
+              {hasResults ? (
+                React.Children.map(filteredChildren, child => {
+                  if (React.isValidElement(child)) {
+                    return React.cloneElement(child, {
+                      className: cn(child.props.className, "py-4 text-base")
+                    });
+                  }
+                  return child;
+                })
+              ) : (
+                <div className="py-8 text-center text-gray-500">
+                  No results found
+                </div>
+              )}
             </div>
           </DrawerContent>
         </Drawer>

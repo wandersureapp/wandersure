@@ -296,7 +296,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                     <SelectTrigger className="mt-1.5">
                       <SelectValue placeholder="Choose your airline" />
                     </SelectTrigger>
-                    <SelectContent className="max-h-60">
+                    <SelectContent className="max-h-60" searchPlaceholder="Search airlines...">
                       {airlines.map(airline => (
                         <SelectItem key={airline} value={airline}>
                           {airline}
@@ -411,7 +411,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                 <SelectTrigger className="mt-1.5">
                   <SelectValue placeholder="Choose your hotel chain" />
                 </SelectTrigger>
-                <SelectContent className="max-h-60">
+                <SelectContent className="max-h-60" searchPlaceholder="Search hotel chains...">
                   {hotelChains.map(hotel => (
                     <SelectItem key={hotel} value={hotel}>
                       {hotel}
@@ -461,7 +461,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                 <SelectTrigger className="mt-1.5">
                   <SelectValue placeholder="Choose rental company" />
                 </SelectTrigger>
-                <SelectContent className="max-h-60">
+                <SelectContent className="max-h-60" searchPlaceholder="Search car rental companies...">
                   {carRentalCompanies.map(company => (
                     <SelectItem key={company} value={company}>
                       {company}
@@ -498,7 +498,7 @@ export default function TripTravelDetails({ tripData, updateTripData, onBack, on
                 <SelectTrigger className="mt-1.5">
                   <SelectValue placeholder="Choose your cruise line" />
                 </SelectTrigger>
-                <SelectContent className="max-h-60">
+                <SelectContent className="max-h-60" searchPlaceholder="Search cruise lines...">
                   {cruiseLines.map(cruise => (
                     <SelectItem key={cruise} value={cruise}>
                       {cruise}
