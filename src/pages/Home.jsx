@@ -5,6 +5,7 @@ import { createPageUrl } from "@/utils";
 import { Button } from "@/components/ui/button";
 import { Shield, Sparkles, Bell, Brain, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
+import SafePageWrapper from "../components/utils/SafePageWrapper";
 
 export default function Home() {
   const handleLoginToPortal = async () => {
@@ -17,6 +18,7 @@ export default function Home() {
   };
 
   return (
+    <SafePageWrapper>
     <div className="min-h-screen bg-white">
       {/* Navigation */}
       <nav className="absolute top-0 left-0 right-0 z-50 bg-transparent">
@@ -374,5 +376,6 @@ export default function Home() {
         </div>
       </footer>
     </div>
+    </SafePageWrapper>
   );
 }
