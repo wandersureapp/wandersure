@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Shield, Sparkles, ArrowRight, Award, ExternalLink } from "lucide-react";
 import { buildAffiliateUrl, trackAffiliateClick } from "../components/utils/affiliateTracking";
+import { openExternalLink } from "../components/utils/openExternalLink";
 
 export default function BrowsePlans() {
   const providers = [
@@ -175,7 +176,7 @@ export default function BrowsePlans() {
                         source: 'browse_plans'
                       });
                       trackAffiliateClick(provider.name, null, null);
-                      window.open(affiliateUrl, '_blank');
+                      openExternalLink(affiliateUrl);
                     }}
                     variant="outline"
                     className="w-full"

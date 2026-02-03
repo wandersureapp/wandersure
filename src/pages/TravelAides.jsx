@@ -64,8 +64,20 @@ export default function TravelAides() {
     }
   };
 
+  const checkNativeBillingAvailability = (items) => {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'REQUEST_IN_APP_PURCHASE',
+        productId: `wandersure_aide_${items[0].id}`,
+        metadata: { aideId: items[0].id, aideName: items[0].title }
+      }));
+    } else {
+      alert('In-app purchases are only available in the mobile app. Please download from Google Play Store.');
+    }
+  };
+
   const proceedToCheckout = async (items) => {
-    alert('Purchases coming soon! In-app purchases will be available in the next update.');
+    checkNativeBillingAvailability(items);
   };
 
   const aides = [

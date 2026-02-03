@@ -65,8 +65,20 @@ export default function TripAccessManager({ trip }) {
   const hasOneTimeAccess = !!tripAccess;
   const hasAnyAccess = hasSubscription || hasOneTimeAccess;
 
+  const checkNativeBillingAvailability = () => {
+    if (window.ReactNativeWebView) {
+      window.ReactNativeWebView.postMessage(JSON.stringify({
+        type: 'REQUEST_IN_APP_PURCHASE',
+        productId: plan === 'explorer' ? 'wandersure_trip_explorer' : 'wandersure_trip_globetrotter',
+        metadata: { tripId: trip.id, plan: plan }
+      }));
+    } else {
+      alert('In-app purchases are only available in the mobile app. Please download from Google Play Store.');
+    }
+  };
+
   const handlePurchase = async (plan, priceId) => {
-    alert('Trip monitoring purchases coming soon! In-app purchases will be available in the next update.');
+    checkNativeBillingAvailability();
   };
 
   if (hasSubscription) {

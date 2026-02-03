@@ -474,7 +474,7 @@ export default function Profile() {
               <Button
                 onClick={handleSave}
                 disabled={updateMutation.isPending}
-                className="bg-blue-600 hover:bg-blue-700 px-8"
+                className="bg-blue-600 hover:bg-blue-700 px-8 min-h-[44px]"
               >
                 <Save className="w-4 h-4 mr-2" />
                 {updateMutation.isPending ? "Saving..." : "Save Profile"}
@@ -502,7 +502,7 @@ export default function Profile() {
                 </p>
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="bg-red-600 hover:bg-red-700">
+                    <Button variant="destructive" className="bg-red-600 hover:bg-red-700 min-h-[44px]">
                       <Trash2 className="w-4 h-4 mr-2" />
                       Delete My Account
                     </Button>
