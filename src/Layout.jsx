@@ -281,7 +281,7 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem 
                       onClick={() => {
                         base44.auth.logout();
-                        window.location.href = createPageUrl("Home");
+                        navigate(createPageUrl("Home"));
                       }}
                       className="text-red-600 cursor-pointer"
                     >
