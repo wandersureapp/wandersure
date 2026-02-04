@@ -193,7 +193,21 @@ export default function Layout({ children, currentPageName }) {
             )}
 
             {/* Logo */}
-            <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group">
+            {shouldShowBackButton ? (
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 flex items-center justify-center">
+                  <img 
+                    src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
+                    alt="WanderSure Logo"
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
+                  WanderSure
+                </span>
+              </div>
+            ) : (
+              <Link to={createPageUrl("Dashboard")} className="flex items-center gap-3 group">
               <div className="w-10 h-10 flex items-center justify-center transform group-hover:scale-105 transition-transform">
                 <img 
                   src="https://qtrypzzcjebvfcihiynt.supabase.co/storage/v1/object/public/base44-prod/public/68f24e9d50db61a8178058b4/b6c0bc4b2_ChatGPTImageOct17202512_05_29PM.png" 
@@ -204,7 +218,8 @@ export default function Layout({ children, currentPageName }) {
               <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
                 WanderSure
               </span>
-            </Link>
+              </Link>
+              )}
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-2">

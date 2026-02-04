@@ -4,9 +4,17 @@
 import { createClientFromRequest } from 'npm:@base44/sdk@0.8.6';
 
 Deno.serve(async (req) => {
-    try {
-        const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
+  try {
+    const base44 = createClientFromRequest(req);
+    const user = await base44.auth.me();
+
+    // Block checkout from native apps - they should use IAP
+    if (isNativeApp(req)) {
+      return Response.json({ 
+        error: 'Please use in-app purchase from the mobile app',
+        requiresNativeIAP: true
+      }, { status: 400 });
+    }
 
         if (!user) {
             return Response.json({ error: 'Unauthorized' }, { status: 401 });
