@@ -64,20 +64,36 @@ export default function TravelAides() {
     }
   };
 
-  const checkNativeBillingAvailability = (items) => {
+  const proceedToCheckout = async (items) => {
     if (window.ReactNativeWebView) {
+      // Native app - use Apple/Google In-App Purchase
       window.ReactNativeWebView.postMessage(JSON.stringify({
         type: 'REQUEST_IN_APP_PURCHASE',
         productId: `wandersure_aide_${items[0].id}`,
-        metadata: { aideId: items[0].id, aideName: items[0].title }
+        price: parseFloat(items[0].price.replace('$', '')),
+        metadata: { 
+          aideId: items[0].id, 
+          aideName: items[0].title,
+          stripePriceId: items[0].stripePriceId
+        }
       }));
     } else {
-      alert('In-app purchases are only available in the mobile app. Please download from Google Play Store.');
+      // Web - use Stripe Checkout
+      try {
+        const response = await base44.functions.invoke('createCheckoutSession', {
+          productType: items[0].id,
+          productId: items[0].stripePriceId,
+          priceAmount: parseFloat(items[0].price.replace('$', ''))
+        });
+        
+        if (response.data.url) {
+          window.location.href = response.data.url;
+        }
+      } catch (error) {
+        console.error('Checkout error:', error);
+        alert('Unable to start checkout. Please try again.');
+      }
     }
-  };
-
-  const proceedToCheckout = async (items) => {
-    checkNativeBillingAvailability(items);
   };
 
   const aides = [
