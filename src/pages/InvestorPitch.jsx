@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import SafePageWrapper from "../components/utils/SafePageWrapper";
 import { 
   TrendingUp, 
   Shield, 
@@ -39,6 +40,7 @@ export default function InvestorPitch() {
   ];
 
   return (
+    <SafePageWrapper>
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900">
       {/* Hero Section */}
       <div className="relative overflow-hidden">
@@ -1206,5 +1208,6 @@ export default function InvestorPitch() {
         }
       `}</style>
     </div>
+    </SafePageWrapper>
   );
 }

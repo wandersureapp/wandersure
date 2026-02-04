@@ -1,6 +1,7 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import SafePageWrapper from "../components/utils/SafePageWrapper";
 import { 
   TrendingUp, 
   Shield, 
@@ -22,6 +23,7 @@ import {
 
 export default function InvestorPitchPrint() {
   return (
+    <SafePageWrapper>
     <div className="bg-white">
       <style>{`
         @media print {
@@ -614,5 +616,6 @@ export default function InvestorPitchPrint() {
         </div>
       </div>
     </div>
+    </SafePageWrapper>
   );
 }

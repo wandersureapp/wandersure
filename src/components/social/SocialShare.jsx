@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Facebook, Twitter, Linkedin, Link as LinkIcon, Check } from "lucide-react";
 import { toast } from "sonner";
 import { trackCustomEvent } from "../analytics/MetaPixel";
+import { openExternalLink } from "../utils/openExternalLink";
 
 export default function SocialShare({ trip, variant = "default" }) {
   const [copied, setCopied] = React.useState(false);
@@ -16,11 +17,7 @@ export default function SocialShare({ trip, variant = "default" }) {
       destination: trip.destination,
       trip_id: trip.id
     });
-    window.open(
-      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
-      '_blank',
-      'width=600,height=400'
-    );
+    openExternalLink(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`);
   };
 
   const handleTwitterShare = () => {
@@ -29,11 +26,7 @@ export default function SocialShare({ trip, variant = "default" }) {
       destination: trip.destination,
       trip_id: trip.id
     });
-    window.open(
-      `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`,
-      '_blank',
-      'width=600,height=400'
-    );
+    openExternalLink(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`);
   };
 
   const handleLinkedInShare = () => {
@@ -42,11 +35,7 @@ export default function SocialShare({ trip, variant = "default" }) {
       destination: trip.destination,
       trip_id: trip.id
     });
-    window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
-      '_blank',
-      'width=600,height=400'
-    );
+    openExternalLink(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`);
   };
 
   const handleCopyLink = async () => {
