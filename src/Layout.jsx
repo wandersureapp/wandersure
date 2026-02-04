@@ -13,6 +13,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import MetaPixel from "./components/analytics/MetaPixel";
 import { openExternalLink } from "./components/utils/openExternalLink";
+import { triggerHaptic } from "./components/utils/hapticFeedback";
 
 export default function Layout({ children, currentPageName }) {
   const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
@@ -135,6 +136,7 @@ export default function Layout({ children, currentPageName }) {
   }, [location.pathname]);
 
   const handleTabNavigation = (tabKey, tabPath) => {
+    triggerHaptic('light');
     if (tabKey === currentTab) {
       // Clicking the current tab - always go to root of that tab
       navigate(tabPath);
@@ -320,20 +322,20 @@ export default function Layout({ children, currentPageName }) {
                     <DropdownMenuItem 
                       onClick={() => {
                         base44.auth.logout();
-                        window.location.href = createPageUrl("Home");
+                        navigate(createPageUrl("Home"));
                       }}
                       className="text-red-600 cursor-pointer"
                     >
                       <LogOut className="w-4 h-4 mr-2" />
                       Sign Out
                     </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              )}
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    </DropdownMenuContent>
+                    </DropdownMenu>
+                    )}
+                    <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
               >
                 {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
