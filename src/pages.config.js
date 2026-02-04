@@ -74,6 +74,7 @@ import TermsOfService from './pages/TermsOfService';
 import TravelAides from './pages/TravelAides';
 import TripChecklist from './pages/TripChecklist';
 import TripDetail from './pages/TripDetail';
+import DeleteAccount from './pages/DeleteAccount';
 import __Layout from './Layout.jsx';
 
 
@@ -105,6 +106,7 @@ export const PAGES = {
     "TravelAides": TravelAides,
     "TripChecklist": TripChecklist,
     "TripDetail": TripDetail,
+    "DeleteAccount": DeleteAccount,
 }
 
 export const pagesConfig = {
