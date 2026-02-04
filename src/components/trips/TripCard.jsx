@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Card, CardContent } from "@/components/ui/card";
+import { triggerHaptic } from "../utils/hapticFeedback";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -55,6 +56,7 @@ export default function TripCard({ trip, onDelete }) {
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            triggerHaptic('warning');
             setShowDeleteDialog(true);
           }}
         >
@@ -131,6 +133,7 @@ export default function TripCard({ trip, onDelete }) {
           <AlertDialogCancel>Cancel</AlertDialogCancel>
           <AlertDialogAction
             onClick={() => {
+              triggerHaptic('heavy');
               onDelete(trip.id);
               setShowDeleteDialog(false);
             }}

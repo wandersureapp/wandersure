@@ -168,6 +168,7 @@ export default function TripChecklist() {
   };
 
   const deleteItem = (itemId) => {
+    triggerHaptic('warning');
     const updatedItems = checklist.items.filter(item => item.id !== itemId);
     const completionPercentage = updatedItems.length > 0 
       ? Math.round((updatedItems.filter(i => i.completed).length / updatedItems.length) * 100)
