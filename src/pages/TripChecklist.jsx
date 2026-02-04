@@ -3,6 +3,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { base44 } from "@/api/base44Client";
 import { useSearchParams, Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
+import { triggerHaptic } from "../components/utils/hapticFeedback";
+import { usePullToRefresh } from "../components/hooks/usePullToRefresh";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -124,12 +126,16 @@ export default function TripChecklist() {
   });
 
   const toggleItem = (itemId) => {
-    const updatedItems = checklist.items.map(item => 
-      item.id === itemId 
-        ? { ...item, completed: !item.completed, completed_date: !item.completed ? new Date().toISOString() : null }
-        : item
+    const item = checklist.items.find(i => i.id === itemId);
+    const updatedItems = checklist.items.map(i => 
+      i.id === itemId 
+        ? { ...i, completed: !i.completed, completed_date: !i.completed ? new Date().toISOString() : null }
+        : i
     );
     const completionPercentage = Math.round((updatedItems.filter(i => i.completed).length / updatedItems.length) * 100);
+    
+    // Haptic feedback - success for completing, light for uncompleting
+    triggerHaptic(!item.completed ? 'success' : 'light');
     
     updateMutation.mutate({
       checklistId: checklist.id,
@@ -139,6 +145,8 @@ export default function TripChecklist() {
 
   const addCustomItem = () => {
     if (!newItemTitle.trim()) return;
+    
+    triggerHaptic('light');
     
     const newItem = {
       id: `custom-${Date.now()}`,
@@ -363,7 +371,7 @@ export default function TripChecklist() {
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 text-gray-400 hover:text-red-600"
+                                className="min-h-[44px] min-w-[44px] md:h-8 md:w-8 md:min-h-0 md:min-w-0 text-gray-400 hover:text-red-600"
                                 onClick={() => deleteItem(item.id)}
                               >
                                 <Trash2 className="w-4 h-4" />

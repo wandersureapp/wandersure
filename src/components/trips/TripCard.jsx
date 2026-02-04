@@ -51,7 +51,7 @@ export default function TripCard({ trip, onDelete }) {
         <Button
           variant="ghost"
           size="icon"
-          className="absolute top-3 right-3 z-10 bg-white hover:bg-red-50 hover:text-red-600 rounded-full shadow-md opacity-80 hover:opacity-100 transition-all"
+          className="absolute top-3 right-3 z-10 bg-white hover:bg-red-50 hover:text-red-600 rounded-full shadow-md opacity-80 hover:opacity-100 transition-all min-w-[44px] min-h-[44px] md:min-w-0 md:min-h-0"
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();

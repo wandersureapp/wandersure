@@ -41,7 +41,25 @@ export default function MyTrips() {
 
   const deleteMutation = useMutation({
     mutationFn: (tripId) => base44.entities.Trip.delete(tripId),
-    onSuccess: () => {
+    onMutate: async (tripId) => {
+      // Cancel outgoing refetches
+      await queryClient.cancelQueries({ queryKey: ['trips'] });
+      
+      // Snapshot previous value
+      const previousTrips = queryClient.getQueryData(['trips']);
+      
+      // Optimistically remove from UI
+      queryClient.setQueryData(['trips'], (old) => 
+        old ? old.filter(trip => trip.id !== tripId) : []
+      );
+      
+      return { previousTrips };
+    },
+    onError: (err, tripId, context) => {
+      // Rollback on error
+      queryClient.setQueryData(['trips'], context.previousTrips);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['trips'] });
     }
   });

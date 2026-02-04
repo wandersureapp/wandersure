@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { triggerHaptic } from '../utils/hapticFeedback';
 
 /**
  * Custom hook for pull-to-refresh functionality
@@ -15,6 +16,7 @@ export function usePullToRefresh(onRefresh, options = {}) {
 
   const handleRefresh = useCallback(async () => {
     setIsRefreshing(true);
+    triggerHaptic('medium');
     try {
       await onRefresh();
     } finally {
