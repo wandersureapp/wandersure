@@ -6,7 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { User, Mail, MapPin, Phone, Calendar, Save, Crown, Sparkles, Plus, Trash2, AlertTriangle } from "lucide-react";
+import { User, Mail, MapPin, Phone, Calendar, Save, Crown, Sparkles, Plus, Trash2, AlertTriangle, XCircle } from "lucide-react";
+import { triggerHaptic } from "../components/utils/hapticFeedback";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   AlertDialog,
@@ -106,16 +107,35 @@ export default function Profile() {
   const updateMutation = useMutation({
     mutationFn: (data) => base44.auth.updateMe(data),
     onSuccess: () => {
+      triggerHaptic('success');
       queryClient.invalidateQueries({ queryKey: ['current-user'] });
     }
   });
 
   const handleSave = () => {
+    triggerHaptic('light');
     updateMutation.mutate(formData);
   };
 
+  const cancelSubscriptionMutation = useMutation({
+    mutationFn: async () => {
+      const prefs = await base44.entities.UserNotificationPreferences.list();
+      const userPref = prefs.find(p => p.user_email === user?.email);
+      if (userPref) {
+        await base44.entities.UserNotificationPreferences.update(userPref.id, {
+          subscription_tier: 'free'
+        });
+      }
+    },
+    onSuccess: () => {
+      triggerHaptic('success');
+      queryClient.invalidateQueries({ queryKey: ['notification-preferences'] });
+    }
+  });
+
   const deleteAccountMutation = useMutation({
     mutationFn: async () => {
+      triggerHaptic('heavy');
       // Call server-side function for atomic deletion
       await base44.functions.invoke('deleteUserAccount', {});
       
@@ -477,7 +497,7 @@ export default function Profile() {
               </div>
             )}
 
-            {/* Account Deletion */}
+            {/* Subscription Management & Account Deletion */}
             <Card className="border-red-200 bg-red-50">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-red-900">
@@ -485,43 +505,99 @@ export default function Profile() {
                   Danger Zone
                 </CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-sm text-red-800 mb-4">
-                  Deleting your account is permanent and cannot be undone. All your trips, data, and preferences will be permanently deleted.
-                </p>
-                <AlertDialog>
-                  <AlertDialogTrigger asChild>
-                    <Button variant="destructive" className="bg-red-600 hover:bg-red-700 min-h-[44px]">
-                      <Trash2 className="w-4 h-4 mr-2" />
-                      Delete My Account
-                    </Button>
-                  </AlertDialogTrigger>
-                  <AlertDialogContent>
-                    <AlertDialogHeader>
-                      <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
-                      <AlertDialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove all your data from our servers, including:
-                        <ul className="list-disc ml-6 mt-2 space-y-1">
-                          <li>All your trips and travel plans</li>
-                          <li>Risk assessments and recommendations</li>
-                          <li>Notification preferences</li>
-                          <li>Profile information</li>
-                        </ul>
-                      </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                      <AlertDialogCancel>Cancel</AlertDialogCancel>
-                      <AlertDialogAction
-                        onClick={() => deleteAccountMutation.mutate()}
-                        disabled={deleteAccountMutation.isPending}
+              <CardContent className="space-y-6">
+                {/* Cancel Subscription */}
+                {(subscriptionTier === 'premium' || subscriptionTier === 'elite') && (
+                  <div className="pb-6 border-b border-red-200">
+                    <h4 className="font-semibold text-red-900 mb-2">Cancel Subscription</h4>
+                    <p className="text-sm text-red-800 mb-4">
+                      Canceling your {subscriptionTier === 'elite' ? 'Globetrotter' : 'Explorer'} subscription will downgrade you to the Basic plan. You'll lose access to premium alerts and features.
+                    </p>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button 
+                          variant="outline" 
+                          className="border-red-300 text-red-700 hover:bg-red-100 min-h-[44px]"
+                          onClick={() => triggerHaptic('warning')}
+                        >
+                          <XCircle className="w-4 h-4 mr-2" />
+                          Cancel Subscription
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Cancel your subscription?</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            You'll be downgraded to the Basic (free) plan and will lose:
+                            <ul className="list-disc ml-6 mt-2 space-y-1">
+                              <li>Real-time flight alerts and gate changes</li>
+                              <li>Airport intelligence (TSA wait times, traffic)</li>
+                              <li>Premium weather and safety updates</li>
+                              <li>Hotel, car rental, and cruise alerts</li>
+                              <li>SMS notifications</li>
+                            </ul>
+                            <p className="mt-3">You can resubscribe anytime to restore these features.</p>
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Keep Subscription</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => cancelSubscriptionMutation.mutate()}
+                            disabled={cancelSubscriptionMutation.isPending}
+                            className="bg-orange-600 hover:bg-orange-700 min-h-[44px]"
+                          >
+                            {cancelSubscriptionMutation.isPending ? 'Canceling...' : 'Yes, Cancel Subscription'}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
+
+                {/* Delete Account */}
+                <div>
+                  <h4 className="font-semibold text-red-900 mb-2">Delete Account</h4>
+                  <p className="text-sm text-red-800 mb-4">
+                    Deleting your account is permanent and cannot be undone. All your trips, data, and preferences will be permanently deleted.
+                  </p>
+                  <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                      <Button 
+                        variant="destructive" 
                         className="bg-red-600 hover:bg-red-700 min-h-[44px]"
+                        onClick={() => triggerHaptic('warning')}
                       >
-                        {deleteAccountMutation.isPending ? 'Deleting...' : 'Yes, Delete My Account'}
-                      </AlertDialogAction>
-                    </AlertDialogFooter>
-                  </AlertDialogContent>
-                </AlertDialog>
+                        <Trash2 className="w-4 h-4 mr-2" />
+                        Delete My Account
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          This action cannot be undone. This will permanently delete your account
+                          and remove all your data from our servers, including:
+                          <ul className="list-disc ml-6 mt-2 space-y-1">
+                            <li>All your trips and travel plans</li>
+                            <li>Risk assessments and recommendations</li>
+                            <li>Notification preferences</li>
+                            <li>Profile information</li>
+                          </ul>
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => deleteAccountMutation.mutate()}
+                          disabled={deleteAccountMutation.isPending}
+                          className="bg-red-600 hover:bg-red-700 min-h-[44px]"
+                        >
+                          {deleteAccountMutation.isPending ? 'Deleting...' : 'Yes, Delete My Account'}
+                        </AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
+                </div>
               </CardContent>
             </Card>
           </div>
