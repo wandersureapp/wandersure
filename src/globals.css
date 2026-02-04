@@ -99,6 +99,7 @@ input, textarea, [contenteditable="true"], .selectable {
 button, a, [role="button"] {
   user-select: none;
   -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Overscroll behavior for scrollable containers */
