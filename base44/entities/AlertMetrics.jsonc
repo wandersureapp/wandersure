@@ -1,0 +1,74 @@
+{
+  "name": "AlertMetrics",
+  "type": "object",
+  "properties": {
+    "date": {
+      "type": "string",
+      "format": "date",
+      "description": "Metrics date"
+    },
+    "total_alerts_generated": {
+      "type": "number",
+      "default": 0
+    },
+    "critical_alerts": {
+      "type": "number",
+      "default": 0
+    },
+    "caution_alerts": {
+      "type": "number",
+      "default": 0
+    },
+    "informational_alerts": {
+      "type": "number",
+      "default": 0
+    },
+    "alerts_sent": {
+      "type": "number",
+      "default": 0
+    },
+    "alerts_suppressed": {
+      "type": "number",
+      "default": 0
+    },
+    "alerts_expired": {
+      "type": "number",
+      "default": 0
+    },
+    "alerts_deduplicated": {
+      "type": "number",
+      "default": 0
+    },
+    "email_delivery_success": {
+      "type": "number",
+      "default": 0
+    },
+    "email_delivery_failed": {
+      "type": "number",
+      "default": 0
+    },
+    "sms_delivery_success": {
+      "type": "number",
+      "default": 0
+    },
+    "sms_delivery_failed": {
+      "type": "number",
+      "default": 0
+    },
+    "user_acknowledgments": {
+      "type": "number",
+      "default": 0
+    },
+    "avg_response_time_seconds": {
+      "type": "number",
+      "description": "Average time for alert to be sent after detection"
+    },
+    "false_positive_reports": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "date"
+  ]
+}

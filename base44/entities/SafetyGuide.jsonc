@@ -1,0 +1,141 @@
+{
+  "name": "SafetyGuide",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "Associated trip ID"
+    },
+    "destination": {
+      "type": "string"
+    },
+    "destination_country": {
+      "type": "string"
+    },
+    "generated_content": {
+      "type": "object",
+      "properties": {
+        "emergency_contacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "service": {
+                "type": "string"
+              },
+              "number": {
+                "type": "string"
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "common_scams": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "scam_type": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "how_to_avoid": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "transportation_safety": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "health_precautions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "areas_to_avoid": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "area": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "document_backup_tips": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "local_laws": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "pdf_url": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "trip_id",
+    "destination"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

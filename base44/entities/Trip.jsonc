@@ -1,0 +1,277 @@
+{
+  "name": "Trip",
+  "type": "object",
+  "properties": {
+    "trip_name": {
+      "type": "string",
+      "description": "Name/title of the trip"
+    },
+    "destination": {
+      "type": "string",
+      "description": "Primary destination (legacy - for backward compatibility)"
+    },
+    "destination_country": {
+      "type": "string",
+      "description": "Country of primary destination (legacy)"
+    },
+    "destinations": {
+      "type": "array",
+      "description": "Multiple destinations for the trip",
+      "items": {
+        "type": "object",
+        "properties": {
+          "city": {
+            "type": "string",
+            "description": "City name"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country name"
+          },
+          "arrival_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "departure_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "purpose": {
+            "type": "string",
+            "enum": [
+              "lodging",
+              "work",
+              "layover",
+              "sightseeing"
+            ],
+            "description": "Purpose of stop at this destination"
+          },
+          "hotel_name": {
+            "type": "string"
+          },
+          "hotel_booking_number": {
+            "type": "string"
+          },
+          "risk_assessment": {
+            "type": "object",
+            "properties": {
+              "overall_score": {
+                "type": "number"
+              },
+              "crime_risk": {
+                "type": "number"
+              },
+              "political_risk": {
+                "type": "number"
+              },
+              "health_risk": {
+                "type": "number"
+              },
+              "weather_risk": {
+                "type": "number"
+              },
+              "disruption_risk": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      }
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "travelers_count": {
+      "type": "number",
+      "description": "Number of travelers",
+      "default": 1
+    },
+    "trip_cost": {
+      "type": "number",
+      "description": "Total trip cost in USD"
+    },
+    "flights": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "airline": {
+            "type": "string"
+          },
+          "flight_number": {
+            "type": "string"
+          },
+          "departure_airport": {
+            "type": "string"
+          },
+          "arrival_airport": {
+            "type": "string"
+          },
+          "departure_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "departure_time": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Array of flight segments"
+    },
+    "hotel_name": {
+      "type": "string"
+    },
+    "hotel_booking_number": {
+      "type": "string"
+    },
+    "car_rental_company": {
+      "type": "string"
+    },
+    "car_rental_booking_number": {
+      "type": "string"
+    },
+    "cruise_line": {
+      "type": "string"
+    },
+    "cruise_booking_number": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "booked",
+        "active",
+        "completed",
+        "cancelled"
+      ],
+      "default": "planning"
+    },
+    "risk_assessment": {
+      "type": "object",
+      "properties": {
+        "overall_score": {
+          "type": "number",
+          "description": "0-100 overall risk score (max across all destinations)"
+        },
+        "flight_delay_risk": {
+          "type": "number"
+        },
+        "weather_risk": {
+          "type": "number"
+        },
+        "crime_risk": {
+          "type": "number"
+        },
+        "political_risk": {
+          "type": "number"
+        },
+        "disruption_risk": {
+          "type": "number"
+        },
+        "health_risk": {
+          "type": "number"
+        },
+        "airport_conditions": {
+          "type": "string"
+        },
+        "tsa_wait_times": {
+          "type": "string"
+        },
+        "last_updated": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "risk_details": {
+      "type": "object",
+      "properties": {
+        "flight_delay_reasoning": {
+          "type": "string"
+        },
+        "weather_reasoning": {
+          "type": "string"
+        },
+        "crime_reasoning": {
+          "type": "string"
+        },
+        "political_reasoning": {
+          "type": "string"
+        },
+        "health_reasoning": {
+          "type": "string"
+        },
+        "disruption_reasoning": {
+          "type": "string"
+        },
+        "airport_intel": {
+          "type": "string"
+        },
+        "critical_alerts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "recommended_coverage": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "trip_name",
+    "start_date",
+    "end_date"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

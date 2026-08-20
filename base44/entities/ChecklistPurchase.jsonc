@@ -1,0 +1,61 @@
+{
+  "name": "ChecklistPurchase",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of the user who purchased"
+    },
+    "product_type": {
+      "type": "string",
+      "enum": [
+        "interactive_checklist",
+        "travel_aide_bundle",
+        "individual_aide"
+      ],
+      "description": "What they purchased"
+    },
+    "product_id": {
+      "type": "string",
+      "description": "Specific product identifier"
+    },
+    "amount_paid": {
+      "type": "number",
+      "description": "Amount paid in USD"
+    },
+    "stripe_payment_intent": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email",
+    "product_type"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

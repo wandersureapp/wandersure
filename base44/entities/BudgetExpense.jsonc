@@ -1,0 +1,101 @@
+{
+  "name": "BudgetExpense",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "Associated trip ID"
+    },
+    "amount": {
+      "type": "number",
+      "description": "Expense amount"
+    },
+    "currency": {
+      "type": "string",
+      "default": "USD"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "accommodation",
+        "food",
+        "transportation",
+        "activities",
+        "shopping",
+        "other"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "expense_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "receipt_photo_url": {
+      "type": "string",
+      "description": "URL to uploaded receipt photo"
+    },
+    "extracted_data": {
+      "type": "object",
+      "properties": {
+        "merchant_name": {
+          "type": "string"
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "required": [
+    "trip_id",
+    "amount",
+    "category",
+    "expense_date"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

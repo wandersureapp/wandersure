@@ -1,0 +1,100 @@
+{
+  "name": "Recommendation",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "ID of associated trip"
+    },
+    "recommended_coverages": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of recommended coverage types based on AI analysis"
+    },
+    "estimated_premium_range": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      },
+      "description": "Estimated cost range"
+    },
+    "provider_referrals": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "provider_name": {
+            "type": "string"
+          },
+          "referral_url": {
+            "type": "string"
+          },
+          "estimated_premium": {
+            "type": "number"
+          },
+          "clicked": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "description": "Provider options with referral links"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Additional notes or recommendations"
+    }
+  },
+  "required": [
+    "trip_id",
+    "recommended_coverages"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

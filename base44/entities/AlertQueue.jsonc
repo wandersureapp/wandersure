@@ -1,0 +1,86 @@
+{
+  "name": "AlertQueue",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "Associated trip ID"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Target user email"
+    },
+    "alert_hash": {
+      "type": "string",
+      "description": "Deduplication hash (trip_id + alert_type + date)"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "informational",
+        "caution",
+        "critical"
+      ]
+    },
+    "alert_type": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    },
+    "risk_score": {
+      "type": "number"
+    },
+    "priority": {
+      "type": "number",
+      "description": "1=critical, 2=caution, 3=informational"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "sent",
+        "failed",
+        "expired",
+        "suppressed"
+      ],
+      "default": "pending"
+    },
+    "delivery_attempts": {
+      "type": "number",
+      "default": 0
+    },
+    "channels_attempted": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Don't send alert after this time"
+    },
+    "sent_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "acknowledged_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "confidence_score": {
+      "type": "number",
+      "description": "0-100 confidence in alert accuracy"
+    }
+  },
+  "required": [
+    "trip_id",
+    "user_email",
+    "alert_hash",
+    "severity",
+    "alert_type",
+    "message"
+  ]
+}

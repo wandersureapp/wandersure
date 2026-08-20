@@ -1,0 +1,93 @@
+{
+  "name": "AlertHistory",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "Associated trip ID"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User who received the alert"
+    },
+    "severity": {
+      "type": "string",
+      "enum": [
+        "informational",
+        "caution",
+        "critical"
+      ],
+      "description": "Alert severity level"
+    },
+    "alert_type": {
+      "type": "string",
+      "description": "Type of alert (flight_delay, weather, crime, etc.)"
+    },
+    "message": {
+      "type": "string",
+      "description": "Alert message content"
+    },
+    "risk_score": {
+      "type": "number",
+      "description": "Risk score at time of alert"
+    },
+    "escalation_count": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of times this alert has escalated"
+    },
+    "channels_sent": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Channels alert was sent through (email, sms, rss)"
+    },
+    "acknowledged": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether user acknowledged the alert"
+    }
+  },
+  "required": [
+    "trip_id",
+    "user_email",
+    "severity",
+    "alert_type",
+    "message"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

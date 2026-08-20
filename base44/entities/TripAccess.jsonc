@@ -1,0 +1,92 @@
+{
+  "name": "TripAccess",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "Associated trip ID"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "User who purchased access"
+    },
+    "access_level": {
+      "type": "string",
+      "enum": [
+        "explorer",
+        "globetrotter"
+      ],
+      "description": "Level of access purchased"
+    },
+    "payment_type": {
+      "type": "string",
+      "enum": [
+        "one_time",
+        "subscription"
+      ],
+      "description": "How they paid"
+    },
+    "amount_paid": {
+      "type": "number",
+      "description": "Amount paid for this trip access"
+    },
+    "stripe_payment_intent": {
+      "type": "string",
+      "description": "Stripe payment intent ID"
+    },
+    "access_start_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When access starts"
+    },
+    "access_end_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When access ends (trip end + 3 days)"
+    },
+    "upgraded_to_subscription": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether they upgraded to subscription"
+    },
+    "upgrade_discount_used": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether they used mid-trip upgrade discount"
+    }
+  },
+  "required": [
+    "trip_id",
+    "user_email",
+    "access_level",
+    "payment_type",
+    "amount_paid"
+  ],
+  "rls": {
+    "create": {
+      "user_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "user_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

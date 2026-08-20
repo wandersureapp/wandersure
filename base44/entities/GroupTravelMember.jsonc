@@ -1,0 +1,115 @@
+{
+  "name": "GroupTravelMember",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "Associated trip ID"
+    },
+    "member_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "linked_user_email": {
+      "type": "string",
+      "description": "If this member is a WanderSure user"
+    },
+    "linked_trip_id": {
+      "type": "string",
+      "description": "If this member has their own trip in the system"
+    },
+    "flight_info": {
+      "type": "object",
+      "properties": {
+        "airline": {
+          "type": "string"
+        },
+        "flight_number": {
+          "type": "string"
+        },
+        "departure_time": {
+          "type": "string"
+        },
+        "arrival_time": {
+          "type": "string"
+        }
+      }
+    },
+    "hotel_info": {
+      "type": "object",
+      "properties": {
+        "hotel_name": {
+          "type": "string"
+        },
+        "booking_number": {
+          "type": "string"
+        },
+        "room_number": {
+          "type": "string"
+        }
+      }
+    },
+    "special_notes": {
+      "type": "string",
+      "description": "Dietary restrictions, medical info, etc."
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "organizer",
+        "member"
+      ],
+      "default": "member"
+    }
+  },
+  "required": [
+    "trip_id",
+    "member_name"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

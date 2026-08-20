@@ -1,0 +1,142 @@
+{
+  "name": "DestinationPlaybook",
+  "type": "object",
+  "properties": {
+    "trip_id": {
+      "type": "string",
+      "description": "Associated trip ID"
+    },
+    "destination": {
+      "type": "string"
+    },
+    "destination_country": {
+      "type": "string"
+    },
+    "travel_dates": {
+      "type": "string"
+    },
+    "generated_content": {
+      "type": "object",
+      "properties": {
+        "local_customs": {
+          "type": "string"
+        },
+        "language_tips": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "phrase": {
+                "type": "string"
+              },
+              "translation": {
+                "type": "string"
+              },
+              "pronunciation": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "hidden_gems": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "category": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "safety_tips": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "money_saving_tips": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "best_time_to_visit": {
+          "type": "string"
+        },
+        "transportation_guide": {
+          "type": "string"
+        },
+        "food_recommendations": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "dish": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "pdf_url": {
+      "type": "string",
+      "description": "URL to generated PDF"
+    }
+  },
+  "required": [
+    "trip_id",
+    "destination"
+  ],
+  "rls": {
+    "create": {
+      "created_by": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "delete": {
+      "$or": [
+        {
+          "created_by": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

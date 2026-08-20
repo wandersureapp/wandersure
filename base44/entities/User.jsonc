@@ -1,0 +1,105 @@
+{
+  "name": "User",
+  "type": "object",
+  "properties": {
+    "street_address": {
+      "type": "string",
+      "description": "Street address"
+    },
+    "city": {
+      "type": "string",
+      "description": "City"
+    },
+    "state": {
+      "type": "string",
+      "description": "State/Province"
+    },
+    "zip_code": {
+      "type": "string",
+      "description": "ZIP/Postal code"
+    },
+    "country": {
+      "type": "string",
+      "description": "Country"
+    },
+    "home_airport": {
+      "type": "string",
+      "description": "Home or preferred airport code"
+    },
+    "phone_number": {
+      "type": "string",
+      "description": "User's phone number"
+    },
+    "date_of_birth": {
+      "type": "string",
+      "format": "date",
+      "description": "User's date of birth"
+    },
+    "passport_number": {
+      "type": "string",
+      "description": "Passport number"
+    },
+    "passport_expiry": {
+      "type": "string",
+      "format": "date",
+      "description": "Passport expiry date"
+    },
+    "emergency_contact_name": {
+      "type": "string",
+      "description": "Emergency contact full name"
+    },
+    "emergency_contact_phone": {
+      "type": "string",
+      "description": "Emergency contact phone number"
+    },
+    "travel_preferences": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "airline",
+              "hotel",
+              "cruise",
+              "car_rental"
+            ]
+          },
+          "provider": {
+            "type": "string"
+          },
+          "loyalty_number": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Travel provider preferences and loyalty numbers"
+    },
+    "dietary_restrictions": {
+      "type": "string",
+      "description": "Dietary restrictions or preferences"
+    },
+    "medical_conditions": {
+      "type": "string",
+      "description": "Medical conditions or allergies"
+    }
+  },
+  "required": [
+    "street_address",
+    "city",
+    "state",
+    "zip_code",
+    "country",
+    "home_airport",
+    "phone_number",
+    "date_of_birth",
+    "passport_number",
+    "passport_expiry",
+    "emergency_contact_name",
+    "emergency_contact_phone",
+    "travel_preferences",
+    "dietary_restrictions",
+    "medical_conditions"
+  ]
+}
